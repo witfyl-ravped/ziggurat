@@ -517,12 +517,4 @@
   |=  inp=path
   ^-  *
   "TBD"
-::
-++  event
-  |=  inp=rooster
-  ^-  chick
-  ::  
-  ::  TBD
-  ::  
-  *chick
 --
