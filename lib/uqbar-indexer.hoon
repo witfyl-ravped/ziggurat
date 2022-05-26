@@ -118,10 +118,12 @@
     %-  pairs
     :~  [%from (account from.shell)]
         [%sig (signature sig.shell)]
+        [%eth-hash (eth-hash eth-hash.shell)]
         [%to %s (scot %ux to.shell)]
         [%rate (numb rate.shell)]
         [%budget (numb budget.shell)]
         [%town-id (numb town-id.shell)]
+        [%status (numb status.shell)]
     ==
   ::
   ++  yolk
@@ -152,6 +154,12 @@
         [%ship %s (scot %p q.signature)]
       [%life (numb r.signature)]
     ~
+  ::
+  ++  eth-hash
+    |=  eth-hash=(unit @ud)
+    ^-  json
+    ?~  eth-hash  ~
+    (numb u.eth-hash)
   ::
   ++  ids
     |=  ids=(set id:smart)
@@ -235,8 +243,9 @@
     ^-  json
     ?~  block  ~
     %-  pairs
-    :+  [%signature (signature p.u.block)]
-      [%chunks (chunks q.u.block)]
+    :^    [%height (numb height.u.block)]
+        [%signature (signature signature.u.block)]
+      [%chunks (chunks chunks.u.block)]
     ~
   ::
   ++  town
@@ -371,10 +380,12 @@
     %-  ot
     :~  [%from account]  :: always account?
         [%sig signature]
+        [%eth-hash eth-hash]
         [%to nu]
         [%rate ni]
         [%budget ni]
         [%town-id ni]
+        [%status ni]
     ==
   ::
   ++  yolk
@@ -410,6 +421,14 @@
         [%ship nu]
       [%life ni]
     ~
+  ::
+  ++  eth-hash
+    |=  jon=json
+    ^-  (unit @ud)
+    ?~  jon  ~
+    :-  ~
+    %.  jon
+    ni
   ::
   ++  ids
     |=  jon=json
@@ -498,7 +517,8 @@
     :-  ~
     %.  jon
     %-  ot
-    :+  [%signature signature]
+    :^    [%height ni]
+        [%signature signature]
       [%chunks chunks]
     ~
   ::
