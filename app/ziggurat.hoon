@@ -155,7 +155,7 @@
       ?>  ?=(%grain -.u.capitol-search)
       =/  capitol-grain=grain:smart  +.-:~(tap in grains.u.capitol-search)
       ?>  ?=(%& -.germ.capitol-grain)
-      =/  validators  ~(key by (hole:smart (map ship *) data.p.germ.capitol-grain))
+      =/  validators  ~(key by (hole:mill (map ship *) data.p.germ.capitol-grain))
       ::
       =+  (gas:poc ~ [0 [0 *@da ~(tap in validators) ~]]^~)
       :_  state(mode %validator, epochs -)
@@ -240,7 +240,7 @@
       =/  found  (~(got by p.globe.state) `@ux`'world')
       ?.  ?=(%& -.germ.found)
         ~|("ziggurat: error: couldn't find that town on chain" !!)
-      =+  (hole:smart ,(map @ud (map ship [@ux [@ux @p life]])) data.p.germ.found)
+      =+  (hole:mill ,(map @ud (map ship [@ux [@ux @p life]])) data.p.germ.found)
       ?~  hall=(~(get by -) town-id.act)
         ~|("ziggurat: error: couldn't find that town on chain" !!)
       ?.  (~(has by u.hall) src.bowl)
@@ -318,7 +318,7 @@
     ::  grab on-chain data for that hall in this epoch
     ?~  found=(~(get by p.globe.state) `@ux`'world')  ~
     ?.  ?=(%& -.germ.u.found)                         ~
-    =+  (hole:smart ,(map @ud (map ship [@ux [@ux @p life]])) data.p.germ.u.found)
+    =+  (hole:mill ,(map @ud (map ship [@ux [@ux @p life]])) data.p.germ.u.found)
     ?~  hall=(~(get by -) u.town-id)                  ~
     `[%give %fact ~[/sequencer/updates] %sequencer-update !>([%new-hall u.hall])]
   --
