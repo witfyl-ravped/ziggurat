@@ -287,6 +287,95 @@
       !>  ^-  update:uqbar-indexer
       u.up
     ::
+        [%x %has-chunk-num @ @ @ ~]
+      =/  epoch-num=@ud  (slav %ud i.t.t.path)
+      =/  block-num=@ud  (slav %ud i.t.t.t.path)
+      =/  town-id=@ud  (slav %ud i.t.t.t.t.path)
+      =/  has-in-index=(unit ?)
+        (serve-index-has %chunk [epoch-num block-num town-id])
+      ?~  has-in-index  [~ ~]
+      :^  ~  ~  %noun
+      !>(`?`u.has-in-index)
+    ::
+        $?  [%x %has-block-hash @ ~]
+            :: [%x %has-chunk-hash @ @ ~]
+            [%x %has-egg @ ~]
+            [%x %has-from @ ~]
+            [%x %has-grain @ ~]
+            [%x %has-holder @ ~]
+            [%x %has-lord @ ~]
+            [%x %has-to @ ~]
+        ==
+      =/  =query-type:uqbar-indexer
+        ;;(query-type:uqbar-indexer i.t.path)
+      =/  hash=@ux  (slav %ux i.t.t.path)
+      ?~  has-in-index=(serve-index-has query-type hash)
+        [~ ~]
+      :^  ~  ~  %noun
+      !>(`?`u.has-in-index)
+    ::
+        [%x %has-slot-num @ @ ~]
+      =/  epoch-num=@ud  (slav %ud i.t.t.path)
+      =/  block-num=@ud  (slav %ud i.t.t.t.path)
+      =/  has-in-index=(unit ?)
+        (serve-index-has %slot epoch-num block-num)
+      ?~  has-in-index  [~ ~]
+      :^  ~  ~  %noun
+      !>(`?`u.has-in-index)
+    ::
+        [%x %has-id @ ~]
+      =/  hash=@ux  (slav %ux i.t.t.path)
+      =/  from=(unit ?)
+        (serve-index-has %from hash)
+      =/  to=(unit ?)
+        (serve-index-has %to hash)
+      ?:  ?&  ?=(~ from)
+              ?=(~ to)
+          ==
+        [~ ~]
+      :^  ~  ~  %noun
+      !>  ^-  ?
+      ?~  from  ?~  to  !!  u.to
+      ?~  to  u.from
+      ?|  u.from
+          u.to
+      ==
+    ::
+        [%x %has-hash @ ~]
+      =/  hash=@ux  (slav %ux i.t.t.path)
+      =/  egg=(unit ?)
+        (serve-index-has %egg hash)
+      =/  from=(unit ?)
+        (serve-index-has %from hash)
+      =/  to=(unit ?)
+        (serve-index-has %to hash)
+      ?:  ?&  ?=(~ egg)
+              ?=(~ from)
+              ?=(~ to)
+          ==
+        [~ ~]
+      :^  ~  ~  %noun
+      !>  ^-  ?
+      ?~  egg
+        ?~  from  ?~  to  !!  u.to
+        ?~  to  u.from
+        ?|  u.from
+            u.to
+        ==
+      ?~  from
+        ?~  to  u.egg
+        ?|  u.egg
+            u.to
+        ==
+      ?~  to
+        ?|  u.egg
+            u.from
+        ==
+      ?|  u.egg
+          u.from
+          u.to
+      ==
+    ::
     ==
     ::  TODO: make blocks and grains play nice with eggs
     ::        so we can return all hits together
@@ -539,6 +628,74 @@
   ?~  slot=(get-slot epoch-num block-num)  ~
   ?~  block=q.u.slot                       ~
   (~(get by chunks.u.block) town-id)
+::
+++  serve-index-has
+  |=  [=query-type:uqbar-indexer =query-payload:uqbar-indexer]
+  |^  ^-  (unit ?)
+  ?+    query-type  !!
+  ::
+      %has-chunk
+    ?.  ?=(town-location:uqbar-indexer query-payload)  ~
+    =*  epoch-num  epoch-num.query-payload
+    =*  block-num  block-num.query-payload
+    =*  town-id    town-id.query-payload
+    ?~  epoch=(get:poc:zig epochs epoch-num)        `%.n
+    ?~  slot=(get:sot:zig slots.u.epoch block-num)  `%.n
+    ?~  block=q.u.slot                              `%.n
+    `(~(has by chunks.u.block) town-id)
+  ::
+  ::     %chunk-hash
+  ::   get-chunk-update
+  ::
+      $?  %has-block-hash
+          %has-egg
+          %has-from
+          %has-grain
+          %has-holder
+          %has-lord
+          %has-to
+      ==
+    ?.  ?=(@ux query-payload)  ~
+    `has-locations
+  ::
+      %has-slot
+    ?.  ?=(block-location:uqbar-indexer query-payload)  ~
+    =*  epoch-num  epoch-num.query-payload
+    =*  block-num  block-num.query-payload
+    ?~  epoch=(get:poc:zig epochs epoch-num)  `%.n
+    `(has:sot:zig slots.u.epoch block-num)
+  ::
+  ==
+  ::
+  ++  has-locations
+    ^-  ?
+    ?>  ?=(@ux query-payload)
+    ?+    query-type  !!
+    ::
+        %has-block-hash
+      (~(has by block-index) query-payload)
+    ::
+        %has-egg
+      (~(has by egg-index) query-payload)
+    ::
+        %has-from
+      (~(has by from-index) query-payload)
+    ::
+        %has-grain
+      (~(has by grain-index) query-payload)
+    ::
+        %has-holder
+      (~(has by holder-index) query-payload)
+    ::
+        %has-lord
+      (~(has by lord-index) query-payload)
+    ::
+        %has-to
+      (~(has by to-index) query-payload)
+    ::
+    ==
+  ::
+  --
 ::
 ++  serve-update
   |=  [=query-type:uqbar-indexer =query-payload:uqbar-indexer]

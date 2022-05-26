@@ -40,7 +40,7 @@
       =/  new-dao-germ=germ  [%& +.args]
       =/  new-dao-id=id
         (fry-rice me.cart me.cart town-id.cart salt.args)
-      =-  [%& ~ (malt ~[[new-dao-id -]])]
+      =-  [%& ~ (malt ~[[new-dao-id -]]) ~]
       :*  id=new-dao-id
           lord=me.cart
           holder=me.cart
@@ -65,7 +65,7 @@
         ::  if threshold is higher than current # of votes,
         ::  just register vote and update rice
         =.  dao  dao(proposals (~(put by proposals.dao) proposal-id prop))
-        [%& (malt ~[[id.dao-grain dao-grain(data.p.germ dao)]]) ~]
+        [%& (malt ~[[id.dao-grain dao-grain(data.p.germ dao)]]) ~ ~]
       ::  otherwise execute proposal and remove from rice
       =.  data.p.germ.dao-grain
         dao(proposals (~(del by proposals.dao) proposal-id))
@@ -95,7 +95,7 @@
         %+  ~(put by proposals.dao)
           proposal-id
         [update=update votes=~]
-      [%& (malt ~[[id.dao-grain dao-grain(data.p.germ dao)]]) ~]
+      [%& (malt ~[[id.dao-grain dao-grain(data.p.germ dao)]]) ~ ~]
     ::
         %execute
       ?>  =(me.cart caller-id)
@@ -130,7 +130,7 @@
           (~(remove-roles update:dao-lib dao) +.+.update)
         ::
         ==
-      [%& (malt ~[[id.dao-grain dao-grain(data.p.germ dao)]]) ~]
+      [%& (malt ~[[id.dao-grain dao-grain(data.p.germ dao)]]) ~ ~]
     ::
     ==
   ::
