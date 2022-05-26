@@ -403,9 +403,7 @@
     =/  our-id=@ux  (slav %ux i.t.wire)
     =+  our-txs=(~(gut by transaction-store.state) our-id [sent=~ received=~])
     =/  eggs=(list [@ux =egg:smart])
-      %~  tap  in
-      ^-  (set [@ux =egg:smart])
-      %-  ~(run in eggs.update)
+      %+  turn  ~(val by eggs.update)
       |=  [=egg-location:uqbar-indexer =egg:smart]
       [(hash-egg egg) egg]
     =^  tx-status-cards=(list card)  our-txs
