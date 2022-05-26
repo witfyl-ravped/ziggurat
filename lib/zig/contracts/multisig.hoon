@@ -14,6 +14,7 @@
   ?~  args.inp  !!
   (process (hole arguments u.args.inp) (pin caller.inp))
   ::
+  ::  XX potentially rename to action/command??
   +$  arguments
     $%
       ::  any id can call the following
@@ -50,10 +51,10 @@
     ^-  ?
     =(me.cart id)
   ++  shamspin
-    |=  ids=(list id)
+    |=  ids=(set id)
     ^-  @uvH
     =<  q
-    %^  spin  ids
+    %^  spin  ~(tap in ids)
       0v0
     |=  [=id hash=@uvH]
     [~ (sham (cat 3 (sham id) hash))]
@@ -64,9 +65,8 @@
       ::  issue a new multisig rice
       =/  salt=@
         %-  sham
-        %^  cat  3  caller-id
-        (shamspin ~(tap in members.args))
-      :: im pretty sure salt is supposed to go in the germ as well
+        (cat 3 caller-id (shamspin members.args))
+      ::  im pretty sure salt is supposed to go in the germ as well
       =/  new-sig-germ=germ  [%& salt [members.args init-thresh.args ~]]
       =/  new-sig-id=id      (fry-rice caller-id me.cart town-id.cart salt)
       =/  new-sig=grain      [new-sig-id me.cart me.cart town-id.cart new-sig-germ]
@@ -75,15 +75,16 @@
     ?>  =(lord.my-grain me.cart)
     ?>  ?=(%& -.germ.my-grain)
     =/  state=multisig-state  (hole multisig-state data.p.germ.my-grain)
-    ::  ?>  ?=(multisig-state data.p.germ.my-grain)  :: doesn't work
+    ::  ?>  ?=(multisig-state data.p.germ.my-grain)  :: doesn't work due to fish-loop
     ::  N.B. because no type assert has been made, 
     ::  data.p.germ.my-grain is basically * and thus has no type checking done on its modification
     ::  therefore, we explitcitly modify `state` to retain typechecking then modify `data`
     ?-    -.args
         %vote
-      ::  should emit event triggering actual call
+      ::  should emit event in crow eventually
       ::  if this sig pushes it over thresh
-      ::  validate member in multisig
+      ::
+      ::
       ?.  (is-member caller-id state)  !!
       =/  prop           (~(got by pending.state) tx-hash.args)
       =.  votes.prop     (~(put in votes.prop) caller-id)
