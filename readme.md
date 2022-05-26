@@ -126,18 +126,17 @@ where the argument `[our %ziggurat]` is a dock pointing to the ship running the 
 ```
 
 
-### Build DAO contracts (not currently required -- built in `lib/zig/deploy.hoon`)
+### Build DAO contracts
 
 If run on a fakezod located at `~/urbit/zod`, the following will create the compiled DAO contract at `~/urbit/zod/.urb/put/dao.noun`:`
 ```
-=h .^(@t %cx /(scot %p our)/base/(scot %da now)/sys/hoon/hoon)
-=s .^(@t %cx /(scot %p our)/zig/(scot %da now)/lib/zig/sys/smart/hoon)
-=c .^(@t %cx /(scot %p our)/zig/(scot %da now)/lib/zig/contracts/dao/hoon)
-
-=hh (slap !>(~) (ream h))
-=hhs (slap hh (ream s))
-=cont (slap hhs (ream c))
-.dao/noun cont
+=hoon .^(@t %cx /(scot %p our)/zig/(scot %da now)/lib/zig/sys/hoon/hoon)
+=smart .^(@t %cx /(scot %p our)/zig/(scot %da now)/lib/zig/sys/smart/hoon)
+=contract .^(@t %cx /(scot %p our)/zig/(scot %da now)/lib/zig/contracts/dao/hoon)
+=step0 (slap !>(~) (ream hoon))
+=step1 (slap step0 (ream smart))
+=step2 (slap step1 (ream contract))
+.dao/noun q:(slap step2 (ream '-'))
 ```
 
 ### DAO set up
