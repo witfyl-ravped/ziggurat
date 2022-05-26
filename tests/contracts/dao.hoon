@@ -663,14 +663,15 @@
     =/  updates=(list on-chain-update:d)
       make-on-chain-updates
     :-  %&
-    :_  ~
-    %+  make-id-grain-map  megacorp-dao-salt
-    %=  dao
-        proposals
-      %+  %~  put  by  proposals.dao
-        (mug (jam updates))
-      [updates=updates votes=~]
-    ==
+    :+  %+  make-id-grain-map  megacorp-dao-salt
+        %=  dao
+            proposals
+          %+  %~  put  by  proposals.dao
+            (mug (jam updates))
+          [updates=updates votes=~]
+        ==
+      ~
+    ~
   ::
   ++  make-test-cart
     ^-  cart:smart
@@ -1248,23 +1249,24 @@
     ^-  chick:smart
     =/  =dao:d  megacorp-dao
     :-  %&
-    :_  ~
-    %+  make-id-grain-map  megacorp-dao-salt
-    %=  dao
-        members
-      %+  %~  put  ju  members.dao
-      megacorp-ceo-id  %comms-host
-    ::
-        permissions
-      %+  %~  put  by  permissions.dao
-        name=%host
-      %+  %~  put  ju  *(jug address:d role:d)
-      make-placeholder-dao-comms-rid  %comms-host
-    ::
-        proposals
-      (~(del by proposals.dao) make-proposal-id)
-    ::
-    ==
+    :+  %+  make-id-grain-map  megacorp-dao-salt
+        %=  dao
+            members
+          %+  %~  put  ju  members.dao
+          megacorp-ceo-id  %comms-host
+        ::
+            permissions
+          %+  %~  put  by  permissions.dao
+            name=%host
+          %+  %~  put  ju  *(jug address:d role:d)
+          make-placeholder-dao-comms-rid  %comms-host
+        ::
+            proposals
+          (~(del by proposals.dao) make-proposal-id)
+        ::
+        ==
+      ~
+    ~
   ::
   ++  make-test-cart
     ^-  cart:smart
