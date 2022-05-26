@@ -15,6 +15,7 @@
   (process (hole arguments u.args.inp) (pin caller.inp))
   ::
   ::  XX potentially rename to action/command??
+  ::  XX potentially add [%remove-tx tx-hash=@ux] if it makes sense?
   +$  arguments
     $%
       ::  any id can call the following
@@ -81,26 +82,19 @@
     ::  therefore, we explitcitly modify `state` to retain typechecking then modify `data`
     ?-    -.args
         %vote
-      ::  should emit event in crow eventually
-      ::  if this sig pushes it over thresh
-      ::
-      ::
       ?.  (is-member caller-id state)  !!
-      =/  prop           (~(got by pending.state) tx-hash.args)
+      =*  tx-hash        tx-hash.args
+      =/  prop           (~(got by pending.state) tx-hash)
       =.  votes.prop     (~(put in votes.prop) caller-id)
-      =.  pending.state  (~(put by pending.state) tx-hash.args prop)
+      =.  pending.state  (~(put by pending.state) tx-hash prop)
       ::  check if proposal is at threshold, execute if so
       ::  otherwise simply update rice
-      ::  TODO this doesn't seem right. (also there is no event arm (?))
       ?:  (gth threshold.state ~(wyt in votes.prop))
-        ::  TODO:
-        ::  queue the tx for execution
-        ::  if the pending egg is a multisig action, just
-        ::  recurse with $, otherwise issue a hen chick with the call.
-        :: [~ next=[to=me.cart town-id args=[me.cart ]] roost=rooster]
-        =.  pending.state         (~(del by pending.state) tx-hash.args)
+        =.  pending.state         (~(del by pending.state) tx-hash)
         =.  data.p.germ.my-grain  state
-        [%& (malt ~[[id.my-grain my-grain]]) ~ ~]
+        ::  TODO emit event in crow
+        =/  roost=rooster         [(malt ~[[id.my-grain my-grain]]) ~ ~]
+        [%| [~ next=[to.p.egg town-id.p.egg q.egg]:prop roost]]
       =.  data.p.germ.my-grain  state
       [%& (malt ~[[id.my-grain my-grain]]) ~ ~]
     ::
