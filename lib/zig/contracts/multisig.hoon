@@ -58,7 +58,7 @@
     %^  spin  ~(tap in ids)
       0v0
     |=  [=id hash=@uvH]
-    [~ (sham (cat 3 (sham id) hash))]
+    [~ (sham (cat 3 hash (sham id)))]
   ++  process
     |=  [args=arguments caller-id=id]
     ^-  chick
