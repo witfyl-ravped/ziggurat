@@ -270,10 +270,10 @@
     ``noun+!>(%.y)
   ::
       [%rice @ ~]
-    (read-rice path 0 (need town-id.state) p.town.state)
+    (read-rice +.path 0 (need town-id.state) p.town.state)
   ::
       [%wheat @ @ta ^]
-    (read-wheat path 0 (need town-id.state) p.town.state)
+    (read-wheat +.path 0 (need town-id.state) p.town.state)
   ::
       [%sizeof @ ~]
     ::  give size of item in town granary
