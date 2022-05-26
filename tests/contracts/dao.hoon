@@ -423,10 +423,11 @@
   ++  make-expected-chick
     |^  ^-  chick:smart
     :-  %&
-    :-  ~
-    %+  %~  put  by  *(map id:smart grain:smart)
-      (make-dao-id new-dao-salt)
-    make-new-dao-grain
+    :+  ~
+      %+  %~  put  by  *(map id:smart grain:smart)
+        (make-dao-id new-dao-salt)
+      make-new-dao-grain
+    ~
     ::
     ++  make-new-dao-grain
       ^-  grain:smart
@@ -481,16 +482,17 @@
     ^-  chick:smart
     =/  =dao:d  megacorp-dao
     :-  %&
-    :_  ~
-    %+  make-id-grain-map  megacorp-dao-salt
-    %=  dao
-        proposals
-      %+  %~  jab  by  proposals.dao
-        0xde0
-      |=  [updates=(list on-chain-update:d) votes=(set id:smart)]
-      :-  updates
-      (~(put in votes) megacorp-ceo-id)
-    ==
+    :+  %+  make-id-grain-map  megacorp-dao-salt
+        %=  dao
+            proposals
+          %+  %~  jab  by  proposals.dao
+            0xde0
+          |=  [updates=(list on-chain-update:d) votes=(set id:smart)]
+          :-  updates
+          (~(put in votes) megacorp-ceo-id)
+        ==
+      ~
+    ~
   ::
   ++  make-test-cart
     ^-  cart:smart
@@ -603,14 +605,15 @@
     =/  updates=(list on-chain-update:d)
       ~[make-on-chain-update]
     :-  %&
-    :_  ~
-    %+  make-id-grain-map  megacorp-dao-salt
-    %=  dao
-        proposals
-      %+  %~  put  by  proposals.dao
-        (mug (jam updates))
-      [updates=updates votes=~]
-    ==
+    :+  %+  make-id-grain-map  megacorp-dao-salt
+        %=  dao
+            proposals
+          %+  %~  put  by  proposals.dao
+            (mug (jam updates))
+          [updates=updates votes=~]
+        ==
+      ~
+    ~
   ::
   ++  make-test-cart
     ^-  cart:smart
@@ -870,25 +873,26 @@
     ^-  chick:smart
     =/  =dao:d  megacorp-dao
     :-  %&
-    :_  ~
-    %+  make-id-grain-map  megacorp-dao-salt
-    %=  dao
-        members
-      %+  %~  put  ju  members.dao
-      startup-ceo-id  %pleb
-    ::
-        id-to-ship
-      %+  %~  put  by  id-to-ship.dao
-      startup-ceo-id  startup-ceo-ship
-    ::
-        ship-to-id
-      %+  %~  put  by  ship-to-id.dao
-      startup-ceo-ship  startup-ceo-id
-    ::
-        proposals
-      (~(del by proposals.dao) make-proposal-id)
-    ::
-    ==
+    :+  %+  make-id-grain-map  megacorp-dao-salt
+        %=  dao
+            members
+          %+  %~  put  ju  members.dao
+          startup-ceo-id  %pleb
+        ::
+            id-to-ship
+          %+  %~  put  by  id-to-ship.dao
+          startup-ceo-id  startup-ceo-ship
+        ::
+            ship-to-id
+          %+  %~  put  by  ship-to-id.dao
+          startup-ceo-ship  startup-ceo-id
+        ::
+            proposals
+          (~(del by proposals.dao) make-proposal-id)
+        ::
+        ==
+      ~
+    ~
   ::
   ++  make-test-cart
     ^-  cart:smart
@@ -921,25 +925,26 @@
     ^-  chick:smart
     =/  =dao:d  megacorp-dao
     :-  %&
-    :_  ~
-    %+  make-id-grain-map  megacorp-dao-salt
-    %=  dao
-        members
-      %+  %~  del  ju  members.dao
-      megacorp-pleb-id  %pleb
-    ::
-        id-to-ship
-      %-  %~  del  by  id-to-ship.dao
-      megacorp-pleb-id
-    ::
-        ship-to-id
-      %-  %~  del  by  ship-to-id.dao
-      megacorp-pleb-ship
-    ::
-        proposals
-      (~(del by proposals.dao) make-proposal-id)
-    ::
-    ==
+    :+  %+  make-id-grain-map  megacorp-dao-salt
+        %=  dao
+            members
+          %+  %~  del  ju  members.dao
+          megacorp-pleb-id  %pleb
+        ::
+            id-to-ship
+          %-  %~  del  by  id-to-ship.dao
+          megacorp-pleb-id
+        ::
+            ship-to-id
+          %-  %~  del  by  ship-to-id.dao
+          megacorp-pleb-ship
+        ::
+            proposals
+          (~(del by proposals.dao) make-proposal-id)
+        ::
+        ==
+      ~
+    ~
   ::
   ++  make-test-cart
     ^-  cart:smart
@@ -972,19 +977,20 @@
     ^-  chick:smart
     =/  =dao:d  megacorp-dao
     :-  %&
-    :_  ~
-    %+  make-id-grain-map  megacorp-dao-salt
-    %=  dao
-        permissions
-      %+  %~  put  by  permissions.dao
-        name=%host
-      %+  %~  put  ju  *(jug address:d role:d)
-      make-placeholder-dao-comms-rid  %comms-host
-    ::
-        proposals
-      (~(del by proposals.dao) make-proposal-id)
-    ::
-    ==
+    :+  %+  make-id-grain-map  megacorp-dao-salt
+        %=  dao
+            permissions
+          %+  %~  put  by  permissions.dao
+            name=%host
+          %+  %~  put  ju  *(jug address:d role:d)
+          make-placeholder-dao-comms-rid  %comms-host
+        ::
+            proposals
+          (~(del by proposals.dao) make-proposal-id)
+        ::
+        ==
+      ~
+    ~
   ::
   ++  make-test-cart
     ^-  cart:smart
@@ -1017,20 +1023,21 @@
     ^-  chick:smart
     =/  =dao:d  megacorp-dao
     :-  %&
-    :_  ~
-    %+  make-id-grain-map  megacorp-dao-salt
-    %=  dao
-        permissions
-      %+  %~  jab  by  permissions.dao
-        name=%write
-      |=  write-perms=(jug address:d role:d)
-      %+  %~  del  ju  write-perms
-      make-placeholder-dao-comms-rid  %pleb
-    ::
-        proposals
-      (~(del by proposals.dao) make-proposal-id)
-    ::
-    ==
+    :+  %+  make-id-grain-map  megacorp-dao-salt
+        %=  dao
+            permissions
+          %+  %~  jab  by  permissions.dao
+            name=%write
+          |=  write-perms=(jug address:d role:d)
+          %+  %~  del  ju  write-perms
+          make-placeholder-dao-comms-rid  %pleb
+        ::
+            proposals
+          (~(del by proposals.dao) make-proposal-id)
+        ::
+        ==
+      ~
+    ~
   ::
   ++  make-test-cart
     ^-  cart:smart
@@ -1063,17 +1070,18 @@
     ^-  chick:smart
     =/  =dao:d  megacorp-dao
     :-  %&
-    :_  ~
-    %+  make-id-grain-map  megacorp-dao-salt
-    %=  dao
-        subdaos
-      %-  %~  put  in  subdaos.dao
-      startup-dao-id
-    ::
-        proposals
-      (~(del by proposals.dao) make-proposal-id)
-    ::
-    ==
+    :+  %+  make-id-grain-map  megacorp-dao-salt
+        %=  dao
+            subdaos
+          %-  %~  put  in  subdaos.dao
+          startup-dao-id
+        ::
+            proposals
+          (~(del by proposals.dao) make-proposal-id)
+        ::
+        ==
+      ~
+    ~
   ::
   ++  make-test-cart
     ^-  cart:smart
@@ -1106,17 +1114,18 @@
     ^-  chick:smart
     =/  =dao:d  megacorp-dao
     :-  %&
-    :_  ~
-    %+  make-id-grain-map  megacorp-dao-salt
-    %=  dao
-        subdaos
-      %-  %~  del  in  subdaos.dao
-      marketing-dao-id
-    ::
-        proposals
-      (~(del by proposals.dao) make-proposal-id)
-    ::
-    ==
+    :+  %+  make-id-grain-map  megacorp-dao-salt
+        %=  dao
+            subdaos
+          %-  %~  del  in  subdaos.dao
+          marketing-dao-id
+        ::
+            proposals
+          (~(del by proposals.dao) make-proposal-id)
+        ::
+        ==
+      ~
+    ~
   ::
   ++  make-test-cart
     ^-  cart:smart
@@ -1149,17 +1158,18 @@
     ^-  chick:smart
     =/  =dao:d  megacorp-dao
     :-  %&
-    :_  ~
-    %+  make-id-grain-map  megacorp-dao-salt
-    %=  dao
-        members
-      %+  %~  put  ju  members.dao
-      megacorp-pleb-id  %owner
-    ::
-        proposals
-      (~(del by proposals.dao) make-proposal-id)
-    ::
-    ==
+    :+  %+  make-id-grain-map  megacorp-dao-salt
+        %=  dao
+            members
+          %+  %~  put  ju  members.dao
+          megacorp-pleb-id  %owner
+        ::
+            proposals
+          (~(del by proposals.dao) make-proposal-id)
+        ::
+        ==
+      ~
+    ~
   ::
   ++  make-test-cart
     ^-  cart:smart
@@ -1192,17 +1202,18 @@
     ^-  chick:smart
     =/  =dao:d  megacorp-dao
     :-  %&
-    :_  ~
-    %+  make-id-grain-map  megacorp-dao-salt
-    %=  dao
-        members
-      %+  %~  del  ju  members.dao
-      megacorp-cmo-id  %owner
-    ::
-        proposals
-      (~(del by proposals.dao) make-proposal-id)
-    ::
-    ==
+    :+  %+  make-id-grain-map  megacorp-dao-salt
+        %=  dao
+            members
+          %+  %~  del  ju  members.dao
+          megacorp-cmo-id  %owner
+        ::
+            proposals
+          (~(del by proposals.dao) make-proposal-id)
+        ::
+        ==
+      ~
+    ~
   ::
   ++  make-test-cart
     ^-  cart:smart

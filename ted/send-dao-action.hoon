@@ -23,19 +23,19 @@
 =>
   |_  [=account:smart contract-args=arguments]
   ::
-  ++  dao-contract-id  ::  HARDCODE to work with gen/sequencer/init.hoon
+  ++  dao-contract-id  ::  HARDCODE to work with gen/sequencer/init-dao.hoon
     `@ux`'dao'
   ::
-  ++  rate  ::  HARDCODE to work with gen/sequencer/init.hoon
+  ++  rate  ::  HARDCODE to work with gen/sequencer/init-dao.hoon
     1
   ::
-  ++  budget  ::  HARDCODE to work with gen/sequencer/init.hoon
+  ++  budget  ::  HARDCODE to work with gen/sequencer/init-dao.hoon
     200.000
   ::
-  ++  town-id  ::  HARDCODE to work with gen/sequencer/init.hoon
+  ++  town-id  ::  HARDCODE to work with gen/sequencer/init-dao.hoon
     1
-  ++  private-key
-    107.379.313.537.631.041.329.005.050.813.496.923.836.597.816.390.555.428.520.502.222.583.401.090.828.793
+  ++  private-key  ::  HARDCODE to work with 0xbeef
+    110.228.216.536.737.721.330.737.642.580.103.686.712.299.204.208.915.999.788.354.117.698.088.958.627.408
   ::
   ++  make-proposal-egg
     ^-  egg:smart
@@ -49,10 +49,12 @@
     ^-  shell:smart
     :*  from=account
         sig=signature
+        eth-hash=~
         to=dao-contract-id
         rate=rate
         budget=budget
         town-id=town-id
+        status=0
     ==
   ::
   ++  make-proposal-yolk
