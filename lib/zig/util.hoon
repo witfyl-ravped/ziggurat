@@ -17,10 +17,12 @@
   :~  ::  fakeships for localhost testnets
       ~zod  ~bus  ~nec  ~wet  ~rys
       ::  hodzod's testing moons
-      ~ransur-rabtyr-dozzod-bacrys
-      ~todnub-figsym-dozzod-bacrys
+      ~watryp-loplyd-dozzod-bacrys
       ::  hosted's testing moons
       ~ricmun-lasfer-hosted-fornet
+      ::  ~littel-wolfur's
+      ~harden-ripped-littel-wolfur
+      ~mipber
   ==
 ::  Potential future gating function:
 ::

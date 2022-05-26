@@ -166,7 +166,7 @@
           :~  :*  %pass  /set-node
                   %agent  [our.bowl %wallet]
                   %poke  %zig-wallet-poke
-                  !>([%set-node 0 i.others])
+                  !>([%set-node relay-town-id i.others])
               ==
               (start-epoch-catchup i.others 0)
               (poke-capitol our.bowl u.address.state [1 100.000] sig)
@@ -183,9 +183,9 @@
     ::
         %new-epoch
       ?>  =(src.bowl our.bowl)
-      =/  cur=epoch  +:(need (pry:poc epochs))
-      =/  last-slot-num=@ud
-        (need (bind (pry:sot slots.cur) head))
+      =/  cur=epoch          +:(need (pry:poc epochs))
+      =/  last-slot=slot     +:(need (pry:sot slots.cur))
+      =/  last-slot-num=@ud  num.p.last-slot
       ?~  validator-set=(get-on-chain-validator-set p.globe.state)
         ::  haven't received global state yet, sit tight
         ~&  >>>  "%ziggurat: waiting to receive relay state"
@@ -222,7 +222,8 @@
         [-.+.order.new-epoch 1]
       :_  %=  state
             epochs  (put:poc epochs num.new-epoch new-epoch)
-            queue  (malt ~[[0 (~(gut by queue) 0 ~)]])
+            queue   (malt ~[[relay-town-id (~(gut by queue) relay-town-id ~)]])
+            height  ?~(q.last-slot height height.u.q.last-slot)
           ==
       =+  %-  hall-update-card
           .^((unit @ud) %gx /(scot %p our.bowl)/sequencer/(scot %da now.bowl)/town-id/noun)
@@ -409,9 +410,9 @@
       ::  for efficiency's sake
       :-  cards
       %=  state
-        height  +(height)
+        height  height.block.update
         epochs  (put:poc epochs num.cur cur)
-        globe   +:(~(got by chunks.block.update) 0)
+        globe   +:(~(got by chunks.block.update) relay-town-id)
       ==
     ::
         %saw-block
@@ -441,6 +442,7 @@
       ::  if we pick their history, clear old timers if any exist
       ::  and set new ones based on latest epoch
       ::  set global state to match last block in acquired history
+      ::  TODO set block height based on theirs
       ~&  %picked-their-history^": longer blockchain"
       =/  [n=@ud =epoch]  (need (pry:poc epochs.update))
       =/  =slot
@@ -449,7 +451,7 @@
           =/  prev=^epoch  (got:poc epochs.update (dec n))
           +:(need (pry:sot slots.prev))
         +.u.latest
-      =+  +:(~(got by chunks:(need q.slot)) 0)
+      =+  +:(~(got by chunks:(need q.slot)) relay-town-id)
       :_  state(epochs epochs.update, globe -)
       (new-epoch-timers epoch our.bowl)
     ?~  a
@@ -471,7 +473,7 @@
           =/  prev=^epoch  (got:poc epochs.update (dec n))
           +:(need (pry:sot slots.prev))
         +.u.latest
-      =+  +:(~(got by chunks:(need q.slot)) 0)
+      =+  +:(~(got by chunks:(need q.slot)) relay-town-id)
       :_  state(epochs epochs.update, globe -)
       (new-epoch-timers epoch our.bowl)
     ?~  q.q.i.a-s
