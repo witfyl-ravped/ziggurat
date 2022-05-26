@@ -592,10 +592,10 @@
   ::  scries for contracts
   ::
       [%rice @ ~]
-    (read-rice path height.state relay-town-id p.globe.state)
+    (read-rice +.path height.state relay-town-id p.globe.state)
   ::
       [%wheat @ @tas @ta ^]  :: grain id, %noun/%json, argument @ta, then any associated rice IDs
-    (read-wheat path height.state relay-town-id p.globe.state)
+    (read-wheat +.path height.state relay-town-id p.globe.state)
   ::
       [%sizeof @ ~]
     ::  give size of item in global granary
