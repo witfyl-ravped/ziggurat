@@ -12,7 +12,7 @@
   ^-  chick
   |^
   ?~  args.inp  !!
-  (process (hole arguments u.args.inp) (pin caller.inp))
+  (process ;;(arguments u.args.inp) (pin caller.inp))
   ::
   ::  XX potentially rename to action/command??
   ::  XX potentially add [%remove-tx tx-hash=@ux] if it makes sense?
@@ -75,7 +75,7 @@
     =/  my-grain=grain  -:~(val by owns.cart)
     ?>  =(lord.my-grain me.cart)
     ?>  ?=(%& -.germ.my-grain)
-    =/  state=multisig-state  (hole multisig-state data.p.germ.my-grain)
+    =/  state=multisig-state  ;;(multisig-state data.p.germ.my-grain)
     ::  ?>  ?=(multisig-state data.p.germ.my-grain)  :: doesn't work due to fish-loop
     ::  N.B. because no type assert has been made, 
     ::  data.p.germ.my-grain is basically * and thus has no type checking done on its modification
