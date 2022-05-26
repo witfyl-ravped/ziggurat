@@ -22,7 +22,6 @@
   ?:  (lth bud u.formula-cost)  [%&^~ [cax hit 0]]
   =.  bud  (sub bud u.formula-cost)
   |-
-  =.  hit  *hints
   ?+    f
     ~&  f
     [%|^trace app]
