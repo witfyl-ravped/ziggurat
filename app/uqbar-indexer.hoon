@@ -164,7 +164,7 @@
         ~
       =*  newest-block  q.val.u.newest-slot
       ?~  newest-block  ~
-      =*  newest-chunks  q.u.newest-block
+      =*  newest-chunks  chunks.u.newest-block
       =/  newest-chunk  (~(get by newest-chunks) town-id)
       ?~  newest-chunk  ~
       :_  ~
@@ -678,8 +678,7 @@
   ^-  (unit chunk:zig)
   ?~  slot=(get-slot epoch-num block-num)  ~
   ?~  block=q.u.slot                       ~
-  =*  chunks  q.u.block
-  (~(get by chunks) town-id)
+  (~(get by chunks.u.block) town-id)
 ::  TODO: make blocks and grains play nice with eggs
 ::        so we can return all hits together
 ::
@@ -1009,7 +1008,8 @@
     =|  holder=(list [@ux second-order-location:uqbar-indexer])
     =|  lord=(list [@ux second-order-location:uqbar-indexer])
     =|  to=(list [@ux egg-location:uqbar-indexer])
-    =/  chunks=(list [town-id=@ud =chunk:zig])  ~(tap by chunks.block)
+    =/  chunks=(list [town-id=@ud =chunk:zig])
+      ~(tap by chunks.block)
     :-  block-hash
     |-
     ?~  chunks  [egg from grain holder lord to]
