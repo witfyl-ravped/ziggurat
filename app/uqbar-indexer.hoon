@@ -391,8 +391,8 @@
             [%x %has-lord @ ~]
             [%x %has-to @ ~]
         ==
-      =/  =query-type:uqbar-indexer
-        ;;(query-type:uqbar-indexer i.t.path)
+      =/  =query-type:ui
+        ;;(query-type:ui i.t.path)
       =/  hash=@ux  (slav %ux i.t.t.path)
       ?~  has-in-index=(serve-index-has query-type hash)
         [~ ~]
@@ -870,12 +870,12 @@
   ==
 ::
 ++  serve-index-has
-  |=  [=query-type:uqbar-indexer =query-payload:uqbar-indexer]
+  |=  [=query-type:ui =query-payload:ui]
   |^  ^-  (unit ?)
   ?+    query-type  !!
   ::
       %has-chunk
-    ?.  ?=(town-location:uqbar-indexer query-payload)  ~
+    ?.  ?=(town-location:ui query-payload)  ~
     =*  epoch-num  epoch-num.query-payload
     =*  block-num  block-num.query-payload
     =*  town-id    town-id.query-payload
@@ -899,7 +899,7 @@
     `has-locations
   ::
       %has-slot
-    ?.  ?=(block-location:uqbar-indexer query-payload)  ~
+    ?.  ?=(block-location:ui query-payload)  ~
     =*  epoch-num  epoch-num.query-payload
     =*  block-num  block-num.query-payload
     ?~  epoch=(get:poc:zig epochs epoch-num)  `%.n
