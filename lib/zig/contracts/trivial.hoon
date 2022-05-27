@@ -2,7 +2,7 @@
 ::  =>  [zig-sys-tiny zig-sys-smart]
 |_  =cart
 ++  write
-  |=  =zygote
+  |=  =embryo
   ^-  chick
   =+  (dec 100)
   [%& ~ ~ ~]

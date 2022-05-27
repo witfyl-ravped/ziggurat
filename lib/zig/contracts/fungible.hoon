@@ -31,7 +31,7 @@
 ::  /+  *zig-sys-smart
 |_  =cart
 ++  write
-  |=  inp=zygote
+  |=  inp=embryo
   ^-  chick
   |^
   ?~  args.inp  !!
@@ -105,7 +105,7 @@
           :+  me.cart  town-id.cart
           [caller.inp `[%give to.args `id.new amount.args] (silt ~[id.giv]) (silt ~[id.new])]
         [~ (malt ~[[id.new new]]) ~]
-      ::  giving account in zygote, and receiving one in owns.cart
+      ::  giving account in embryo, and receiving one in owns.cart
       =/  rec=grain  (~(got by owns.cart) u.to-rice.args)
       ?>  ?=(%& -.germ.rec)
       =/  receiver=account  ;;(account data.p.germ.rec)

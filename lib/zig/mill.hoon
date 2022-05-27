@@ -149,7 +149,7 @@
       ::
       ++  fertilize
         |=  =yolk
-        ^-  zygote
+        ^-  embryo
         ?.  ?=(account caller.yolk)  !!
         :+  caller.yolk
           args.yolk
@@ -193,7 +193,7 @@
       --
     ::
     ++  grow
-      |=  [=crop =zygote =egg]
+      |=  [=crop =embryo =egg]
       ~>  %bout
       ^-  [(unit rooster) final=(unit ^granary) rem=@ud =errorcode]
       |^
@@ -223,8 +223,8 @@
         =/  =contract  (hole contract [nok.crop +:(cue q.q.smart-lib)])
         =/  res
           ::  need jet dashboard to run bull:
-          ::  (bull |.(;;(chick (~(write contract cart) zygote))) bud)
-          (mule |.(;;(chick (~(write contract cart) zygote))))^(sub budget 7)
+          ::  (bull |.(;;(chick (~(write contract cart) embryo))) bud)
+          (mule |.(;;(chick (~(write contract cart) embryo))))^(sub budget 7)
         ~&  >>  "write result: {<res>}"
         ?:  ?=(%| -.-.res)
           ::  error in contract execution

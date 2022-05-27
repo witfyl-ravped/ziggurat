@@ -66,7 +66,7 @@
   $_  ^|
   |_  cart
   ++  write
-    |~  zygote
+    |~  embryo
     *chick
   ::
   ++  read
@@ -116,7 +116,7 @@
       cont-grains=(set id)
   ==
 ::  yolk that's been "fertilized" with data by execution engine
-+$  zygote
++$  embryo
   $:  =caller
       args=(unit *)
       grains=(map id grain)

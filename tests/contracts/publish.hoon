@@ -21,7 +21,7 @@
 ::  tests for %deploy
 ::
 ++  test-trivial-deploy  ^-  tang
-  =/  =zygote
+  =/  =embryo
     [owner-1 `[%deploy %.y trivial-nok ~] ~]
   =/  =cart
     [`@ux`'publish' 0 1 ~]
@@ -34,7 +34,7 @@
         [%| `trivial-nok ~]
     ==
   =/  res=chick
-    (~(write cont cart) zygote)
+    (~(write cont cart) embryo)
   =/  correct=chick
     [%& ~ (malt ~[[id.new-grain new-grain]]) ~]
   (expect-eq !>(correct) !>(res))

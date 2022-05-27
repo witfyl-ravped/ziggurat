@@ -11,7 +11,7 @@
 ::
 |_  =cart
 ++  write
-  |=  inp=zygote
+  |=  inp=embryo
   ^-  chick
   ?~  args.inp  !!
   =*  args  +.u.args.inp

@@ -42,7 +42,7 @@
 ::  Tests for %become-validator calls
 ::
 ++  test-become-validator  ^-  tang
-  =/  inp=zygote
+  =/  inp=embryo
     :+  [0xbeef 0 0x1.beef]
       `[%become-validator [0x1111 ~zod 1]]
     ~
@@ -60,7 +60,7 @@
   (expect-eq !>(res) !>(correct))
 ::
 ++  test-become-validator-already-one  ^-  tang
-  =/  inp=zygote
+  =/  inp=embryo
     :+  [0xbeef 0 0x1.beef]
       `[%become-validator [0x1111 ~zod 1]]
     ~
@@ -80,7 +80,7 @@
 ::  Tests for %stop-validating calls
 ::
 ++  test-stop-validating  ^-  tang
-  =/  inp=zygote
+  =/  inp=embryo
     :+  [0xbeef 0 0x1.beef]
       `[%stop-validating [0x1111 ~zod 1]]
     ~
@@ -107,7 +107,7 @@
   (expect-eq !>(res) !>(correct))
 ::
 ++  test-stop-validating-wasnt-one  ^-  tang
-  =/  inp=zygote
+  =/  inp=embryo
     :+  [0xbeef 0 0x1.beef]
       `[%stop-validating [0x1111 ~zod 1]]
     ~
@@ -118,7 +118,7 @@
 ::  Tests for %init calls
 ::
 ++  test-init-1
-  =/  inp=zygote
+  =/  inp=embryo
     :+  [0xbeef 0 0x1.beef]
       `[%init [0x1111 ~zod 1] 1]
     ~
@@ -138,7 +138,7 @@
 ::  Tests for %join calls
 ::
 ++  test-join-1
-  =/  inp=zygote
+  =/  inp=embryo
     :+  [0xdead 0 0x1.dead]
       `[%join [0x2222 ~bus 1] 1]
     ~
@@ -167,7 +167,7 @@
 ::  Tests for %exit calls
 ::
 ++  test-exit-1
-  =/  inp=zygote
+  =/  inp=embryo
     :+  [0xdead 0 0x1.dead]
       `[%exit [0x2222 ~bus 1] 1]
     ~
