@@ -1,10 +1,35 @@
 /+  smart=zig-sys-smart
 :-  %say
-|=  [[now=@da eny=@uvJ bek=beak] [cont=path ~] ~]
+|=  [[now=@da eny=@uvJ bek=beak] [pax=path ~] ~]
 ^-  *
 |^
-=/  text  .^(@t %cx cont)
-=/  parser
+=/  text  .^(@t %cx pax)
+=/  res=small-pile  (parse-pile pax (trip text))
+~&  >  res
+::  =/  smart-txt  .^(@t %cx /(scot %p p.bek)/zig/(scot %da now)/lib/zig/sys/smart/hoon)
+::  =/  hoon-txt  .^(@t %cx /(scot %p p.bek)/zig/(scot %da now)/lib/zig/sys/hoon/hoon)
+::  =/  hoe  (slap !>(~) (ream hoon-txt))
+::  =/  hoed  (slap hoe (ream smart-txt))
+::  =/  contract  (slap hoed (ream text))
+:-  %noun
+~  ::  q:(slap contract (ream '-'))
++$  small-pile
+    $:  raw=(list [face=term =path])
+        =hoon
+    ==
+++  parse-pile
+  |=  [pax=path tex=tape]
+  ^-  small-pile
+  =/  [=hair res=(unit [=small-pile =nail])]  (pile-rule [0 (lent tex)] tex)
+  ?^  res  small-pile.u.res
+  %-  mean  %-  flop
+  =/  lyn  p.hair
+  =/  col  q.hair
+  :~  leaf+"syntax error at [{<lyn>} {<col>}] in {<pax>}"
+      leaf+(trip (snag (dec lyn) (to-wain:format (crip tex))))
+      leaf+(runt [(dec col) '-'] "^")
+  ==
+++  pile-rule
   %-  full
   ;~  plug
     %+  rune  tis
@@ -13,20 +38,6 @@
     %+  stag  %tssg
     (most gap tall:vast)
   ==
-=/  res=parsed
-  %+  parser
-    [0 (met 3 text)]
-  `(list @tas)`(trip text)
-::~&  >  res
-::  =/  smart-txt  .^(@t %cx /(scot %p p.bek)/zig/(scot %da now)/lib/zig/sys/smart/hoon)
-::  =/  hoon-txt  .^(@t %cx /(scot %p p.bek)/zig/(scot %da now)/lib/zig/sys/hoon/hoon)
-::  =/  hoe  (slap !>(~) (ream hoon-txt))
-::  =/  hoed  (slap hoe (ream smart-txt))
-::  =/  contract  (slap hoed (ream text))
-:-  %noun
-~  ::  q:(slap contract (ream '-'))
-++  parsed
-  [(list [@tas path]) hoon]
 ++  vest
   |=  tub=nail
   ^-  (like hoon)

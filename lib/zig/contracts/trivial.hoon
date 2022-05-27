@@ -1,5 +1,5 @@
-::  /+  zig-sys-tiny, zig-sys-smart
-::  =>  [zig-sys-tiny zig-sys-smart]
+/=  uhoon  /lib/zig/sys/hoon/hoon
+/=  smart  /lib/zig/sys/smart/hoon
 |_  =cart
 ++  write
   |=  =zygote
