@@ -44,36 +44,31 @@
     ::  validate transaction signature
     ::  using ecdsa-raw-sign in wallet, TODO review this
     ::  comment this out if testing mill
+    ::  TODO figure out how to guarantee raw-recover non-crashing
     =?  v.sig.p.egg  (gte v.sig.p.egg 27)  (sub v.sig.p.egg 27)
-    ~&  >>  egg
-    ::  ecdsa-raw-recover crashes so we virtualize
     =/  recovered
-      ?~  eth-hash.p.egg
-        %-  mule
-        |.
-        %-  compress-point:secp256k1:secp:crypto
-        %+  ecdsa-raw-recover:secp256k1:secp:crypto
-          (sham (jam q.egg))
-        sig.p.egg
-      %-  mule
-      |.
-      %-  address-from-pub:key:ethereum
-      %-  serialize-point:secp256k1:secp:crypto
       %+  ecdsa-raw-recover:secp256k1:secp:crypto
-        u.eth-hash.p.egg
+        ?~(eth-hash.p.egg (sham (jam q.egg)) u.eth-hash.p.egg)
       sig.p.egg
-    ?:  ?=(%| -.recovered)
-      ~&  >>>  "mill: failed to parse transaction signature"
-      [town 0 %2]  ::  signature is broken in some way
-    ?.  =(id.from.p.egg p.recovered)
-    ~&  >>>  "mill: signature mismatch: expected {<id.from.p.egg>}, got {<`@ux`p.recovered>}"
+    =/  caller-address
+      ?~  eth-hash.p.egg
+        %-  address-from-pub:key:ethereum
+        %-  serialize-point:secp256k1:secp:crypto
+        recovered
+      %-  compress-point:secp256k1:secp:crypto
+      recovered
+    ?.  =(id.from.p.egg caller-address)
+    ~&  >>>  "mill: signature mismatch: expected {<id.from.p.egg>}, got {<`@ux`caller-address>}"
       [town 0 %2]  ::  signed tx doesn't match account
+    ::
     ?.  =(nonce.from.p.egg +((~(gut by q.town) id.from.p.egg 0)))
       ~&  >>>  "tx rejected; bad nonce"
       [town 0 %3]  ::  bad nonce
+    ::
     ?.  (~(audit tax p.town) egg)
       ~&  >>>  "tx rejected; not enough budget"
       [town 0 %4]  ::  can't afford gas
+    ::
     =+  [gan rem err]=(~(work farm p.town) egg)
     =/  fee=@ud   (sub budget.p.egg rem)
     :_  [fee err]
