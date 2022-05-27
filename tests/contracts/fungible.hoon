@@ -74,7 +74,7 @@
       `[%give 0xdead `0x1.dead 30]
     (malt ~[[id:`grain`account-1 account-1]])
   =/  =cart
-    [~ `@ux`'fungible' 0 1 (malt ~[[id:`grain`account-2 account-2]])]
+    [`@ux`'fungible' 0 1 (malt ~[[id:`grain`account-2 account-2]])]
   =/  updated-1
     :*  0x1.beef
         `@ux`'fungible'
@@ -101,7 +101,7 @@
       `[%give 0xffff ~ 30]
     (malt ~[[id:`grain`account-1 account-1]])
   =/  =cart
-    [~ `@ux`'fungible' 0 1 ~]
+    [`@ux`'fungible' 0 1 ~]
   =/  new-id  (fry-rice 0xffff `@ux`'fungible' 1 `@`'salt')
   =/  new
     :*  new-id
@@ -125,7 +125,7 @@
       `[%give 0xdead `0x1.dead 51]
     (malt ~[[id:`grain`account-1 account-1]])
   =/  =cart
-    [~ `@ux`'fungible' 0 1 (malt ~[[id:`grain`account-2 account-2]])]
+    [`@ux`'fungible' 0 1 (malt ~[[id:`grain`account-2 account-2]])]
   =/  res=(each * (list tank))
     (mule |.((~(write cont cart) zygote)))
   (expect-eq !>(%.n) !>(-.res))
@@ -136,7 +136,7 @@
       `[%give 0xface `0x1.face 10]
     (malt ~[[id:`grain`account-1 account-1]])
   =/  =cart
-    [~ `@ux`'fungible' 0 1 (malt ~[[id:`grain`account-4 account-4]])]
+    [`@ux`'fungible' 0 1 (malt ~[[id:`grain`account-4 account-4]])]
   =/  res=(each * (list tank))
     (mule |.((~(write cont cart) zygote)))
   (expect-eq !>(%.n) !>(-.res))

@@ -197,7 +197,7 @@
       ~>  %bout
       ^-  [(unit rooster) final=(unit ^granary) rem=@ud =errorcode]
       |^
-      =+  [chick rem err]=(weed to.p.egg ~ budget.p.egg)
+      =+  [chick rem err]=(weed to.p.egg budget.p.egg)
       ?~  chick  [~ ~ rem err]
       ?:  ?=(%& -.u.chick)
         ::  rooster result, finished growing
@@ -206,7 +206,6 @@
         [`p.u.chick gan rem err]
       ::  hen result, continuation
       =*  next  next.p.u.chick
-      =*  mem   mem.p.u.chick  :: FIX! USE THIS SOMEWHERE??
       ::  continuation calls can alter grains
       ?~  gan=(harvest roost.p.u.chick to.p.egg from.p.egg)
         [~ ~ rem %7]
@@ -216,9 +215,9 @@
       ::  +weed: run contract formula with arguments and memory, bounded by bud
       ::
       ++  weed
-        |=  [to=id mem=(unit vase) budget=@ud]
+        |=  [to=id budget=@ud]
         ^-  [(unit chick) rem=@ud =errorcode]
-        =/  cart  [mem to blocknum town-id owns.crop]
+        =/  cart  [to blocknum town-id owns.crop]
         ::  TODO figure out how to pre-cue this and get good results
         ::
         =/  =contract  (hole contract [nok.crop +:(cue q.q.smart-lib)])

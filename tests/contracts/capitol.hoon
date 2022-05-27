@@ -21,15 +21,13 @@
           [%& `@`'ziggurat' data=*(map ship [@ux ship @ud])]
       ==
     ++  world-cart  ^-  cart
-      :*  ~
-          `@ux`'capitol'
+      :*  `@ux`'capitol'
           0
           0
           (malt ~[[`@ux`'world' world-grain]])
       ==
     ++  ziggurat-cart  ^-  cart
-      :*  ~
-          `@ux`'capitol'
+      :*  `@ux`'capitol'
           0
           0
           (malt ~[[`@ux`'ziggurat' ziggurat-grain]])
@@ -74,7 +72,7 @@
         [%& `@`'ziggurat' (malt ~[[~zod [0x1111 ~zod 1]]])]
     ==
   =/  =cart
-    [~ `@ux`'capitol' 0 0 (malt ~[[`@ux`'ziggurat' initial]])]
+    [`@ux`'capitol' 0 0 (malt ~[[`@ux`'ziggurat' initial]])]
   =/  res=(each * (list tank))
     (mule |.((~(write cont cart) inp)))
   (expect-eq !>(%.n) !>(-.res))
@@ -101,7 +99,7 @@
         [%& `@`'ziggurat' ~]
     ==
   =/  =cart
-    [~ `@ux`'capitol' 0 0 (malt ~[[`@ux`'ziggurat' initial]])]
+    [`@ux`'capitol' 0 0 (malt ~[[`@ux`'ziggurat' initial]])]
   =/  res=chick
     (~(write cont cart) inp)
   =/  correct=chick
@@ -159,7 +157,7 @@
         [%& `@`'world' (malt ~[[1 (malt ~[[~zod [0xbeef [0x1111 ~zod 1]]] [~bus [0xdead [0x2222 ~bus 1]]]])]])]
     ==
   =/  =cart
-    [~ `@ux`'capitol' 0 0 (malt ~[[`@ux`'world' initial]])]
+    [`@ux`'capitol' 0 0 (malt ~[[`@ux`'world' initial]])]
   =/  res=chick
     (~(write cont cart) inp)
   =/  correct=chick
@@ -188,7 +186,7 @@
         [%& `@`'world' (malt ~[[1 (malt ~[[~zod [0xbeef [0x1111 ~zod 1]]]])]])]
     ==
   =/  =cart
-    [~ `@ux`'capitol' 0 0 (malt ~[[`@ux`'world' initial]])]
+    [`@ux`'capitol' 0 0 (malt ~[[`@ux`'world' initial]])]
   =/  res=chick
     (~(write cont cart) inp)
   =/  correct=chick

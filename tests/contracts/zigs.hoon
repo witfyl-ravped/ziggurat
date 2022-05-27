@@ -74,7 +74,7 @@
       `[%give 0xdead `0x1.dead 30 10]
     (malt ~[[id:`grain`account-1 account-1]])
   =/  =cart
-    [~ `@ux`'zigs' 0 1 (malt ~[[id:`grain`account-2 account-2]])]
+    [`@ux`'zigs' 0 1 (malt ~[[id:`grain`account-2 account-2]])]
   =/  updated-1
     :*  0x1.beef
         `@ux`'zigs'
@@ -101,7 +101,7 @@
       `[%give 0xffff ~ 30 10]
     (malt ~[[id:`grain`account-1 account-1]])
   =/  =cart
-    [~ `@ux`'zigs' 0 1 ~]
+    [`@ux`'zigs' 0 1 ~]
   =/  new-id  (fry-rice 0xffff `@ux`'zigs' 1 `@`'zigs')
   =/  new
     :*  new-id
@@ -125,7 +125,7 @@
       `[%give 0xdead `0x1.dead 51 10]
     (malt ~[[id:`grain`account-1 account-1]])
   =/  =cart
-    [~ `@ux`'zigs' 0 1 (malt ~[[id:`grain`account-2 account-2]])]
+    [`@ux`'zigs' 0 1 (malt ~[[id:`grain`account-2 account-2]])]
   =/  res=(each * (list tank))
     (mule |.((~(write cont cart) zygote)))
   (expect-eq !>(%.n) !>(-.res))
@@ -136,7 +136,7 @@
       `[%give 0xdead `0x1.dead 20 31]
     (malt ~[[id:`grain`account-1 account-1]])
   =/  =cart
-    [~ `@ux`'zigs' 0 1 (malt ~[[id:`grain`account-2 account-2]])]
+    [`@ux`'zigs' 0 1 (malt ~[[id:`grain`account-2 account-2]])]
   =/  res=(each * (list tank))
     (mule |.((~(write cont cart) zygote)))
   (expect-eq !>(%.n) !>(-.res))
@@ -161,7 +161,7 @@
         [%& `@`'zigs' [50 (malt ~[[0xbeef 10]]) `@ux`'zigs']]
     ==
   =/  =cart
-    [~ `@ux`'zigs' 0 1 (malt ~[[id:`grain`account-2 account-2]])]
+    [`@ux`'zigs' 0 1 (malt ~[[id:`grain`account-2 account-2]])]
   =/  res=chick
     (~(write cont cart) zygote)
   =/  correct=chick
@@ -174,7 +174,7 @@
       `[%give 0xface `0x1.face 10 10]
     (malt ~[[id:`grain`account-1 account-1]])
   =/  =cart
-    [~ `@ux`'zigs' 0 1 (malt ~[[id:`grain`account-4 account-4]])]
+    [`@ux`'zigs' 0 1 (malt ~[[id:`grain`account-4 account-4]])]
   =/  res=(each * (list tank))
     (mule |.((~(write cont cart) zygote)))
   (expect-eq !>(%.n) !>(-.res))
@@ -192,7 +192,7 @@
       `[%give 0xface `0x1.face 10 10]
     (malt ~[[id:`grain`account-1 bad-account]])
   =/  =cart
-    [~ `@ux`'zigs' 0 1 (malt ~[[id:`grain`account-4 account-4]])]
+    [`@ux`'zigs' 0 1 (malt ~[[id:`grain`account-4 account-4]])]
   =/  res=(each * (list tank))
     (mule |.((~(write cont cart) zygote)))
   (expect-eq !>(%.n) !>(-.res))
@@ -203,7 +203,7 @@
       `[%give 0xface `0x1.face 10 10]
     (malt ~[[id:`grain`metadata-1 metadata-1]])
   =/  =cart
-    [~ `@ux`'zigs' 0 1 (malt ~[[id:`grain`account-4 account-4]])]
+    [`@ux`'zigs' 0 1 (malt ~[[id:`grain`account-4 account-4]])]
   =/  res=(each * (list tank))
     (mule |.((~(write cont cart) zygote)))
   (expect-eq !>(%.n) !>(-.res))
@@ -214,7 +214,7 @@
       `[%give 0xdead `0x1.dead 10 10]
     (malt ~[[id:`grain`account-1 account-1]])
   =/  =cart
-    [~ `@ux`'zigs' 0 1 (malt ~[[id:`grain`account-3 account-3]])]
+    [`@ux`'zigs' 0 1 (malt ~[[id:`grain`account-3 account-3]])]
   =/  res=(each * (list tank))
     (mule |.((~(write cont cart) zygote)))
   (expect-eq !>(%.n) !>(-.res))
@@ -225,7 +225,7 @@
       `[%give 0xdead `0x1.cafe 10 10]
     (malt ~[[id:`grain`account-1 account-1]])
   =/  =cart
-    [~ `@ux`'zigs' 0 1 (malt ~[[id:`grain`account-3 account-3]])]
+    [`@ux`'zigs' 0 1 (malt ~[[id:`grain`account-3 account-3]])]
   =/  res=(each * (list tank))
     (mule |.((~(write cont cart) zygote)))
   (expect-eq !>(%.n) !>(-.res))
@@ -238,7 +238,7 @@
       `[%take 0xbeef `0x1.beef 0x1.dead 10]
     ~
   =/  =cart
-    [~ `@ux`'zigs' 0 1 (malt ~[[id:`grain`account-1 account-1] [id:`grain`account-2 account-2]])]
+    [`@ux`'zigs' 0 1 (malt ~[[id:`grain`account-1 account-1] [id:`grain`account-2 account-2]])]
   =/  updated-1
     :*  0x1.beef
         `@ux`'zigs'
@@ -265,7 +265,7 @@
       `[%take 0xcafe `0x1.cafe 0x1.dead 10]
     ~
   =/  =cart
-    [~ `@ux`'zigs' 0 1 (malt ~[[id:`grain`account-3 account-3] [id:`grain`account-2 account-2]])]
+    [`@ux`'zigs' 0 1 (malt ~[[id:`grain`account-3 account-3] [id:`grain`account-2 account-2]])]
   =/  updated-3
     :*  0x1.cafe
         `@ux`'zigs'
@@ -292,7 +292,7 @@
       `[%take 0xbeef `0x1.cafe 0x1.dead 10]
     ~
   =/  =cart
-    [~ `@ux`'zigs' 0 1 (malt ~[[id:`grain`account-3 account-3] [id:`grain`account-2 account-2]])]
+    [`@ux`'zigs' 0 1 (malt ~[[id:`grain`account-3 account-3] [id:`grain`account-2 account-2]])]
   =/  res=(each * (list tank))
     (mule |.((~(write cont cart) zygote)))
   (expect-eq !>(%.n) !>(-.res))
@@ -303,7 +303,7 @@
       `[%take 0xffff ~ 0x1.dead 10]
     ~
   =/  =cart
-    [~ `@ux`'zigs' 0 1 (malt ~[[id:`grain`account-2 account-2]])]
+    [`@ux`'zigs' 0 1 (malt ~[[id:`grain`account-2 account-2]])]
   =/  new-id  (fry-rice 0xffff `@ux`'zigs' 1 `@`'zigs')
   =/  new
     :*  new-id
@@ -334,7 +334,7 @@
       `[%take 0xbeef `0x1.beef 0x1.dead 20]
     ~
   =/  =cart
-    [~ `@ux`'zigs' 0 1 (malt ~[[id:`grain`account-3 account-3] [id:`grain`account-2 account-2]])]
+    [`@ux`'zigs' 0 1 (malt ~[[id:`grain`account-3 account-3] [id:`grain`account-2 account-2]])]
   =/  res=(each * (list tank))
     (mule |.((~(write cont cart) zygote)))
   (expect-eq !>(%.n) !>(-.res))
@@ -345,7 +345,7 @@
       `[%take 0xdead `0x1.dead 0x1.beef 60]
     ~
   =/  =cart
-    [~ `@ux`'zigs' 0 1 (malt ~[[id:`grain`account-1 account-1] [id:`grain`account-2 account-2]])]
+    [`@ux`'zigs' 0 1 (malt ~[[id:`grain`account-1 account-1] [id:`grain`account-2 account-2]])]
   =/  res=(each * (list tank))
     (mule |.((~(write cont cart) zygote)))
   (expect-eq !>(%.n) !>(-.res))
@@ -356,7 +356,7 @@
       `[%take 0xdead `0x1.dead 0x1.beef 60]
     ~
   =/  =cart
-    [~ `@ux`'zigs' 0 1 (malt ~[[id:`grain`account-1 account-1] [id:`grain`account-2 account-2]])]
+    [`@ux`'zigs' 0 1 (malt ~[[id:`grain`account-1 account-1] [id:`grain`account-2 account-2]])]
   =/  res=(each * (list tank))
     (mule |.((~(write cont cart) zygote)))
   (expect-eq !>(%.n) !>(-.res))
@@ -376,7 +376,7 @@
         [%& `@`'zigs' [50 (malt ~[[0xdead 1.000] [0xcafe 100]]) `@ux`'zigs']]
     ==
   =/  =cart
-    [~ `@ux`'zigs' 0 1 ~]
+    [`@ux`'zigs' 0 1 ~]
   =/  res=chick
     (~(write cont cart) zygote)
   =/  correct=chick
@@ -396,7 +396,7 @@
         [%& `@`'zigs' [50 (malt ~[[0xdead 100]]) `@ux`'zigs']]
     ==
   =/  =cart
-    [~ `@ux`'zigs' 0 1 ~]
+    [`@ux`'zigs' 0 1 ~]
   =/  res=chick
     (~(write cont cart) zygote)
   =/  correct=chick
@@ -416,7 +416,7 @@
         [%& `@`'zigs' [50 (malt ~[[0xdead 0]]) `@ux`'zigs']]
     ==
   =/  =cart
-    [~ `@ux`'zigs' 0 1 ~]
+    [`@ux`'zigs' 0 1 ~]
   =/  res=chick
     (~(write cont cart) zygote)
   =/  correct=chick
@@ -429,7 +429,7 @@
       `[%set-allowance 0xbeef 100]
     (malt ~[[id:`grain`account-1 account-1]])
   =/  =cart
-    [~ `@ux`'zigs' 0 1 ~]
+    [`@ux`'zigs' 0 1 ~]
   =/  res=(each * (list tank))
     (mule |.((~(write cont cart) zygote)))
   (expect-eq !>(%.n) !>(-.res))

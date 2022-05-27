@@ -83,7 +83,7 @@
       `[%give 0xdead `0x1.dead 1]
     (malt ~[[id:`grain`account-1 account-1]])
   =/  =cart
-    [~ `@ux`'nft' 0 1 (malt ~[[id:`grain`account-2 account-2]])]
+    [`@ux`'nft' 0 1 (malt ~[[id:`grain`account-2 account-2]])]
   =/  updated-1  ^-  grain
     :*  0x1.beef
           `@ux`'nft'
@@ -110,7 +110,7 @@
       `[%give 0xffff ~ 1]
     (malt ~[[id:`grain`account-1 account-1]])
   =/  =cart
-    [~ `@ux`'nft' 0 1 ~]
+    [`@ux`'nft' 0 1 ~]
   =/  new-id  (fry-rice 0xffff `@ux`'nft' 1 `@`'salt')
   =/  new
     :*  new-id
@@ -134,7 +134,7 @@
       `[%give 0xdead `0x1.dead 2]
     (malt ~[[id:`grain`account-1 account-1]])
   =/  =cart
-    [~ `@ux`'nft' 0 1 (malt ~[[id:`grain`account-2 account-2]])]
+    [`@ux`'nft' 0 1 (malt ~[[id:`grain`account-2 account-2]])]
   =/  res=(each * (list tank))
     (mule |.((~(write cont cart) zygote)))
   (expect-eq !>(%.n) !>(-.res))

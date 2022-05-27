@@ -54,8 +54,7 @@
 ::  cart: state accessible by contract
 ::
 +$  cart
-  $:  mem=(unit *)
-      me=id
+  $:  me=id
       block=@ud
       town-id=@ud
       owns=(map id grain)

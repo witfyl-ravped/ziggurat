@@ -24,7 +24,7 @@
   =/  =zygote
     [owner-1 `[%deploy %.y trivial-nok ~] ~]
   =/  =cart
-    [~ `@ux`'publish' 0 1 ~]
+    [`@ux`'publish' 0 1 ~]
   =/  new-id  (fry-contract 0xbeef 1 trivial-nok)
   =/  new-grain  ^-  grain
     :*  new-id
