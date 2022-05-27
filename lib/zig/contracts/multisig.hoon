@@ -14,8 +14,9 @@
   ?~  args.inp  !!
   (process ;;(arguments u.args.inp) (pin caller.inp))
   ::
-  ::  XX potentially rename to action/command??
   ::  XX potentially add [%remove-tx tx-hash=@ux] if it makes sense?
+  ::  XX potentially add expired txs?
+  ::  XX potentially rename `arguments` to action/command??
   +$  arguments
     $%
       ::  any id can call the following
@@ -36,11 +37,17 @@
       [%set-threshold new-thresh=@ud]
     ==
   ::
+  +$  event
+    $%
+      [%vote-passed tx-hash=@ux votes=(set id)]
+    ==
+  ::
   +$  tx-hash  @ux
   +$  multisig-state
       $:  members=(set id)
           threshold=@ud
           pending=(map tx-hash [=egg votes=(set id)])
+          :: submitted=(set tx-hash) could add this if it makes sense
       ==
   ::
   ++  is-member
@@ -59,6 +66,17 @@
       0v0
     |=  [=id hash=@uvH]
     [~ (sham (cat 3 hash (sham id)))]
+  ++  event-to-json
+    |=  [=event]
+    ^-  [@tas json]
+    ::  TODO implement
+    =/  tag  -.event
+    =/  jon
+      %-  pairs
+      :~  'eventName'  s+[`@t`tag]
+      ==
+    [tag jon]
+  ::
   ++  process
     |=  [args=arguments caller-id=id]
     ^-  chick
@@ -79,7 +97,9 @@
     ::  ?>  ?=(multisig-state data.p.germ.my-grain)  :: doesn't work due to fish-loop
     ::  N.B. because no type assert has been made, 
     ::  data.p.germ.my-grain is basically * and thus has no type checking done on its modification
-    ::  therefore, we explitcitly modify `state` to retain typechecking then modify `data`
+    ::  therefore, we explicitly modify `state` to retain typechecking then modify `data`
+    ::
+    ::  TODO find a good alias name for data.p.germ.my-grain
     ?-    -.args
         %vote
       ?.  (is-member caller-id state)  !!
@@ -90,16 +110,19 @@
       ::  check if proposal is at threshold, execute if so
       ::  otherwise simply update rice
       ?:  (gth threshold.state ~(wyt in votes.prop))
+        ::  TODO emit crow event in rooster
         =.  pending.state         (~(del by pending.state) tx-hash)
         =.  data.p.germ.my-grain  state
-        ::  TODO emit event in crow
-        =/  roost=rooster         [(malt ~[[id.my-grain my-grain]]) ~ ~]
+        =/  crow=(list [@tas json])
+          :~  (event-to-json [%vote-passed tx-hash votes.prop])
+          ==
+        ::
+        =/  roost=rooster         [(malt ~[[id.my-grain my-grain]]) ~ crow]
         [%| [~ next=[to.p.egg town-id.p.egg q.egg]:prop roost]]
       =.  data.p.germ.my-grain  state
       [%& (malt ~[[id.my-grain my-grain]]) ~ ~]
     ::
         %submit-tx
-      ::  validate member in multisig
       ?.  (is-member caller-id state)  !!
       ::  TODO is mug appropriate here since its non-cryptographic?
       :: (i.e. collision potential can overwrite) another valid tx, however rare
