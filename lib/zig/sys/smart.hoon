@@ -82,6 +82,11 @@
 ::  egg error codes:
 ::  code can be anything upon submission,
 ::  gets set for chunk inclusion in +mill
+::  NOTE: continuation calls generate their own eggs, which
+::  could potentially fail at one of these error points too.
+::  currently keeping this simple, but could try to differentiate
+::  between first-call and continuation-call errors later
+::
 +$  errorcode
   $%  %0  ::  0: successfully performed
       %1  ::  1: submitted with raw id / no account info
@@ -92,11 +97,6 @@
       %6  ::  6: crash in contract execution
       %7  ::  7: validation of changed/issued rice failed
   ==
-::
-::  NOTE: continuation calls generate their own eggs, which
-::  could potentially fail at one of these error points too.
-::  currently keeping this simple, but could try to differentiate
-::  between first-call and continuation-call errors later
 ::
 +$  egg  (pair shell yolk)
 +$  shell
