@@ -225,7 +225,7 @@
             rate.gas.act
             bud.gas.act
             town.act
-            status=100
+            status=%100
         ==
       ?~  priv.keypair
         ::  if we don't have private key for this address, set as pending
@@ -312,7 +312,7 @@
       =/  sig           ?~  priv.keypair
                           [0 0 0]
                         (ecdsa-raw-sign:secp256k1:secp:crypto (sham (jam yolk)) u.priv.keypair)
-      =/  =egg:smart    [[caller sig ~ to.act rate.gas.act bud.gas.act town.act status=100] yolk]
+      =/  =egg:smart    [[caller sig ~ to.act rate.gas.act bud.gas.act town.act status=%100] yolk]
       ?~  priv.keypair
         ::  if we don't have private key for this address, set as pending
         ::  and allow frontend to sign with HW wallet or otherwise
