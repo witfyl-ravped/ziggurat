@@ -23,7 +23,7 @@
       ~(tap in pubkeys)
     |=  k=@ux
     =-  [%pass - %agent [indexer %uqbar-indexer] %watch -]
-    /id/(scot %ux k)
+    /from/(scot %ux k)
   %+  turn
     ~(tap in pubkeys)
   |=  k=@ux
@@ -36,7 +36,7 @@
   %+  murn  ~(tap by wex)
   |=  [[=wire =ship =term] *]
   ^-  (unit card)
-  ?.  |(=([%id id] wire) =([%holder id] wire))  ~
+  ?.  |(=([%from id] wire) =([%holder id] wire))  ~
   `[%pass wire %agent [ship term] %leave ~]
 ::
 ++  clear-all-holder-and-id-subs
@@ -45,7 +45,7 @@
   %+  murn  ~(tap by wex)
   |=  [[=wire =ship =term] *]
   ^-  (unit card)
-  ?.  |(?=([%id *] wire) ?=([%holder *] wire))  ~
+  ?.  |(?=([%from *] wire) ?=([%holder *] wire))  ~
   `[%pass wire %agent [ship term] %leave ~]  
 ::
 ++  create-asset-subscriptions

@@ -44,8 +44,11 @@
 ::    /chunk/[@ud]:
 ::      A stream of each new chunk for a given town.
 ::
-::    /id/[@ux]:
-::      A stream of new activity of given id.
+::    /from/[@ux]:
+::      A stream of updates to transactions sent by given id.
+::
+::    /to/[@ux]:
+::      A stream of transactions sent to given id.
 ::
 ::    /grain/[@ux]:
 ::      A stream of changes to given grain.
@@ -140,7 +143,8 @@
     ?+    path  (on-watch:def path)
     ::
         $?  [%chunk @ ~]
-            [%id @ ~]
+            [%from @ ~]
+            [%to @ ~]
             [%grain @ ~]
             [%holder @ ~]
             [%lord @ ~]
@@ -156,7 +160,8 @@
     ?+    path  (on-watch:def path)
     ::
         $?  [%chunk @ ~]
-            [%id @ ~]
+            [%from @ ~]
+            [%to @ ~]
             [%grain @ ~]
             [%holder @ ~]
             [%lord @ ~]
@@ -373,8 +378,8 @@
           |^
           %-  zing
           :~  (make-sub-cards %ud `block-num %chunk /chunk)
-              (make-sub-cards %ux ~ %from /id)
-              (make-sub-cards %ux ~ %to /id)
+              (make-sub-cards %ux ~ %from /from)
+              (make-sub-cards %ux ~ %to /to)
               (make-sub-cards %ux ~ %grain /grain)
               (make-sub-cards %ux ~ %holder /holder)
               (make-sub-cards %ux ~ %lord /lord)

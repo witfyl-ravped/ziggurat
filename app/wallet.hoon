@@ -354,10 +354,10 @@
         ?~  p.sign
           ::  got it
           ~&  >>  "wallet: tx was received by sequencer"
-          this-tx(status.p.egg 101)
+          this-tx(status.p.egg %101)
         ::  failed
         ~&  >>>  "wallet: tx was rejected by sequencer"
-        this-tx(status.p.egg 103)
+        this-tx(status.p.egg %103)
       :-  ~[(tx-update-card egg.this-tx `args.this-tx)]
       %=    this
           transaction-store
@@ -365,7 +365,7 @@
         [from our-txs(sent (~(put by sent.our-txs) hash this-tx))]
       ::
           nonces
-        ?:  =(status.p.egg.this-tx 101)
+        ?:  =(status.p.egg.this-tx %101)
           nonces
         ::  dec nonce on this town, tx was rejected
         (~(put by nonces) from (~(jab by (~(got by nonces) from)) town-id.p.egg.this-tx |=(n=@ud (dec n))))
@@ -390,13 +390,17 @@
       metadata-store  (find-new-metadata found our.bowl metadata-store [our now]:bowl)
     ==
   ::
-      [%id @ ~]
-    ::  update to a tracked account
+  ::  currently asking indexer for updates to transactions we've sent
+  ::  in future, can subscribe to `to` path and get updates about 
+  ::  transactions sent to us from others
+  ::
+      [%from @ ~]
+    ::  update to a transaction from a tracked account
+    ~&  >  sign
     ?:  ?=(%watch-ack -.sign)  (on-agent:def wire sign)
     ?.  ?=(%fact -.sign)       (on-agent:def wire sign)
     ?.  ?=(%uqbar-indexer-update p.cage.sign)  (on-agent:def wire sign)
     =/  update  !<(update:uqbar-indexer q.cage.sign)
-    ~&  >>>  "wallet: id update: {<update>}"
     ?.  ?=(%egg -.update)  `this
     ::  this will give us updates to transactions we send
     ::
@@ -411,13 +415,8 @@
     =^  tx-status-cards=(list card)  our-txs
       %^  spin  eggs  our-txs
       |=  [[hash=@ux =egg:smart] _our-txs]
-      ?.  =(our-id (pin:smart from.p.egg))
-        ::  this is a transaction sent to us / not from us
-        ^-  [card _our-txs]
-        :-  (tx-update-card egg ~)
-        our-txs(received (~(put by received.our-txs) hash egg))
-      ::  tx sent by us, update status code and send to frontend
-      ::  following error code spec in smart.hoon, eventually
+      ::  update status code and send to frontend
+      ::  following error code spec in smart.hoon
       ^-  [card _our-txs]
       =/  this-tx  (~(get by sent.our-txs) hash)
       :-  ?~  this-tx
