@@ -2,13 +2,6 @@
 ::
 ::  smart contract functions
 ::
-::  +hole: vase-checks your types for you
-::
-++  hole
-  |*  [typ=mold val=*]
-  ^-  typ
-  !<(typ [-:!>(*typ) val])
-::
 ::  +fry: hash lord+town+germ to make contract grain pubkey
 ::
 ++  fry-contract
@@ -61,7 +54,7 @@
 ::  cart: state accessible by contract
 ::
 +$  cart
-  $:  mem=(unit vase)
+  $:  mem=(unit *)
       me=id
       block=@ud
       town-id=@ud
@@ -133,5 +126,5 @@
 +$  chick    (each rooster hen)
 ::  new: crow, emit information about transaction to be picked up by interested parties
 +$  rooster  [changed=(map id grain) issued=(map id grain) crow=(list [@tas json])]
-+$  hen      [mem=(unit vase) next=[to=id town-id=@ud args=yolk] roost=rooster]
++$  hen      [mem=(unit *) next=[to=id town-id=@ud args=yolk] roost=rooster]
 --
