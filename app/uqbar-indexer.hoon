@@ -186,11 +186,7 @@
       =/  to-update=(unit update:uqbar-indexer)
         (serve-previous-update %to payload)
       =/  update=(unit update:uqbar-indexer)
-        %-  combine-update-sets
-        ;;  %-  list
-          %-  unit
-          [%egg eggs=(set [egg-location:uqbar-indexer egg:smart])]
-        ~[from-update to-update]
+        (combine-update-sets ~[from-update to-update])
       ?~  update  ~
       :_  ~
       %+  fact:io
@@ -314,11 +310,7 @@
       =/  to=(unit update:uqbar-indexer)
         (serve-update %to hash)
       =/  up=(unit update:uqbar-indexer)
-        %-  combine-update-sets
-        ;;  %-  list
-          %-  unit
-          [%egg eggs=(set [egg-location:uqbar-indexer egg:smart])]
-        ~[from to]
+        (combine-update-sets ~[from to])
       ?~  up  [~ ~]
       :^  ~  ~  %uqbar-indexer-update
       !>  ^-  update:uqbar-indexer
@@ -336,11 +328,7 @@
       =/  to=(unit update:uqbar-indexer)
         (serve-update %to hash)
       =/  up=(unit update:uqbar-indexer)
-        %-  combine-update-sets
-        ;;  %-  list
-          %-  unit
-          [%egg eggs=(set [egg-location:uqbar-indexer egg:smart])]
-        ~[egg from to]
+        (combine-update-sets ~[egg from to])
       ?~  up  [~ ~]
       :^  ~  ~  %uqbar-indexer-update
       !>  ^-  update:uqbar-indexer
@@ -685,15 +673,16 @@
 :: https://github.com/uqbar-dao/ziggurat/blob/da1d37adf538ee908945557a68387d3c87e1c32e/app/uqbar-indexer.hoon#L361:
 ::
 ++  combine-update-sets
-  |=  updates=(list (unit [%egg eggs=(set [egg-location:uqbar-indexer egg:smart])]))
+  |=  updates=(list (unit update:uqbar-indexer))
   ^-  (unit update:uqbar-indexer)
   ?~  updates  ~
   =/  combined=(set [egg-location:uqbar-indexer egg:smart])
     %-  %~  gas  in  *(set [egg-location:uqbar-indexer egg:smart])
     %-  zing
     %+  turn  updates
-    |=  update=(unit [%egg eggs=(set [egg-location:uqbar-indexer egg:smart])])
+    |=  update=(unit update:uqbar-indexer)
     ?~  update  ~
+    ?>  ?=(%egg -.u.update)
     ~(tap in eggs.u.update)
   `[%egg combined]
 ::

@@ -30,15 +30,6 @@
   ==
 --
 ::
-::
-=+
-  ^=  hook-core
-  |_  =bowl:gall
-  +*  io    ~(. agentio bowl)
-      pass   pass:io
-  ++  watch-groups  (~(watch-our pass /groups) %group-store /groups)
-  --
-::
 =|  state-zero
 =*  state  -
 %-  agent:dbug
@@ -59,7 +50,7 @@
 ::
 ++  on-init
   :_  this
-  ~[watch-groups:hc]
+  ~[(~(watch-our pass /groups) %group-store /groups)]
 ::
 ++  on-save  !>(state)
 ++  on-load
@@ -67,7 +58,7 @@
   =+  !<(old=versioned-state vase)
   ?:  ?=([%0 ~] old)  `this
   :_  this
-  ~[watch-groups:hc]
+  ~[(~(watch-our pass /groups) %group-store /groups)]
 ::
 ++  on-poke
   |=  [=mark =vase]
@@ -106,8 +97,10 @@
   |=  [=wire =sign:agent:gall]
   ?.  ?=([%groups ~] wire)
     (on-agent:def wire sign)
-  ?+  -.sign  (on-agent:def wire sign)
-    %kick  :_(this ~[watch-groups:hc])
+  ?+    -.sign  (on-agent:def wire sign)
+      %kick
+    :_  this
+    ~[(~(watch-our pass /groups) %group-store /groups)]
   ::
       %fact
     ?.  =(p.cage.sign %group-update-0)  `this
