@@ -149,11 +149,11 @@
       =+  sig=become-validator+(sign:zig-sig our.bowl now.bowl 'attestation')
       ::  ask the indexer for current set of validators on-chain
       ::  so we can subscribe to them all
+      ~|  "%ziggurat: error: can't find validators on-chain"
       =/  capitol-search
-        .^((unit update:uqbar-indexer) %gx /(scot %p our.bowl)/uqbar-indexer/(scot %da now.bowl)/grain/(scot %ux 'ziggurat')/noun)
-      ?~  capitol-search  ~|("%ziggurat: error: can't find validators on-chain" !!)
-      ?>  ?=(%grain -.u.capitol-search)
-      =/  capitol-grain=grain:smart  +.-:~(tap in grains.u.capitol-search)
+        .^(update:uqbar-indexer %gx /(scot %p our.bowl)/uqbar-indexer/(scot %da now.bowl)/grain/(scot %ux 'ziggurat')/noun)
+      ?>  ?=(%grain -.capitol-search)
+      =/  capitol-grain=grain:smart  +.+.-:~(tap by grains.capitol-search)
       ?>  ?=(%& -.germ.capitol-grain)
       =/  validators  ~(key by (hole:smart (map ship *) data.p.germ.capitol-grain))
       ::

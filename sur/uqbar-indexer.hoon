@@ -4,7 +4,26 @@
 ::
 |%
 +$  query-type
-  ?(%block-hash %chunk %egg %from %grain %holder %lord %slot %to %hash)
+  $?  %block-hash
+      %chunk
+      %egg
+      %from
+      %grain
+      %holder
+      %lord
+      %slot
+      %to
+      %hash
+      %has-block-hash
+      %has-chunk
+      %has-egg
+      %has-from
+      %has-grain
+      %has-holder
+      %has-lord
+      %has-slot
+      %has-to
+  ==
 +$  query-payload
   ?(@ux location)
 ::
@@ -25,7 +44,7 @@
 +$  update
   $%  [%chunk location=town-location =chunk:zig]
       [%egg eggs=(set [location=egg-location =egg:smart])]
-      [%grain grains=(set [location=town-location =grain:smart])]
+      [%grain grains=(map grain-id=id:smart [location=town-location =grain:smart])]
       [%slot =slot:zig]
   ==
 --

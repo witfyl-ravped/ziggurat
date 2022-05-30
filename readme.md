@@ -126,6 +126,136 @@ where the argument `[our %ziggurat]` is a dock pointing to the ship running the 
 ```
 
 
+### Build DAO contracts
+
+If run on a fakezod located at `~/urbit/zod`, the following will create the compiled DAO contract at `~/urbit/zod/.urb/put/dao.noun`:`
+```
+=hoon .^(@t %cx /(scot %p our)/zig/(scot %da now)/lib/zig/sys/hoon/hoon)
+=smart .^(@t %cx /(scot %p our)/zig/(scot %da now)/lib/zig/sys/smart/hoon)
+=contract .^(@t %cx /(scot %p our)/zig/(scot %da now)/lib/zig/contracts/dao/hoon)
+=step0 (slap !>(~) (ream hoon))
+=step1 (slap step0 (ream smart))
+=step2 (slap step1 (ream contract))
+.dao/noun q:(slap step2 (ream '-'))
+```
+
+### DAO set up
+
+1. Start the chain and the indexer (i.e. see "To initialize a blockchain" section above).
+
+2. Tell the DAO agent to watch our indexer:
+```
+:dao &set-indexer [our %uqbar-indexer]
+```
+
+3. Set up subscription of off-chain DAO agent to on-chain DAO (which is created in `gen/sequencer/init-dao.hoon`):
+```
+::  arguments are rid, which is analogous to a landscape group, salt, which is unique to each DAO, and DAO name
+-zig!create-dao-comms [[~zod %uqbar-dao] `@`'uqbar-dao' 'Uqbar DAO']
+```
+
+### Changing DAO state
+
+To change the DAO state, a transaction must be sent to the chain.
+The helper thread `ted/send-dao-action.hoon` builds transactions.
+For example, from a ship that is a DAO owner (and additionally currently limited to `~zod` as of 220502), the following will submit transactions to create two proposals and then add a vote to each.
+If the threshold is surpassed by the vote, the proposals will pass.
+```
+::  account ids
+=pubkey 0x2.e3c1.d19b.fd3e.43aa.319c.b816.1c89.37fb.b246.3a65.f84d.8562.155d.6181.8113.c85b
+=zigs-id 0x10b.4ca5.fb93.480b.a0d7.c168.0f3e.6d43
+=dao-id 0xef44.5e1e.2113.c21d.7560.c831.6056.d984
+
+::  prepare on-chain-update objects for proposals
+=add-perm-host-update [%add-permissions dao-id %host [our %uqbar-dao] (~(put in *(set @tas)) %comms-host)]
+=add-role-host-update [%add-roles dao-id (~(put in *(set @tas)) %comms-host) pubkey]
+
+::  proposals and votes
+-zig!send-dao-action [our [pubkey 1 zigs-id] [%propose dao-id add-perm-host-update]]
+-zig!send-dao-action [our [pubkey 2 zigs-id] [%propose dao-id add-role-host-update]]
+-zig!send-dao-action [our [pubkey 3 zigs-id] [%vote dao-id 0x54c2.59a7]]
+-zig!send-dao-action [our [pubkey 4 zigs-id] [%vote dao-id 0x44f5.977d]]
+```
+
+## Indexer
+
+The indexer exposes a variety of scry and subscription paths.
+A few are discussed below with examples.
+Please see the docstring at the top of `app/uqbar-indexer.hoon` for a fuller set of available paths.
+
+### Indexer scries
+
+Four example scries will be shown below for a user scrying from the Dojo; externally using the Curl commandline tool; and using the Urbit HTTP API.
+
+For simplicity, the following is assumed:
+
+I. The `%uqbar-indexer` app is running on the `%zig` desk on a fakezod.
+II. The fakezod is running at `localhost:8080`.
+
+Examples:
+
+1. The most recent 5 block headers.
+
+```
+::  inside Urbit
+=z -build-file /=zig=/sur/ziggurat/hoon
+.^((list [epoch-num=@ud =block-header:z]) %gx /=uqbar-indexer=/headers/5/noun)
+
+# using Curl
+curl -i -X POST localhost:8080/~/login -d 'password=lidlut-tabwed-pillex-ridrup'
+# record cookie from above and use below
+curl --cookie "urbauth-~zod=$ZOD_COOKIE" localhost:8080/~/scry/uqbar-indexer/headers/5.json
+
+# using HTTP API
+await api.scry({app: "uqbar-indexer", path: "/headers/5"});
+```
+
+2. All data in a chunk with epoch number, block number, and chunk/town number as `1`, `2`, and `3`, respectively (these should, of course, be substituted for variables appropriate).
+
+```
+::  inside Urbit
+::  TODO
+
+# using Curl
+# TODO
+
+# using HTTP API
+await api.scry({app: "uqbar-indexer", path: "/chunk-num/1/2/3"});
+```
+
+3. A given transaction with hash `0xdead.beef` (this should, of course, be substituted for a variable as appropriate).
+
+```
+::  inside Urbit
+::  TODO
+
+# using Curl
+# TODO
+
+# using HTTP API
+await api.scry({app: "uqbar-indexer", path: "/egg/0xdead.beef"});
+```
+
+4. All transcations for a given address with hash `0xcafe.babe` (this should, of course, be substituted for a variable as appropriate) (TODO: add start/end times to retrieve subset of transactions).
+
+```
+::  inside Urbit
+::  TODO
+
+# using Curl
+# TODO
+
+# using HTTP API
+await api.scry({app: "uqbar-indexer", path: "/from/0xcafe.babe"});
+```
+
+### Indexer subscriptions
+
+One example subscription will be discussed: subscribing to receive each new block (or "slot") that is processed by the indexer. (TODO)
+Please see the docstring at the top of `app/uqbar-indexer.hoon` for a fuller set of available paths.
+
+For the HTTP API, the app to subscribe to is `"uqbar-indexer"`, and the path is `"/slot"`.
+
 # Testing Zink
 
 ```
