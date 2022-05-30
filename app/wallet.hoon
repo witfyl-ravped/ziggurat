@@ -178,7 +178,7 @@
       ?>  =(hash.act yolk-hash.p)
       =:  sig.p.egg.p  sig.act
           eth-hash.p.egg.p  `eth-hash.act
-      ==  
+      ==
       ?>  ?=(account:smart from.p.egg.p)
       =*  from   id.from.p.egg.p
       =*  nonce  nonce.from.p.egg.p
@@ -210,7 +210,7 @@
       =/  node=ship      (~(gut by nodes.state) town.act our.bowl)
       =/  =caller:smart  :+  from.act  +(nonce)
                          (fry-rice:smart from.act `@ux`'zigs-contract' town.act `@`'zigs')
-      =/  =yolk:smart    [caller `(ream args.act) my-grains.act cont-grains.act]
+      =/  =yolk:smart    [caller `q:(slap !>(~) (ream args.act)) my-grains.act cont-grains.act]
       =/  keypair        (~(got by keys.state) from.act)
       =/  =egg:smart
         :_  yolk
@@ -391,12 +391,11 @@
     ==
   ::
   ::  currently asking indexer for updates to transactions we've sent
-  ::  in future, can subscribe to `to` path and get updates about 
+  ::  in future, can subscribe to `to` path and get updates about
   ::  transactions sent to us from others
   ::
       [%from @ ~]
     ::  update to a transaction from a tracked account
-    ~&  >  sign
     ?:  ?=(%watch-ack -.sign)  (on-agent:def wire sign)
     ?.  ?=(%fact -.sign)       (on-agent:def wire sign)
     ?.  ?=(%uqbar-indexer-update p.cage.sign)  (on-agent:def wire sign)

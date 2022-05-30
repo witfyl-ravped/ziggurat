@@ -119,11 +119,15 @@ where the argument `[our %ziggurat]` is a dock pointing to the ship running the 
 (example pokes that will work upon chain initialization in dojo):
 ```
 #  ZIGS
-:wallet &zig-wallet-poke [%submit 0x3.e87b.0cbb.431d.0e8a.2ee2.ac42.d9da.cab8.063d.6bb6.2ff9.b2aa.e1b9.0f56.9c3f.3423 0x74.6361.7274.6e6f.632d.7367.697a 1 [1 10.000] [%give 1.936.157.050 0x2.eaea.cffd.2bbe.e0c0.02dd.b5f8.dd04.e63f.297f.14cf.d809.b616.2137.126c.da9e.8d3d 777]]
+:wallet &zig-wallet-poke [%submit 0x3.e87b.0cbb.431d.0e8a.2ee2.ac42.d9da.cab8.063d.6bb6.2ff9.b2aa.e1b9.0f56.9c3f.3423 0x74.6361.7274.6e6f.632d.7367.697a 0 [1 10.000] [%give 1.936.157.050 0x2.eaea.cffd.2bbe.e0c0.02dd.b5f8.dd04.e63f.297f.14cf.d809.b616.2137.126c.da9e.8d3d 777]]
 
 #  NFT
 :wallet &zig-wallet-poke [%submit 0x3.e87b.0cbb.431d.0e8a.2ee2.ac42.d9da.cab8.063d.6bb6.2ff9.b2aa.e1b9.0f56.9c3f.3423 0xcafe.babe 1 [1 10.000] [%give 32.770.263.103.071.854 0x2.eaea.cffd.2bbe.e0c0.02dd.b5f8.dd04.e63f.297f.14cf.d809.b616.2137.126c.da9e.8d3d 1]]
 ```
+
+##  custom transaction
+
+:wallet &zig-wallet-poke [%submit-custom from=0x3.e87b.0cbb.431d.0e8a.2ee2.ac42.d9da.cab8.063d.6bb6.2ff9.b2aa.e1b9.0f56.9c3f.3423 to=0x74.6361.7274.6e6f.632d.7367.697a town=0 gas=[1 1.000] args='[%give `110.558.721.324.506.004.033.180.643.308.571.591.041 777 10.000]' my-grains=(silt ~[0x532c.d5cf.befc.5c0f.86e1.40bb.6e89.c2d8]) cont-grains=(silt ~[0x532c.d5cf.befc.5c0f.0d88.3e91.f6da.0181])]
 
 
 # Testing Zink
