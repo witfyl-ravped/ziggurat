@@ -168,15 +168,15 @@
       =/  newest-chunk  (~(get by newest-chunks) town-id)
       ?~  newest-chunk  ~
       :_  ~
-      %+  fact:io
-        :-  %uqbar-indexer-update
-        !>  ^-  update:uqbar-indexer
-        :+  %chunk
-          :+  epoch-num=num.val.u.newest-epoch
-            block-num=num.p.val.u.newest-slot
-          town-id=town-id
-        u.newest-chunk
-      ~
+      %-  fact:io
+      :_  ~
+      :-  %uqbar-indexer-update
+      !>  ^-  update:uqbar-indexer
+      :+  %chunk
+        :+  epoch-num=num.val.u.newest-epoch
+          block-num=num.p.val.u.newest-slot
+        town-id=town-id
+      u.newest-chunk
     ::
         [%id @ ~]
       :_  this
@@ -189,10 +189,10 @@
         (combine-update-sets ~[from-update to-update])
       ?~  update  ~
       :_  ~
-      %+  fact:io
-        :-  %uqbar-indexer-update
-        !>(`update:uqbar-indexer`u.update)
-      ~
+      %-  fact:io
+      :_  ~
+      :-  %uqbar-indexer-update
+      !>(`update:uqbar-indexer`u.update)
     ::
         ?([%grain @ ~] [%holder @ ~] [%lord @ ~])
       :_  this
@@ -201,10 +201,10 @@
       ?~  update=(serve-previous-update query-type payload)
         ~
       :_  ~
-      %+  fact:io
-        :-  %uqbar-indexer-update
-        !>(`update:uqbar-indexer`u.update)
-      ~
+      %-  fact:io
+      :_  ~
+      :-  %uqbar-indexer-update
+      !>(`update:uqbar-indexer`u.update)
     ::
         [%slot ~]
       :_  this
@@ -212,11 +212,11 @@
       ?~  newest-slot=(pry:sot:zig slots.val.u.newest-epoch)
         ~
       :_  ~
-      %+  fact:io
-        :-  %uqbar-indexer-update
-        !>  ^-  update:uqbar-indexer
-        [%slot val.u.newest-slot]
-      ~
+      %-  fact:io
+      :_  ~
+      :-  %uqbar-indexer-update
+      !>  ^-  update:uqbar-indexer
+      [%slot val.u.newest-slot]
     ::
     ==
   ::
