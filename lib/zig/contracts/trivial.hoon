@@ -1,4 +1,3 @@
-/=  uhoon  /lib/zig/sys/hoon/hoon
 /=  smart  /lib/zig/sys/smart/hoon
 |_  =cart
 ++  write

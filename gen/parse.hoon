@@ -3,16 +3,28 @@
 |=  [[now=@da eny=@uvJ bek=beak] [pax=path ~] ~]
 ^-  *
 |^
-=/  text  .^(@t %cx pax)
-=/  res=small-pile  (parse-pile pax (trip text))
-~&  >  res
+=/  contract-text  .^(@t %cx pax)
+=/  [raw=(list [face=term =path]) contract-hoon=hoon]  (parse-pile pax (trip contract-text))
+~&  >  raw
+::  take raw list, grab from paths, and slap.
+=/  txt  .^(@t %cx /(scot %p p.bek)/zig/(scot %da now)/lib/zig/sys/hoon/hoon)
+=/  so-far  (slap !>(~) (ream txt))
+~&  >>  "so-far: {<(met 3 (jam so-far))>}"
+:-  %noun
+|-
+?~  raw
+  =+  (slap so-far contract-hoon)
+  q:(slap - (ream '-'))
+::  TODO make desk-agnostic
+~&  "adding {<face.i.raw>}"
+=+  .^(@t %cx (weld /(scot %p p.bek)/zig/(scot %da now) path.i.raw))
+$(so-far (slap so-far (ream -)), raw t.raw)
 ::  =/  smart-txt  .^(@t %cx /(scot %p p.bek)/zig/(scot %da now)/lib/zig/sys/smart/hoon)
 ::  =/  hoon-txt  .^(@t %cx /(scot %p p.bek)/zig/(scot %da now)/lib/zig/sys/hoon/hoon)
 ::  =/  hoe  (slap !>(~) (ream hoon-txt))
 ::  =/  hoed  (slap hoe (ream smart-txt))
 ::  =/  contract  (slap hoed (ream text))
-:-  %noun
-~  ::  q:(slap contract (ream '-'))
+::  q:(slap contract (ream '-'))
 +$  small-pile
     $:  raw=(list [face=term =path])
         =hoon
@@ -20,7 +32,7 @@
 ++  parse-pile
   |=  [pax=path tex=tape]
   ^-  small-pile
-  =/  [=hair res=(unit [=small-pile =nail])]  (pile-rule [0 (lent tex)] tex)
+  =/  [=hair res=(unit [=small-pile =nail])]  (pile-rule [1 1] tex)
   ?^  res  small-pile.u.res
   %-  mean  %-  flop
   =/  lyn  p.hair
@@ -30,7 +42,8 @@
       leaf+(runt [(dec col) '-'] "^")
   ==
 ++  pile-rule
-  %-  full
+  ::  TODO do we need full parse match?? currently causes fail
+  ::  %-  full
   ;~  plug
     %+  rune  tis
     ;~(plug sym ;~(pfix gap stap))
