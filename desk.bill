@@ -6,5 +6,5 @@
     %dao-metadata-pull-hook
     %dao-metadata-push-hook
     %dao
-    %uqbar-indexer
+    %indexer
 ==

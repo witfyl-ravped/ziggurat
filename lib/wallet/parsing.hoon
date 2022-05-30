@@ -1,4 +1,4 @@
-/-  *wallet, uqbar-indexer
+/-  *wallet, indexer
 /+  *wallet-util
 =,  enjs:format
 |%
