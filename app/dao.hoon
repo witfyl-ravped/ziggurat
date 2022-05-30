@@ -323,7 +323,7 @@
         ^-  card
         =/  full-app-name=@tas
           (rap 3 %dao '-' app-infix '-' %push-hook ~)
-        %^  %~  poke-our  pass:io  (weld remove-wire /[app-infix])
+        %^  ~(poke-our pass:io (weld remove-wire /[app-infix]))
           full-app-name  %push-hook-action
         !>(`action:push-hook`[%remove remove-rid])
       ::
