@@ -291,9 +291,7 @@
   =,  dejs:format
   |%
   ++  update
-    |=  jon=json
-    ^-  update:ui
-    %.  jon
+    ^-  $-(json update:ui)
     %-  of
     :~  [%chunk (ot ~[[%location town-location] [%chunk chunk]])]
         [%egg eggs]
@@ -312,9 +310,7 @@
     ~
   ::
   ++  town-location
-    |=  jon=json
-    ^-  town-location:ui
-    %.  jon
+    ^-  $-(json town-location:ui)
     %-  ot
     :^    [%epoch-num ni]
         [%block-num ni]
@@ -322,9 +318,7 @@
     ~
   ::
   ++  egg-location
-    |=  jon=json
-    ^-  egg-location:ui
-    %.  jon
+    ^-  $-(json egg-location:ui)
     %-  ot
     :~  [%epoch-num ni]
         [%block-num ni]
@@ -333,31 +327,23 @@
     ==
   ::
   ++  chunks
-    |=  jon=json
-    ^-  chunks:zig
-    %.  jon
+    ^-  $-(json chunks:zig)
     (op dem chunk)
   ::
   ++  chunk
-    |=  jon=json
-    ^-  chunk:zig
-    %.  jon
+    ^-  $-(json chunk:zig)
     %-  ot
     :+  [%transactions transactions]
       [%town town]
     ~
   ::
   ++  transactions
-    |=  jon=json
-    ^-  (list [@ux egg:smart])
-    %.  jon
+    ^-  $-(json (list [@ux egg:smart]))
     %-  ar
     (at ~[nu egg])
   ::
   ++  eggs
-    |=  jon=json
-    ^-  (map egg-id=id:smart [location=egg-location:ui =egg:smart])
-    %.  jon
+    ^-  $-(json (map egg-id=id:smart [location=egg-location:ui =egg:smart]))
     %+  op  hex
     %-  ot
     :+  [%location egg-location]
@@ -365,18 +351,14 @@
     ~
   ::
   ++  egg
-    |=  jon=json
-    ^-  egg:smart
-    %.  jon
+    ^-  $-(json egg:smart)
     %-  ot
     :+  [%shell shell]
       [%yolk yolk]
     ~
   ::
   ++  shell
-    |=  jon=json
-    ^-  shell:smart
-    %.  jon
+    ^-  $-(json shell:smart)
     %-  ot
     :~  [%from account]  :: always account?
         [%sig signature]
@@ -403,9 +385,7 @@
     ~
   ::
   ++  account
-    |=  jon=json
-    ^-  account:smart
-    %.  jon
+    ^-  $-(json account:smart)
     %-  ot
     :^    [%id nu]
         [%nonce ni]
@@ -413,9 +393,7 @@
     ~
   ::
   ++  signature
-    |=  jon=json
-    ^-  signature:zig
-    %.  jon
+    ^-  $-(json signature:zig)
     %-  ot
     :^    [%hash nu]
         [%ship nu]
@@ -431,15 +409,11 @@
     ni
   ::
   ++  ids
-    |=  jon=json
-    ^-  (set id:smart)
-    %.  jon
+    ^-  $-(json (set id:smart))
     (as nu)
   ::
   ++  grains
-    |=  jon=json
-    ^-  (map grain-id=id:smart [location=town-location:ui =grain:smart])
-    %.  jon
+    ^-  $-(json (map grain-id=id:smart [location=town-location:ui =grain:smart]))
     %+  op  hex
     %-  ot
     :+  [%location town-location]
@@ -447,9 +421,7 @@
     ~
   ::
   ++  grain
-    |=  jon=json
-    ^-  grain:smart
-    %.  jon
+    ^-  $-(json grain:smart)
     %-  ot
     :~  [%id nu]
         [%lord nu]
@@ -492,18 +464,14 @@
     ~
   ::
   ++  slot
-    |=  jon=json
-    ^-  slot:zig
-    %.  jon
+    ^-  $-(json slot:zig)
     %-  ot
     :+  [%header block-header]
       [%block block]
     ~
   ::
   ++  block-header
-    |=  jon=json
-    ^-  block-header:zig
-    %.  jon
+    ^-  $-(json block-header:zig)
     %-  ot
     :^    [%num ni]
         [%prev-header-hash nu]
@@ -523,24 +491,18 @@
     ~
   ::
   ++  town
-    |=  jon=json
-    ^-  town:smart
-    %.  jon
+    ^-  $-(json town:smart)
     %-  ot
     :+  [%granary granary]
       [%populace populace]
     ~
   ::
   ++  granary
-    |=  jon=json
-    ^-  granary:smart
-    %.  jon
+    ^-  $-(json granary:smart)
     (op hex grain)
   ::
   ++  populace
-    |=  jon=json
-    ^-  populace:smart
-    %.  jon
+    ^-  $-(json populace:smart)
     (op hex ni)
   ::
   --
