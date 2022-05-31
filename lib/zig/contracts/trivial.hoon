@@ -1,15 +1,16 @@
+::  /+  zig-sys-tiny, zig-sys-smart
+::  =>  [zig-sys-tiny zig-sys-smart]
 |_  =cart
 ++  write
-  |=  inp=zygote
+  |=  =zygote
   ^-  chick
-  =/  a  (dec 100)
-  [%& ~ ~]
+  =+  (dec 100)
+  [%& ~ ~ ~]
 ++  read
-  |=  inp=path
-  ^-  noun
-  ~
-++  event
-  |=  inp=rooster
-  ^-  chick
-  [%& ~ ~]
+  |_  =path
+  ++  json
+    ~
+  ++  noun
+    ~
+  --
 --
