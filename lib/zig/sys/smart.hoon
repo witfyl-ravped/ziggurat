@@ -125,5 +125,5 @@
 +$  chick    (each rooster hen)
 ::  new: crow, emit information about transaction to be picked up by interested parties
 +$  rooster  [changed=(map id grain) issued=(map id grain) crow=(list [@tas json])]
-+$  hen      [mem=(unit *) next=[to=id town-id=@ud args=yolk] roost=rooster]
++$  hen      [next=[to=id town-id=@ud args=yolk] roost=rooster]
 --

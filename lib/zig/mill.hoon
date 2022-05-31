@@ -52,10 +52,10 @@
       sig.p.egg
     =/  caller-address
       ?~  eth-hash.p.egg
-        %-  address-from-pub:key:ethereum
-        %-  serialize-point:secp256k1:secp:crypto
+        %-  compress-point:secp256k1:secp:crypto
         recovered
-      %-  compress-point:secp256k1:secp:crypto
+      %-  address-from-pub:key:ethereum
+      %-  serialize-point:secp256k1:secp:crypto
       recovered
     ?.  =(id.from.p.egg caller-address)
     ~&  >>>  "mill: signature mismatch: expected {<id.from.p.egg>}, got {<`@ux`caller-address>}"
@@ -199,10 +199,12 @@
       ++  weed
         |=  [to=id budget=@ud]
         ^-  [(unit chick) rem=@ud =errorcode]
-        =/  cart  [to blocknum town-id owns.crop]
+        =/  =cart  [to blocknum town-id owns.crop]
         ::  TODO figure out how to pre-cue this and get good results
         ::
         =/  =contract  (hole contract [nok.crop +:(cue q.q.smart-lib)])
+        ~&  >  embryo
+        ~&  >>>  cart
         =/  res
           ::  need jet dashboard to run bull:
           ::  (bull |.(;;(chick (~(write contract cart) embryo))) bud)
