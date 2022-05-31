@@ -571,8 +571,8 @@
   ^-  (unit (unit cage))
   ::  scries for sequencer agent
   ::
-  ?.  =(%x -.path)  ~
-  ?+    +.path  (on-peek:def path)
+  ?.  =(%x i.path)  ~
+  ?+    t.path  (on-peek:def path)
       [%active ~]
     ``noun+!>(`?`=(%validator mode.state))
   ::
