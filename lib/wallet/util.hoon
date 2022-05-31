@@ -79,7 +79,7 @@
   ::  most recent data
   =/  =book  *book
   ?.  ?=(%grain -.update)  book
-  =/  grains-list  `(list [=town-location:uqbar-indexer =grain:smart])`~(tap in grains.update)
+  =/  grains-list  `(list [=town-location:uqbar-indexer =grain:smart])`~(val by grains.update)
   |-  ^-  ^book
   ?~  grains-list  book
   =/  =grain:smart  grain.i.grains-list
@@ -125,12 +125,13 @@
   |=  [=token-type =id:smart [our=ship now=time]]
   ^-  (unit asset-metadata)
   ::  manually import metadata for a token
-  =+  .^((unit update:uqbar-indexer) %gx /(scot %p our)/uqbar-indexer/(scot %da now)/grain/(scot %ux id)/noun)
-  ?~  -
+  =/  has-grain  .^(? %gx /(scot %p our)/uqbar-indexer/(scot %da now)/has-grain/(scot %ux id)/noun)
+  ?.  has-grain
     ~&  >>>  "%wallet: failed to find matching metadata for a grain we hold"
     ~
-  ?>  ?=(%grain -.u.-)
-  =/  meta-grain=grain:smart  +.-:~(tap in grains.u.-)
+  =+  .^(update:uqbar-indexer %gx /(scot %p our)/uqbar-indexer/(scot %da now)/grain/(scot %ux id)/noun)
+  ?>  ?=(%grain -.-)
+  =/  meta-grain=grain:smart  +.+.-:~(tap by grains.-)
   ?>  ?=(%& -.germ.meta-grain)
   =/  found=(unit asset-metadata)
     ?+  token-type  ~
