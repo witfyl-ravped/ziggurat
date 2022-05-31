@@ -461,6 +461,20 @@
       ::
       ==
     ::
+        [%epochs-catchup ~]
+      ?+    -.sign  (on-agent:def wire sign)
+      ::
+          %kick
+        `this
+      ::
+          %fact
+        =^  cards  state
+          %-  consume-ziggurat-update
+          !<(update:zig q.cage.sign)
+        [cards this]
+      ::
+      ==
+    ::
     ==
     ::
     :: +consume-indexer-update:
@@ -471,29 +485,56 @@
       |^  ^-  (quip card _state)
       ?+    -.update  !!  :: TODO: can we do better here?
       ::
+          %epochs-catchup
+        =/  =epochs:zig  epochs.update
+        =|  cards=(list card)
+        |-
+        ?~  epochs  [cards state]
+        =/  epoch  (pop:poc:zig epochs)
+        =*  epoch-num   num.val.head.epoch
+        =/  =slots:zig  slots.val.head.epoch
+        =+  ^=  [new-cards new-state]
+            |-
+            ?~  slots  [cards state]
+            =/  slot  (pop:sot:zig slots)
+            =+  ^=  [new-cards new-state]
+                (consume-slot epoch-num val.head.slot)
+            $(slots rest.slot, cards new-cards, state new-state)
+        $(epochs rest.epoch, cards new-cards, state new-state)
+      ::
           %indexer-block
-        ?~  blk.update  `state  :: TODO: log block header?
-        =*  epoch-num   epoch-num.update
-        =*  block-num   num.header.update
-        =/  new-slot=slot:zig  [header.update blk.update]
+        %+  consume-slot  epoch-num.update
+        [header.update blk.update]
+      ::
+      ::  add %chunk handling? see e.g.
+      ::  https://github.com/uqbar-dao/ziggurat/blob/da1d37adf538ee908945557a68387d3c87e1c32e/app/uqbar-indexer.hoon#L923
+      ==
+      ::
+      ++  consume-slot
+        |=  [epoch-num=@ud =slot:zig]
+        ^-  (quip card _state)
+        =*  header  p.slot
+        =*  block   q.slot
+        ?~  block  `state  :: TODO: log block header?
+        =*  block-num  num.header
         =/  working-epoch=epoch:zig
           ?~  existing-epoch=(get:poc:zig epochs epoch-num)
             :^    num=epoch-num
                 start-time=*time  ::  TODO: get this info from sequencer
               order=~
-            slots=(put:sot:zig *slots:zig block-num new-slot)
+            slots=(put:sot:zig *slots:zig block-num slot)
           %=  u.existing-epoch  ::  TODO: do more checks to avoid overwriting (unnecessary work)
               slots
             %^    put:sot:zig
                 slots.u.existing-epoch
               block-num
-            new-slot
+            slot
           ::
           ==
         ::  store and index the new block
         ::
         =/  most-recent-parsed-block=parsed-block
-          ((parse-block epoch-num block-num) new-slot)
+          ((parse-block epoch-num block-num) slot)
         =*  block-hash  block-hash.most-recent-parsed-block
         =*  egg         egg.most-recent-parsed-block
         =*  from        from.most-recent-parsed-block
@@ -510,7 +551,7 @@
             to-index        (~(gas ju to-index) to)
             epochs          (put:poc:zig epochs epoch-num working-epoch)
             recent-headers
-          :-  [epoch-num header.update]
+          :-  [epoch-num header]
           %+  scag
             (dec num-recent-headers)
           ^-  (list [epoch-num=@ud =block-header:zig])
@@ -528,7 +569,7 @@
           |=  [ship sub-path=path]
           ^-  [@tas @u]
           :-  `@tas`-.sub-path
-          ?:  ?=(%slot -.sub-path)  0  ::  placeholder
+          ?:  ?=(%slot -.sub-path)  0  ::  unused placeholder
           ?:  ?=(%chunk -.sub-path)
             (slav %ud -.+.sub-path)
           (slav %ux -.+.sub-path)
@@ -550,7 +591,7 @@
               %+  fact:io
                 :-  %uqbar-indexer-update
                 !>  ^-  update:uqbar-indexer
-                [%slot new-slot]
+                [%slot slot]
               ~[/slot]
           ==
           ::
@@ -586,9 +627,6 @@
         ::
         --
       ::
-      ::  add %chunk handling? see e.g.
-      ::  https://github.com/uqbar-dao/ziggurat/blob/da1d37adf538ee908945557a68387d3c87e1c32e/app/uqbar-indexer.hoon#L923
-      ==
       --
     --
   ::
@@ -600,15 +638,25 @@
 |_  =bowl:gall
 +*  io   ~(. agentio bowl)
 ::
+++  epochs-catchup-wire
+  ^-  wire
+  /epochs-catchup
+::
 ++  chain-update-wire
   ^-  wire
   /chain-update
+::
+++  get-epoch-catchup
+  |=  d=dock
+  ^-  card
+  %+  ~(watch pass:io epochs-catchup-wire)
+  d  /validator/epoch-catchup/0
 ::
 ++  watch-chain-source
   |=  d=dock
   ^-  card
   %+  %~  watch  pass:io
-  :: TODO: improve (maybe metadata from zig and chunks from seq?
+  :: TODO: improve (maybe metadata from zig and chunks from seq?)
   chain-update-wire  d  /indexer/updates
 ::
 ++  get-wex-dock-by-wire
@@ -644,7 +692,7 @@
   :_  state
   =/  leave-card=(unit card)  leave-chain-source
   ?~  leave-card
-    ~[watch-card]
+    ~[(get-epoch-catchup d) watch-card]
   ~[u.leave-card watch-card]
 ::
 ++  get-slot
@@ -1025,7 +1073,8 @@
     =*  town-id  town-id.i.chunks
     =*  chunk    chunk.i.chunks
     ::
-    =+  [new-egg new-from new-grain new-holder new-lord new-to]=(parse-chunk town-id chunk)
+    =+  ^=  [new-egg new-from new-grain new-holder new-lord new-to]
+        (parse-chunk town-id chunk)
     %=  $
         chunks  t.chunks
         egg     (weld egg new-egg)
