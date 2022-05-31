@@ -1,6 +1,13 @@
 /-  *zink
 /+  *zink-pedersen, *zink-json
 |%
+++  zebra                                                 ::  bounded zk +mule
+  |=  [bud=@ud cax=cache tap=*]
+  ^-  book
+  %.  [tap %9 2 %0 1]
+  %*  .  zink
+    app  [cax ~ bud]
+  ==
 ::
 +$  good  (unit *)
 +$  fail  (list [@ta *])
@@ -17,10 +24,13 @@
   |=  [s=* f=*]
   ^-  book
   |^
-  ?~  formula-cost=(cost f bud)
-    [%&^~ [cax hit 0]]
-  ?:  (lth bud u.formula-cost)  [%&^~ [cax hit 0]]
-  =.  bud  (sub bud u.formula-cost)
+  ::?~  formula-cost=(cost f bud)
+  ::  [%&^~ [cax hit 0]]
+  ::~&  > %done-with-formula-cost
+  ::~&  formula-cost
+  ::?:  (lth bud u.formula-cost)  [%&^~ [cax hit 0]]
+  ::=.  bud  (sub bud u.formula-cost)
+  ~&  f
   |-
   ?+    f
     ~&  f
@@ -311,14 +321,6 @@
       =.  bud  (sub bud 1)
       ?.  ?=([x=@ud y=@ud] sam)  %|^trace
       %&^(some (mul x.sam y.sam))
-    ::
-        %cain
-      ?:  (lth bud 1)  %&^~
-      =.  bud  (sub bud 1)
-      =/  vax=(unit vase)
-        ((soft vase) sam)
-      ?~  vax  %|^trace
-      %&^(some (sell u.vax))
     ==
   ::
   ++  frag
