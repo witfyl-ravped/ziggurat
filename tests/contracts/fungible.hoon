@@ -113,7 +113,7 @@
   =/  res=chick
     (~(write cont cart) embryo)
   =/  correct=chick
-    :^  %|  ~
+    :+  %|
       :+  me.cart  town-id.cart
       [owner-1 `[%give 0xffff `new-id 30] (silt ~[0x1.beef]) (silt ~[new-id])]
     [~ (malt ~[[new-id new]]) ~]
