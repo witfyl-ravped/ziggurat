@@ -35,7 +35,7 @@
   ^-  chick
   |^
   ?~  args.inp  !!
-  (process (hole arguments u.args.inp) (pin caller.inp))
+  (process ;;(arguments u.args.inp) (pin caller.inp))
   ::
   ::  molds used by writes to this contract
   ::
@@ -93,7 +93,7 @@
       ::  grab giver's rice from the input. it should be only rice in the map
       =/  giv=grain  -:~(val by grains.inp)
       ?>  &(=(lord.giv me.cart) ?=(%& -.germ.giv))
-      =/  giver=account  (hole account data.p.germ.giv)
+      =/  giver=account  ;;(account data.p.germ.giv)
       ?>  (gte balance.giver amount.args)
       ?~  to-rice.args
         ::  create new rice for reciever and add it to state
@@ -108,7 +108,7 @@
       ::  giving account in zygote, and receiving one in owns.cart
       =/  rec=grain  (~(got by owns.cart) u.to-rice.args)
       ?>  ?=(%& -.germ.rec)
-      =/  receiver=account  (hole account data.p.germ.rec)
+      =/  receiver=account  ;;(account data.p.germ.rec)
       ::  assert that tokens match
       ?>  =(metadata.receiver metadata.giver)
       ::  alter the two balances inside the grains
@@ -124,7 +124,7 @@
       ::  the address book should be there to find it, like in %give.
       =/  giv=grain  (~(got by owns.cart) from-rice.args)
       ?>  ?=(%& -.germ.giv)
-      =/  giver=account  (hole account data.p.germ.giv)
+      =/  giver=account  ;;(account data.p.germ.giv)
       =/  allowance=@ud  (~(got by allowances.giver) caller-id)
       ::  assert caller is permitted to spend this amount of token
       ?>  (gte balance.giver amount.args)
@@ -142,7 +142,7 @@
       ::  direct send
       =/  rec=grain  (~(got by owns.cart) u.to-rice.args)
       ?>  ?=(%& -.germ.rec)
-      =/  receiver=account  (hole account data.p.germ.rec)
+      =/  receiver=account  ;;(account data.p.germ.rec)
       ?>  =(metadata.receiver metadata.giver)
       ::  update the allowance of taker
       =.  allowances.giver
@@ -164,7 +164,7 @@
       ::  single rice expected, account
       =/  acc=grain  -:~(val by grains.inp)
       ?>  &(=(lord.acc me.cart) ?=(%& -.germ.acc))
-      =/  =account  (hole account data.p.germ.acc)
+      =/  =account  ;;(account data.p.germ.acc)
       =.  data.p.germ.acc
         account(allowances (~(put by allowances.account) who.args amount.args))
       ::  return single changed rice
@@ -174,7 +174,7 @@
       ::  expects token metadata in owns.cart
       =/  tok=grain  (~(got by owns.cart) token.args)
       ?>  &(=(lord.tok me.cart) ?=(%& -.germ.tok))
-      =/  meta  (hole token-metadata data.p.germ.tok)
+      =/  meta  ;;(token-metadata data.p.germ.tok)
       ::  first, check if token is mintable
       ?>  &(mintable.meta ?=(^ cap.meta) ?=(^ minters.meta))
       ::  check if mint will surpass supply cap
@@ -224,7 +224,7 @@
       ::  have rice, can modify
       =/  =grain  (~(got by owns.cart) u.to-rice.i.mints)
       ?>  &(=(lord.grain me.cart) ?=(%& -.germ.grain))
-      =/  acc  (hole account data.p.germ.grain)
+      =/  acc  ;;(account data.p.germ.grain)
       ?>  =(metadata.acc token.args)
       =.  data.p.germ.grain  acc(balance (add balance.acc amount.i.mints))
       $(mints t.mints, changed-rice (~(put by changed-rice) id.grain grain))

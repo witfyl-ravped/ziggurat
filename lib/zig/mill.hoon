@@ -2,6 +2,14 @@
 /*  smart-lib  %noun  /lib/zig/compiled/smart-lib/noun
 =,  smart
 |_  library=*
+::
+::  +hole: vase-checks your types for you
+::
+++  hole
+  |*  [typ=mold val=*]
+  ^-  typ
+  !<(typ [-:!>(*typ) val])
+::
 ++  mill
   |_  [miller=account town-id=@ud blocknum=@ud now=time]
   ::

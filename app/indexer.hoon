@@ -511,8 +511,8 @@
         $(epochs rest.epoch, cards new-cards, state new-state)
       ::
           %indexer-block
-        %+  consume-slot
-        epoch-num.update  [header.update blk.update]
+        %+  consume-slot  epoch-num.update
+        [header.update blk.update]
       ::
       ::  add %chunk handling? see e.g.
       ::  https://github.com/uqbar-dao/ziggurat/blob/da1d37adf538ee908945557a68387d3c87e1c32e/app/uqbar-indexer.hoon#L923

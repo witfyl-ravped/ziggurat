@@ -111,9 +111,9 @@
 ::    ::  can't just check the whole town,
 ::    ::  best thing to do is check the zigs data
 ::    =/  beef-account
-::      (hole:smart account-mold:zigs +.germ:(~(got by p.-.res) 0x1.beef))
+::      (hole:mill account-mold:zigs +.germ:(~(got by p.-.res) 0x1.beef))
 ::    =/  cafe-account
-::      (hole:smart account-mold:zigs +.germ:(~(got by p.-.res) 0x1.cafe))
+::      (hole:mill account-mold:zigs +.germ:(~(got by p.-.res) 0x1.cafe))
 ::    =/  correct-beef-account
 ::      `account-mold:zigs`[(sub 1.000.000 (add 690 set-fee:zigs)) ~]
 ::    =/  correct-cafe-account
@@ -134,9 +134,9 @@
 ::        fake-town:zigs
 ::      egg
 ::    =/  beef-account
-::      (hole:smart account-mold:zigs +.germ:(~(got by p.-.res) 0x1.beef))
+::      (hole:mill account-mold:zigs +.germ:(~(got by p.-.res) 0x1.beef))
 ::    =/  cafe-account
-::      (hole:smart account-mold:zigs +.germ:(~(got by p.-.res) 0x1.cafe))
+::      (hole:mill account-mold:zigs +.germ:(~(got by p.-.res) 0x1.cafe))
 ::    =/  correct-beef-account
 ::      `account-mold:zigs`[(sub 1.000.000 set-fee:zigs) ~]
 ::    =/  correct-cafe-account
@@ -157,9 +157,9 @@
 ::        fake-town:zigs
 ::      egg
 ::    =/  beef-account
-::      (hole:smart account-mold:zigs +.germ:(~(got by p.-.res) 0x1.beef))
+::      (hole:mill account-mold:zigs +.germ:(~(got by p.-.res) 0x1.beef))
 ::    =/  cafe-account
-::      (hole:smart account-mold:zigs +.germ:(~(got by p.-.res) 0x1.cafe))
+::      (hole:mill account-mold:zigs +.germ:(~(got by p.-.res) 0x1.cafe))
 ::    =/  correct-beef-account
 ::      `account-mold:zigs`[(sub 1.000.000 set-fee:zigs) ~]
 ::    =/  correct-cafe-account
@@ -183,9 +183,9 @@
 ::        fake-town:zigs
 ::      egg
 ::    =/  beef-account
-::      (hole:smart account-mold:zigs +.germ:(~(got by p.-.res) 0x1.beef))
+::      (hole:mill account-mold:zigs +.germ:(~(got by p.-.res) 0x1.beef))
 ::    =/  cafe-account
-::      (hole:smart account-mold:zigs +.germ:(~(got by p.-.res) 0x1.cafe))
+::      (hole:mill account-mold:zigs +.germ:(~(got by p.-.res) 0x1.cafe))
 ::    =/  correct-beef-account
 ::      `account-mold:zigs`[(sub 1.000.000 set-fee:zigs) ~]
 ::    =/  correct-cafe-account
@@ -206,9 +206,9 @@
 ::        fake-town:zigs
 ::      egg
 ::    =/  beef-account
-::      (hole:smart account-mold:zigs +.germ:(~(got by p.-.res) 0x1.beef))
+::      (hole:mill account-mold:zigs +.germ:(~(got by p.-.res) 0x1.beef))
 ::    =/  cafe-account
-::      (hole:smart account-mold:zigs +.germ:(~(got by p.-.res) 0x1.cafe))
+::      (hole:mill account-mold:zigs +.germ:(~(got by p.-.res) 0x1.cafe))
 ::    =/  correct-beef-account
 ::      `account-mold:zigs`[(sub 1.000.000 set-fee:zigs) ~]
 ::    =/  correct-cafe-account

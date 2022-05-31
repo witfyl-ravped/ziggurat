@@ -1,3 +1,5 @@
+::  /+  zig-sys-tiny, zig-sys-smart
+::  =>  [zig-sys-tiny zig-sys-smart]
 |_  =cart
 ++  write
   |=  =zygote
