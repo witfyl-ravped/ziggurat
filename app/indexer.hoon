@@ -79,6 +79,7 @@
     dbug,
     default-agent,
     verb,
+    indexer-lib=indexer-bowl,
     smart=zig-sys-smart
 ::
 |%
@@ -125,11 +126,12 @@
 ^-  agent:gall
 =<
   |_  =bowl:gall
-  +*  this                .
-      def                 ~(. (default-agent this %|) bowl)
-      io                  ~(. agentio bowl)
+  +*  this          .
+      def           ~(. (default-agent this %|) bowl)
+      io            ~(. agentio bowl)
+      ui-lib        ~(. indexer-lib bowl)
       indexer-core  +>
-      ic                 ~(. indexer-core bowl)
+      ic            ~(. indexer-core bowl)
   ::
   ++  on-init  `this(num-recent-headers 50)
   ++  on-save  !>(state)
@@ -257,7 +259,7 @@
   ::
   ++  on-peek
     |=  =path
-    ^-  (unit (unit cage))
+    |^  ^-  (unit (unit cage))
     ?+    path  (on-peek:def path)
     ::
         [%x %block-height ~]
@@ -340,20 +342,18 @@
         [%x %hash @ ~]
         ::  search over all hashes and return all hits
       =/  hash=@ux  (slav %ux i.t.t.path)
-      =/  egg=(unit update:ui)
-        (serve-update %egg hash)
-      =/  grain=(unit update:ui)
-        (serve-update %grain hash)
-      =/  from=(unit update:ui)
-        (serve-update %from hash)
-      =/  slot=(unit update:ui)
-        (serve-update %block-hash hash)
-      =/  to=(unit update:ui)
-        (serve-update %to hash)
-      =/  up=(unit update:ui)
-        (combine-updates ~[egg from to] ~[grain] slot)
+      =/  up=(unit update:ui)  (get-all-hashes hash)
       ?~  up  [~ ~]
       [~ ~ %indexer-update !>(`update:ui`u.up)]
+    ::
+        [%x %json %hash @ ~]
+        ::  search over all hashes and return all hits;
+        ::  manually convert to JSON so we can mold rice
+        ::  data (requires scry which requires bowl)
+      =/  hash=@ux  (slav %ux i.t.t.t.path)
+      =/  up=(unit update:ui)  (get-all-hashes hash)
+      ?~  up  [~ ~]
+      [~ ~ %json !>(`json`(update:enjs:ui-lib u.up))]
     ::
         [%x %has-chunk-num @ @ @ ~]
       =/  epoch-num=@ud  (slav %ud i.t.t.path)
@@ -445,6 +445,23 @@
       ==
     ::
     ==
+    ::
+    ++  get-all-hashes
+      |=  hash=@ux
+      ^-  (unit update:ui)
+      =/  egg=(unit update:ui)
+        (serve-update %egg hash)
+      =/  grain=(unit update:ui)
+        (serve-update %grain hash)
+      =/  from=(unit update:ui)
+        (serve-update %from hash)
+      =/  slot=(unit update:ui)
+        (serve-update %block-hash hash)
+      =/  to=(unit update:ui)
+        (serve-update %to hash)
+      (combine-updates ~[egg from to] ~[grain] slot)
+    ::
+    --
   ::
   ++  on-agent
     |=  [=wire =sign:agent:gall]

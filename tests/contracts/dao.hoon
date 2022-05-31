@@ -387,8 +387,8 @@
     0xda.0da0
   ::
   ++  make-new-salt-and-dao
-    ^-  [salt=@ =dao:d]
-    [salt=new-dao-salt data=startup-dao]
+    ^-  [salt=@ dao=(unit dao:d)]
+    [salt=new-dao-salt data=`startup-dao]
   ::
   ++  make-expected-chick
     |^  ^-  chick:smart
@@ -1088,6 +1088,27 @@
         ==
       ~
     ~
+  ::
+  ++  make-test-cart
+    ^-  cart:smart
+    %-  make-cart
+    (make-id-grain-map megacorp-dao-salt megacorp-dao)
+  ::
+  --
+::
+++  test-read-json
+  |^
+  =/  =cart:smart  make-test-cart
+  ~&  >  "cart: {<`cart:smart`cart>}"
+  =+  [is-success jon]=(mule |.(~(json ~(read cont cart) /rice-data)))
+  ;:  weld
+    %+  expect-eq
+      !>  %.y
+      !>  is-success
+    %+  expect-eq
+      !>  ~
+      !>  jon
+  ==
   ::
   ++  make-test-cart
     ^-  cart:smart

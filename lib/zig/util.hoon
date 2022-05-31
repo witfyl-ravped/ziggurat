@@ -1,4 +1,5 @@
 /-  *ziggurat, wallet
+/*  smart-lib  %noun  /lib/zig/compiled/smart-lib/noun
 =>  |%
     +$  card  card:agent:gall
     --
@@ -238,15 +239,16 @@
     ?~  found=(~(get by granary) find)  ~
     ?.  ?=(%& -.germ.u.found)           ~
     ?.  =(lord.u.found id)              ~
-    `[find u.res]
+    `[find u.found]
   ::  this isn't an ideal method but okay for now
   ::  goal is to return ~ if some rice weren't found
   ?.  =(~(wyt by owns) (lent contract-rice))
     ``noun+!>(~)
-  =/  cont  (hole:smart contract:smart u.cont.p.germ.u.res)
+  =/  cont
+    (hole:smart contract:smart [u.cont.p.germ.u.res +:(cue q.q.smart-lib)])
   =/  cart  [~ id blocknum town-id owns]
   ?+  read-type  ``noun+!>(~)
     %noun  ``noun+!>(`~(noun ~(read cont cart) arg))
-    %json  ``json+!>(`~(json ~(read cont cart) arg))
+    %json  ``json+!>(~(json ~(read cont cart) arg))
   ==
 --

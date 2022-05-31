@@ -272,7 +272,7 @@
       [%rice @ ~]
     (read-rice +.path 0 (need town-id.state) p.town.state)
   ::
-      [%wheat @ @ta ^]
+      [%wheat @ @tas @ta ^]
     (read-wheat +.path 0 (need town-id.state) p.town.state)
   ::
       [%sizeof @ ~]
