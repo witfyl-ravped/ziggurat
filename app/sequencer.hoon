@@ -255,8 +255,8 @@
   ::  if wheat,
   ::  call read arm here based on path
   ::  args stored in path
-  ?.  =(%x i.path)  ~
-  ?+    t.path  (on-peek:def path)
+  ?.  =(%x -.path)  ~
+  ?+    +.path  (on-peek:def path)
       [%active ~]
     ``noun+!>(`?`!=(~ hall.state))
   ::
