@@ -53,7 +53,7 @@ links to other desks, such as base-dev and garden-dev.
 
 3. To start the indexer/block explorer backend, use:
 ```
-:uqbar-indexer &set-chain-source [our %ziggurat]
+:indexer &set-chain-source [our %ziggurat]
 ```
 where the argument `[our %ziggurat]` is a dock pointing to the ship running the `%ziggurat` agent to receive block updates from.
 
@@ -145,7 +145,7 @@ If run on a fakezod located at `~/urbit/zod`, the following will create the comp
 
 2. Tell the DAO agent to watch our indexer:
 ```
-:dao &set-indexer [our %uqbar-indexer]
+:dao &set-indexer [our %indexer]
 ```
 
 3. Set up subscription of off-chain DAO agent to on-chain DAO (which is created in `gen/sequencer/init-dao.hoon`):
@@ -181,7 +181,7 @@ If the threshold is surpassed by the vote, the proposals will pass.
 
 The indexer exposes a variety of scry and subscription paths.
 A few are discussed below with examples.
-Please see the docstring at the top of `app/uqbar-indexer.hoon` for a fuller set of available paths.
+Please see the docstring at the top of `app/indexer.hoon` for a fuller set of available paths.
 
 ### Indexer scries
 
@@ -189,7 +189,7 @@ Four example scries will be shown below for a user scrying from the Dojo; extern
 
 For simplicity, the following is assumed:
 
-I. The `%uqbar-indexer` app is running on the `%zig` desk on a fakezod.
+I. The `%indexer` app is running on the `%zig` desk on a fakezod.
 II. The fakezod is running at `localhost:8080`.
 
 Examples:
@@ -199,15 +199,15 @@ Examples:
 ```
 ::  inside Urbit
 =z -build-file /=zig=/sur/ziggurat/hoon
-.^((list [epoch-num=@ud =block-header:z]) %gx /=uqbar-indexer=/headers/5/noun)
+.^((list [epoch-num=@ud =block-header:z]) %gx /=indexer=/headers/5/noun)
 
 # using Curl
 curl -i -X POST localhost:8080/~/login -d 'password=lidlut-tabwed-pillex-ridrup'
 # record cookie from above and use below
-curl --cookie "urbauth-~zod=$ZOD_COOKIE" localhost:8080/~/scry/uqbar-indexer/headers/5.json
+curl --cookie "urbauth-~zod=$ZOD_COOKIE" localhost:8080/~/scry/indexer/headers/5.json
 
 # using HTTP API
-await api.scry({app: "uqbar-indexer", path: "/headers/5"});
+await api.scry({app: "indexer", path: "/headers/5"});
 ```
 
 2. All data in a chunk with epoch number, block number, and chunk/town number as `1`, `2`, and `3`, respectively (these should, of course, be substituted for variables appropriate).
@@ -220,7 +220,7 @@ await api.scry({app: "uqbar-indexer", path: "/headers/5"});
 # TODO
 
 # using HTTP API
-await api.scry({app: "uqbar-indexer", path: "/chunk-num/1/2/3"});
+await api.scry({app: "indexer", path: "/chunk-num/1/2/3"});
 ```
 
 3. A given transaction with hash `0xdead.beef` (this should, of course, be substituted for a variable as appropriate).
@@ -233,10 +233,10 @@ await api.scry({app: "uqbar-indexer", path: "/chunk-num/1/2/3"});
 # TODO
 
 # using HTTP API
-await api.scry({app: "uqbar-indexer", path: "/egg/0xdead.beef"});
+await api.scry({app: "indexer", path: "/egg/0xdead.beef"});
 ```
 
-4. All transcations for a given address with hash `0xcafe.babe` (this should, of course, be substituted for a variable as appropriate) (TODO: add start/end times to retrieve subset of transactions).
+4. All transactions for a given address with hash `0xcafe.babe` (this should, of course, be substituted for a variable as appropriate) (TODO: add start/end times to retrieve subset of transactions).
 
 ```
 ::  inside Urbit
@@ -246,15 +246,15 @@ await api.scry({app: "uqbar-indexer", path: "/egg/0xdead.beef"});
 # TODO
 
 # using HTTP API
-await api.scry({app: "uqbar-indexer", path: "/from/0xcafe.babe"});
+await api.scry({app: "indexer", path: "/from/0xcafe.babe"});
 ```
 
 ### Indexer subscriptions
 
 One example subscription will be discussed: subscribing to receive each new block (or "slot") that is processed by the indexer. (TODO)
-Please see the docstring at the top of `app/uqbar-indexer.hoon` for a fuller set of available paths.
+Please see the docstring at the top of `app/indexer.hoon` for a fuller set of available paths.
 
-For the HTTP API, the app to subscribe to is `"uqbar-indexer"`, and the path is `"/slot"`.
+For the HTTP API, the app to subscribe to is `"indexer"`, and the path is `"/slot"`.
 
 # Testing Zink
 

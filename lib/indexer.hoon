@@ -1,4 +1,4 @@
-/-  ui=uqbar-indexer,
+/-  ui=indexer,
     zig=ziggurat
 /+  smart=zig-sys-smart
 ::
@@ -12,21 +12,38 @@
     ?-    -.update
     ::
         %chunk
+      %+  frond  %chunk
       %-  pairs
       :+  [%location (town-location location.update)]
         [%chunk (chunk chunk.update)]
       ~
     ::
         %egg
-      (frond %eggs (eggs eggs.update))
+      (frond %egg (eggs eggs.update))
     ::
         %grain
-      (frond %grains (grains grains.update))
+      (frond %grain (grains grains.update))
+    ::
+        %hash
+      %+  frond  %hash
+      %-  pairs
+      :^    [%eggs (eggs eggs.update)]
+          [%grains (grains grains.update)]
+        [%slots (slots slots.update)]
+      ~
     ::
         %slot
-      (frond %slot (slot slot.update))
+      (frond %slots (slots slots.update))
     ::
     ==
+  ::
+  ++  block-location
+    |=  =block-location:ui
+    ^-  json
+    %-  pairs
+    :+  [%epoch-num (numb epoch-num.block-location)]
+      [%block-num (numb block-num.block-location)]
+    ~
   ::
   ++  town-location
     |=  =town-location:ui
@@ -75,11 +92,12 @@
     ~
   ::
   ++  eggs
-    |=  eggs=(set [location=egg-location:ui =egg:smart])
+    |=  eggs=(map egg-id=id:smart [location=egg-location:ui =egg:smart])
     ^-  json
-    :-  %a
-    %+  turn  ~(tap in eggs)
-    |=  [location=egg-location:ui e=egg:smart]
+    %-  pairs
+    %+  turn  ~(tap by eggs)
+    |=  [=id:smart location=egg-location:ui e=egg:smart]
+    :-  (scot %ux id)
     %-  pairs
     :+  [%location (egg-location location)]
       [%egg (egg e)]
@@ -190,6 +208,18 @@
       [%owns (ids owns.p.germ)]
     ~
   ::
+  ++  slots
+    |=  slots=(map slot-id=id:smart [location=block-location:ui =slot:zig])
+    ^-  json
+    %-  pairs
+    %+  turn  ~(tap by slots)
+    |=  [=id:smart location=block-location:ui s=slot:zig]
+    :-  (scot %ux id)
+    %-  pairs
+    :+  [%location (block-location location)]
+      [%slot (slot s)]
+    ~
+  ::
   ++  slot
     |=  =slot:zig
     ^-  json
@@ -266,8 +296,16 @@
     :~  [%chunk (ot ~[[%location town-location] [%chunk chunk]])]
         [%egg eggs]
         [%grain grains]
-        [%slot slot]
+        [%hash (ot ~[[%eggs eggs] [%grains grains] [%slots slots]])]
+        [%slot slots]
     ==
+  ::
+  ++  block-location
+    ^-  $-(json block-location:ui)
+    %-  ot
+    :+  [%epoch-num ni]
+      [%block-num ni]
+    ~
   ::
   ++  town-location
     ^-  $-(json town-location:ui)
@@ -303,8 +341,8 @@
     (at ~[nu egg])
   ::
   ++  eggs
-    ^-  $-(json (set [location=egg-location:ui =egg:smart]))
-    %-  as
+    ^-  $-(json (map egg-id=id:smart [location=egg-location:ui =egg:smart]))
+    %+  op  hex
     %-  ot
     :+  [%location egg-location]
       [%egg egg]
@@ -411,6 +449,14 @@
     %.  jon
     %-  ot
     :-  [%owns ids]
+    ~
+  ::
+  ++  slots
+    ^-  $-(json (map slot-id=id:smart [location=block-location:ui =slot:zig]))
+    %+  op  hex
+    %-  ot
+    :+  [%location block-location]
+      [%slot slot]
     ~
   ::
   ++  slot

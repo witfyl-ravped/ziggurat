@@ -1,6 +1,6 @@
-/-  ui=uqbar-indexer,
+/-  ui=indexer,
     zig=ziggurat
-/+  ui-lib=uqbar-indexer
+/+  ui-lib=indexer
 ::
 |_  headers=(list [epoch-num=@ud =block-header:zig])
 +$  headers-mold  (list [epoch-num=@ud =block-header:zig])
