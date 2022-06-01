@@ -7,14 +7,14 @@
 ::  contract can serve unlimited DAOs, who simply store their
 ::  structure as rice held and ruled by this contract on-chain.
 ::
-:: /+  *zig-sys-smart
+/+  *zig-sys-smart
 |_  =cart
 ++  write
   |=  inp=embryo
   ^-  chick
   |^
   ?~  args.inp  !!
-  (process (hole arguments u.args.inp) (pin caller.inp))
+  (process ;;(arguments u.args.inp) (pin caller.inp))
   ::
   +$  arguments
     $%  [%add-dao salt=@ dao=(unit dao:d)]
@@ -30,7 +30,7 @@
     ?>  =(lord.dao-grain me.cart)
     ?>  ?=(%& -.germ.dao-grain)
     :-  dao-grain
-    (hole dao:d data.p.germ.dao-grain)
+    ;;(dao:d data.p.germ.dao-grain)
   ::
   ++  process
     |=  [args=arguments caller-id=id]
@@ -539,6 +539,9 @@
       :: ~
     ::
         [%wheat ~]
+      ~
+    ::
+        [%egg-args ~]
       ~
     ::
     ==

@@ -188,6 +188,7 @@
   ^-  granary:smart
   =/  grains=(list:smart (pair:smart id:smart grain:smart))
     :~  [id.zigs-wheat-grain zigs-wheat-grain]
+        [id.zigs-metadata-grain zigs-metadata-grain]
         [zigs-1 beef-zigs-grain]
         [zigs-2 dead-zigs-grain]
         [zigs-3 cafe-zigs-grain]

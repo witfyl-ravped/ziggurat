@@ -61,8 +61,7 @@
     ++  make-cart
       |=  owns=(map id:smart grain:smart)
       ^-  cart:smart
-      :*  mem=~
-          me=dao-contract-id
+      :*  me=dao-contract-id
           block=0
           town-id=town-id
           owns=owns
@@ -104,9 +103,9 @@
         make-placeholder-dao-comms-rid
       (~(put in *(set role:d)) %jannie)
     ::
-    ++  make-megacorp-ceo-vote-zygote
+    ++  make-megacorp-ceo-vote-embryo
       |=  proposal-id=id:smart
-      ^-  zygote:smart
+      ^-  embryo:smart
       =/  args
         :^    ~
             %vote
@@ -372,8 +371,8 @@
   |^
   =/  expected-chick=chick:smart  make-expected-chick
   =/  =cart:smart                 make-test-cart
-  =/  =zygote:smart               make-zygote
-  =+  [is-success chick]=(mule |.((~(write cont cart) zygote)))
+  =/  =embryo:smart               make-embryo
+  =+  [is-success chick]=(mule |.((~(write cont cart) embryo)))
   ;:  weld
     %+  expect-eq
       !>  %.y
@@ -416,8 +415,8 @@
     %-  make-cart
     ~
   ::
-  ++  make-zygote
-    ^-  zygote:smart
+  ++  make-embryo
+    ^-  embryo:smart
     :+  caller=[id=startup-ceo-id nonce=0 zigs=0xd0.11a5]
       args=`[%add-dao make-new-salt-and-dao]
     grains=~
@@ -437,8 +436,8 @@
   |^
   =/  expected-chick=chick:smart  make-expected-chick
   =/  =cart:smart                 make-test-cart
-  =/  =zygote:smart               make-zygote
-  =+  [is-success chick]=(mule |.((~(write cont cart) zygote)))
+  =/  =embryo:smart               make-embryo
+  =+  [is-success chick]=(mule |.((~(write cont cart) embryo)))
   ;:  weld
     %+  expect-eq
       !>  %.y
@@ -469,8 +468,8 @@
     %-  make-cart
     (make-id-grain-map megacorp-dao-salt megacorp-dao)
   ::
-  ++  make-zygote
-    ^-  zygote:smart
+  ++  make-embryo
+    ^-  embryo:smart
     :+  caller=[id=megacorp-ceo-id nonce=0 zigs=0xd0.11a5]
       args=`[%vote dao-id=megacorp-dao-id proposal-id=0xde0]
     grains=~
@@ -480,8 +479,8 @@
 ++  test-vote-non-existent-proposal
   |^
   =/  =cart:smart    make-test-cart
-  =/  =zygote:smart  make-zygote
-  =+  [is-success chick]=(mule |.((~(write cont cart) zygote)))
+  =/  =embryo:smart  make-embryo
+  =+  [is-success chick]=(mule |.((~(write cont cart) embryo)))
   ;:  weld
     %+  expect-eq
       !>  %.n
@@ -493,8 +492,8 @@
     %-  make-cart
     (make-id-grain-map megacorp-dao-salt megacorp-dao)
   ::
-  ++  make-zygote
-    ^-  zygote:smart
+  ++  make-embryo
+    ^-  embryo:smart
     :+  caller=[id=megacorp-ceo-id nonce=0 zigs=0xd0.11a5]
       args=`[%vote dao-id=megacorp-dao-id proposal-id=0xde.1234]
     grains=~
@@ -504,8 +503,8 @@
 ++  test-vote-not-owner
   |^
   =/  =cart:smart    make-test-cart
-  =/  =zygote:smart  make-zygote
-  =+  [is-success chick]=(mule |.((~(write cont cart) zygote)))
+  =/  =embryo:smart  make-embryo
+  =+  [is-success chick]=(mule |.((~(write cont cart) embryo)))
   ;:  weld
     %+  expect-eq
       !>  %.n
@@ -517,8 +516,8 @@
     %-  make-cart
     (make-id-grain-map megacorp-dao-salt megacorp-dao)
   ::
-  ++  make-zygote
-    ^-  zygote:smart
+  ++  make-embryo
+    ^-  embryo:smart
     :+  caller=[id=megacorp-pleb-id nonce=0 zigs=0xd0.11a5]
       args=`[%vote dao-id=megacorp-dao-id proposal-id=0xde0]
     grains=~
@@ -529,8 +528,8 @@
   ::  TODO: can this test be more useful?
   |^
   =/  =cart:smart    make-test-cart
-  =/  =zygote:smart  make-zygote
-  =+  [is-success chick]=(mule |.((~(write cont cart) zygote)))
+  =/  =embryo:smart  make-embryo
+  =+  [is-success chick]=(mule |.((~(write cont cart) embryo)))
   ;:  weld
     %+  expect-eq
       !>  %.n
@@ -542,8 +541,8 @@
     %-  make-cart
     (make-id-grain-map startup-dao-salt startup-dao)
   ::
-  ++  make-zygote
-    ^-  zygote:smart
+  ++  make-embryo
+    ^-  embryo:smart
     :+  caller=[id=megacorp-ceo-id nonce=0 zigs=0xd0.11a5]
       args=`[%vote dao-id=megacorp-dao-id proposal-id=0xde0]
     grains=~
@@ -558,8 +557,8 @@
   |^
   =/  expected-chick=chick:smart  make-expected-chick
   =/  =cart:smart                 make-test-cart
-  =/  =zygote:smart               make-zygote
-  =+  [is-success chick]=(mule |.((~(write cont cart) zygote)))
+  =/  =embryo:smart               make-embryo
+  =+  [is-success chick]=(mule |.((~(write cont cart) embryo)))
   ;:  weld
     %+  expect-eq
       !>  %.y
@@ -589,8 +588,8 @@
     %-  make-cart
     (make-id-grain-map megacorp-dao-salt megacorp-dao)
   ::
-  ++  make-zygote
-    ^-  zygote:smart
+  ++  make-embryo
+    ^-  embryo:smart
     =/  args
       :^    ~
           %propose
@@ -614,8 +613,8 @@
 ++  test-propose-existing-proposal
   |^
   =/  =cart:smart                 make-test-cart
-  =/  =zygote:smart               make-zygote
-  =+  [is-success chick]=(mule |.((~(write cont cart) zygote)))
+  =/  =embryo:smart               make-embryo
+  =+  [is-success chick]=(mule |.((~(write cont cart) embryo)))
   ;:  weld
     %+  expect-eq
       !>  %.n
@@ -627,8 +626,8 @@
     %-  make-cart
     (make-id-grain-map megacorp-dao-salt megacorp-dao)
   ::
-  ++  make-zygote
-    ^-  zygote:smart
+  ++  make-embryo
+    ^-  embryo:smart
     =/  args
       :^    ~
           %propose
@@ -644,8 +643,8 @@
 ++  test-propose-not-owner
   |^
   =/  =cart:smart                 make-test-cart
-  =/  =zygote:smart               make-zygote
-  =+  [is-success chick]=(mule |.((~(write cont cart) zygote)))
+  =/  =embryo:smart               make-embryo
+  =+  [is-success chick]=(mule |.((~(write cont cart) embryo)))
   ;:  weld
     %+  expect-eq
       !>  %.n
@@ -657,8 +656,8 @@
     %-  make-cart
     (make-id-grain-map megacorp-dao-salt megacorp-dao)
   ::
-  ++  make-zygote
-    ^-  zygote:smart
+  ++  make-embryo
+    ^-  embryo:smart
     =/  args
       :^    ~
           %propose
@@ -688,8 +687,8 @@
 ++  test-execute-user-cant-call
   |^
   =/  =cart:smart                 make-test-cart
-  =/  =zygote:smart               make-zygote
-  =+  [is-success chick]=(mule |.((~(write cont cart) zygote)))
+  =/  =embryo:smart               make-embryo
+  =+  [is-success chick]=(mule |.((~(write cont cart) embryo)))
   ;:  weld
     %+  expect-eq
       !>  %.n
@@ -701,8 +700,8 @@
     %-  make-cart
     (make-id-grain-map megacorp-dao-salt megacorp-dao)
   ::
-  ++  make-zygote
-    ^-  zygote:smart
+  ++  make-embryo
+    ^-  embryo:smart
     =/  args
       :^    ~
           %execute
@@ -727,9 +726,9 @@
   |^
   =/  expected-chick=chick:smart  make-expected-chick
   =/  =cart:smart                 make-test-cart
-  =/  =zygote:smart
-    (make-megacorp-ceo-vote-zygote make-proposal-id)
-  =+  [is-success chick]=(mule |.((~(write cont cart) zygote)))
+  =/  =embryo:smart
+    (make-megacorp-ceo-vote-embryo make-proposal-id)
+  =+  [is-success chick]=(mule |.((~(write cont cart) embryo)))
   ;:  weld
     %+  expect-eq
       !>  %.y
@@ -779,9 +778,9 @@
   |^
   =/  expected-chick=chick:smart  make-expected-chick
   =/  =cart:smart                 make-test-cart
-  =/  =zygote:smart
-    (make-megacorp-ceo-vote-zygote make-proposal-id)
-  =+  [is-success chick]=(mule |.((~(write cont cart) zygote)))
+  =/  =embryo:smart
+    (make-megacorp-ceo-vote-embryo make-proposal-id)
+  =+  [is-success chick]=(mule |.((~(write cont cart) embryo)))
   ;:  weld
     %+  expect-eq
       !>  %.y
@@ -831,9 +830,9 @@
   |^
   =/  expected-chick=chick:smart  make-expected-chick
   =/  =cart:smart                 make-test-cart
-  =/  =zygote:smart
-    (make-megacorp-ceo-vote-zygote make-proposal-id)
-  =+  [is-success chick]=(mule |.((~(write cont cart) zygote)))
+  =/  =embryo:smart
+    (make-megacorp-ceo-vote-embryo make-proposal-id)
+  =+  [is-success chick]=(mule |.((~(write cont cart) embryo)))
   ;:  weld
     %+  expect-eq
       !>  %.y
@@ -877,9 +876,9 @@
   |^
   =/  expected-chick=chick:smart  make-expected-chick
   =/  =cart:smart                 make-test-cart
-  =/  =zygote:smart
-    (make-megacorp-ceo-vote-zygote make-proposal-id)
-  =+  [is-success chick]=(mule |.((~(write cont cart) zygote)))
+  =/  =embryo:smart
+    (make-megacorp-ceo-vote-embryo make-proposal-id)
+  =+  [is-success chick]=(mule |.((~(write cont cart) embryo)))
   ;:  weld
     %+  expect-eq
       !>  %.y
@@ -924,9 +923,9 @@
   |^
   =/  expected-chick=chick:smart  make-expected-chick
   =/  =cart:smart                 make-test-cart
-  =/  =zygote:smart
-    (make-megacorp-ceo-vote-zygote make-proposal-id)
-  =+  [is-success chick]=(mule |.((~(write cont cart) zygote)))
+  =/  =embryo:smart
+    (make-megacorp-ceo-vote-embryo make-proposal-id)
+  =+  [is-success chick]=(mule |.((~(write cont cart) embryo)))
   ;:  weld
     %+  expect-eq
       !>  %.y
@@ -968,9 +967,9 @@
   |^
   =/  expected-chick=chick:smart  make-expected-chick
   =/  =cart:smart                 make-test-cart
-  =/  =zygote:smart
-    (make-megacorp-ceo-vote-zygote make-proposal-id)
-  =+  [is-success chick]=(mule |.((~(write cont cart) zygote)))
+  =/  =embryo:smart
+    (make-megacorp-ceo-vote-embryo make-proposal-id)
+  =+  [is-success chick]=(mule |.((~(write cont cart) embryo)))
   ;:  weld
     %+  expect-eq
       !>  %.y
@@ -1012,9 +1011,9 @@
   |^
   =/  expected-chick=chick:smart  make-expected-chick
   =/  =cart:smart                 make-test-cart
-  =/  =zygote:smart
-    (make-megacorp-ceo-vote-zygote make-proposal-id)
-  =+  [is-success chick]=(mule |.((~(write cont cart) zygote)))
+  =/  =embryo:smart
+    (make-megacorp-ceo-vote-embryo make-proposal-id)
+  =+  [is-success chick]=(mule |.((~(write cont cart) embryo)))
   ;:  weld
     %+  expect-eq
       !>  %.y
@@ -1056,9 +1055,9 @@
   |^
   =/  expected-chick=chick:smart  make-expected-chick
   =/  =cart:smart                 make-test-cart
-  =/  =zygote:smart
-    (make-megacorp-ceo-vote-zygote make-proposal-id)
-  =+  [is-success chick]=(mule |.((~(write cont cart) zygote)))
+  =/  =embryo:smart
+    (make-megacorp-ceo-vote-embryo make-proposal-id)
+  =+  [is-success chick]=(mule |.((~(write cont cart) embryo)))
   ;:  weld
     %+  expect-eq
       !>  %.y
@@ -1099,7 +1098,6 @@
 ++  test-read-json
   |^
   =/  =cart:smart  make-test-cart
-  ~&  >  "cart: {<`cart:smart`cart>}"
   =+  [is-success jon]=(mule |.(~(json ~(read cont cart) /rice-data)))
   ;:  weld
     %+  expect-eq
