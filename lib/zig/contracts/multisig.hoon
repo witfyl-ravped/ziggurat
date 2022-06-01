@@ -5,7 +5,9 @@
 ::  argument, and are stored in account-controlled rice.
 ::
 ::/+  *zig-sys-smart
+!:
 ^-  contract  :: not strictly necessary but works well
+::
 |_  =cart
 ++  write
   |=  inp=embryo
@@ -71,10 +73,10 @@
     ^-  [@tas json]
     ::  TODO implement
     =/  tag  -.event
-    =/  jon
-      %-  pairs
-      :~  'eventName'  s+[`@t`tag]
-      ==
+    =/  jon  *json
+      ::%-  pairs:enjs:format
+      :::~  s+'eventName'  s+[`@t`tag]
+      ::==
     [tag jon]
   ::
   ++  process
@@ -118,7 +120,7 @@
           ==
         ::
         =/  roost=rooster         [(malt ~[[id.my-grain my-grain]]) ~ crow]
-        [%| [~ next=[to.p.egg town-id.p.egg q.egg]:prop roost]]
+        [%| [next=[to.p.egg town-id.p.egg q.egg]:prop roost]]
       =.  data.p.germ.my-grain  state
       [%& (malt ~[[id.my-grain my-grain]]) ~ ~]
     ::
