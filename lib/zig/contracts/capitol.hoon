@@ -13,11 +13,11 @@
 ::  /+  *zig-sys-smart
 |_  =cart
 ++  write
-  |=  inp=zygote
+  |=  inp=embryo
   ^-  chick
   |^
   ?~  args.inp  !!
-  (process (hole arguments u.args.inp) (pin caller.inp))
+  (process ;;(arguments u.args.inp) (pin caller.inp))
   ::
   ::  molds used by this contract
   ::
@@ -45,7 +45,7 @@
       ::  start a new town if one with if that id doesn't exist
       =/  worl=grain  (~(got by owns.cart) `@ux`'world')
       ?>  ?=(%& -.germ.worl)
-      =/  =world  (hole world data.p.germ.worl)
+      =/  =world  ;;(world data.p.germ.worl)
       ?:  (~(has by world) town.args)  !!
       =.  data.p.germ.worl
         (~(put by world) town.args (malt ~[[q.sig.args [caller-id sig.args]]]))
@@ -55,7 +55,7 @@
       ::  become a sequencer on an existing town
       =/  worl=grain  (~(got by owns.cart) `@ux`'world')
       ?>  ?=(%& -.germ.worl)
-      =/  =world  (hole world data.p.germ.worl)
+      =/  =world  ;;(world data.p.germ.worl)
       ?~  current=`(unit (map ship [id sig]))`(~(get by world) town.args)  !!
       =/  new  (~(put by u.current) q.sig.args [caller-id sig.args])
       =.  data.p.germ.worl
@@ -66,7 +66,7 @@
       ::  leave a town that you're sequencing on
       =/  worl=grain  (~(got by owns.cart) `@ux`'world')
       ?>  ?=(%& -.germ.worl)
-      =/  =world  (hole world data.p.germ.worl)
+      =/  =world  ;;(world data.p.germ.worl)
       ?~  current=`(unit (map ship [id sig]))`(~(get by world) town.args)  !!
       =/  new  (~(del by u.current) q.sig.args)
       =.  data.p.germ.worl
@@ -78,7 +78,7 @@
         %become-validator
       =/  zigg=grain  (~(got by owns.cart) `@ux`'ziggurat')
       ?>  ?=(%& -.germ.zigg)
-      =/  =ziggurat  (hole ziggurat data.p.germ.zigg)
+      =/  =ziggurat  ;;(ziggurat data.p.germ.zigg)
       ?<  (~(has by ziggurat) q.args)
       =.  data.p.germ.zigg  (~(put by ziggurat) q.args +.args)
       [%& (malt ~[[id.zigg zigg]]) ~ ~]
@@ -86,7 +86,7 @@
         %stop-validating
       =/  zigg=grain  (~(got by owns.cart) `@ux`'ziggurat')
       ?>  ?=(%& -.germ.zigg)
-      =/  =ziggurat  (hole ziggurat data.p.germ.zigg)
+      =/  =ziggurat  ;;(ziggurat data.p.germ.zigg)
       ?>  (~(has by ziggurat) q.args)
       =.  data.p.germ.zigg  (~(del by ziggurat) q.args)
       [%& (malt ~[[id.zigg zigg]]) ~ ~]

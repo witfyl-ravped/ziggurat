@@ -1,6 +1,6 @@
 |_  =cart
 ++  write
-  |=  =zygote
+  |=  =embryo
   ^-  chick
   =+  (dec 100)
   [%& ~ ~ ~]

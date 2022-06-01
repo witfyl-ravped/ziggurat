@@ -16,7 +16,7 @@
     --
 |_  =cart
 ++  write
-  |=  inp=zygote
+  |=  inp=embryo
   ^-  chick
   ?~  args.inp  !!
   =/  caller-id
