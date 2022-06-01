@@ -1,7 +1,7 @@
 /=  smart  /lib/zig/sys/smart/hoon
 |_  =cart
 ++  write
-  |=  =zygote
+  |=  =embryo
   ^-  chick
   =+  (dec 100)
   [%& ~ ~ ~]
