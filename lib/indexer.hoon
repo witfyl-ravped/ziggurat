@@ -1,4 +1,4 @@
-/-  ui=uqbar-indexer,
+/-  ui=indexer,
     zig=ziggurat
 /+  smart=zig-sys-smart
 ::

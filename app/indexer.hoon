@@ -1,4 +1,4 @@
-::  uqbar-indexer:
+::  indexer [uqbar-dao]:
 ::
 ::  Index blocks
 ::
@@ -73,7 +73,7 @@
 ::    %serve-update:
 ::
 ::
-/-  ui=uqbar-indexer,
+/-  ui=indexer,
     zig=ziggurat
 /+  agentio,
     dbug,
@@ -128,8 +128,8 @@
   +*  this                .
       def                 ~(. (default-agent this %|) bowl)
       io                  ~(. agentio bowl)
-      uqbar-indexer-core  +>
-      uic                 ~(. uqbar-indexer-core bowl)
+      indexer-core  +>
+      ic                 ~(. indexer-core bowl)
   ::
   ++  on-init  `this(num-recent-headers 50)
   ++  on-save  !>(state)
@@ -148,7 +148,7 @@
       ::
           %set-chain-source
         ?>  (team:title our.bowl src.bowl)
-        (set-chain-source:uic !<(dock vase))
+        (set-chain-source:ic !<(dock vase))
       ::
           %set-num-recent-headers
         ?>  (team:title our.bowl src.bowl)
@@ -179,7 +179,7 @@
       :_  ~
       %-  fact:io
       :_  ~
-      :-  %uqbar-indexer-update
+      :-  %indexer-update
       !>  ^-  update:ui
       :+  %chunk
         :+  epoch-num=num.val.u.newest-epoch
@@ -202,8 +202,7 @@
       :_  ~
       %-  fact:io
       :_  ~
-      :-  %uqbar-indexer-update
-      !>(`update:ui`u.update)
+      [%indexer-update !>(`update:ui`u.update)]
     ::
         ?([%grain @ ~] [%holder @ ~] [%lord @ ~])
       =/  serve-previous-update=_serve-update
@@ -216,8 +215,7 @@
       :_  ~
       %-  fact:io
       :_  ~
-      :-  %uqbar-indexer-update
-      !>(`update:ui`u.update)
+      [%indexer-update !>(`update:ui`u.update)]
     ::
         [%slot ~]
       :_  this
@@ -230,7 +228,7 @@
       :_  ~
       %-  fact:io
       :_  ~
-      :-  %uqbar-indexer-update
+      :-  %indexer-update
       !>  ^-  update:ui
       :-  %slot
       %+  %~  put  by
@@ -276,9 +274,7 @@
       =/  town-id=@ud  (slav %ud i.t.t.t.t.path)
       ?~  up=(serve-update %chunk [epoch-num block-num town-id])
         [~ ~]
-      :^  ~  ~  %uqbar-indexer-update
-      !>  ^-  update:ui
-      u.up
+      [~ ~ %indexer-update !>(`update:ui`u.up)]
     ::
         $?  [%x %block-hash @ ~]
             :: [%x %chunk-hash @ @ ~]
@@ -293,14 +289,12 @@
         ;;(query-type:ui i.t.path)
       =/  hash=@ux  (slav %ux i.t.t.path)
       ?~  up=(serve-update query-type hash)  [~ ~]
-      :^  ~  ~  %uqbar-indexer-update
-      !>  ^-  update:ui
-      u.up
+      [~ ~ %indexer-update !>(`update:ui`u.up)]
     ::
         [%x %headers @ ~]
       ?~  recent-headers  [~ ~]
       =/  num-headers=@ud  (slav %ud i.t.t.path)
-      :^  ~  ~  %uqbar-indexer-headers
+      :^  ~  ~  %indexer-headers
       !>  ^-  (list [epoch-num=@ud =block-header:zig])
       %+  scag
         num-headers
@@ -314,7 +308,7 @@
       =*  epoch-num  num.val.u.newest-epoch
       =*  slot  val.u.newest-slot
       =*  block-header  p.slot
-      :^  ~  ~  %uqbar-indexer-update
+      :^  ~  ~  %indexer-update
       !>  ^-  update:ui
       :-  %slot
       %+  %~  put  by
@@ -327,9 +321,7 @@
       =/  epoch-num=@ud  (slav %ud i.t.t.path)
       =/  block-num=@ud  (slav %ud i.t.t.t.path)
       ?~  up=(serve-update %slot epoch-num block-num)  [~ ~]
-      :^  ~  ~  %uqbar-indexer-update
-      !>  ^-  update:ui
-      u.up
+      [~ ~ %indexer-update !>(`update:ui`u.up)]
     ::
         [%x %id @ ~]
         ::  search over from and to and return all hits
@@ -343,9 +335,7 @@
       =/  up=(unit update:ui)
         (combine-egg-updates ~[from to])
       ?~  up  [~ ~]
-      :^  ~  ~  %uqbar-indexer-update
-      !>  ^-  update:ui
-      u.up
+      [~ ~ %indexer-update !>(`update:ui`u.up)]
     ::
         [%x %hash @ ~]
         ::  search over all hashes and return all hits
@@ -363,9 +353,7 @@
       =/  up=(unit update:ui)
         (combine-updates ~[egg from to] ~[grain] slot)
       ?~  up  [~ ~]
-      :^  ~  ~  %uqbar-indexer-update
-      !>  ^-  update:ui
-      u.up
+      [~ ~ %indexer-update !>(`update:ui`u.up)]
     ::
         [%x %has-chunk-num @ @ @ ~]
       =/  epoch-num=@ud  (slav %ud i.t.t.path)
@@ -469,9 +457,9 @@
           %kick
         :_  this
         =/  old-source=(unit dock)
-          (get-wex-dock-by-wire:uic wire)
+          (get-wex-dock-by-wire:ic wire)
         ?~  old-source  ~
-        ~[(watch-chain-source:uic u.old-source)]
+        ~[(watch-chain-source:ic u.old-source)]
       ::
           %fact
         =^  cards  state
@@ -608,7 +596,7 @@
               ?~  (~(get by sub-paths) %slot)  ~
               :_  ~
               %+  fact:io
-                :-  %uqbar-indexer-update
+                :-  %indexer-update
                 !>  ^-  update:ui
                 :-  %slot
                 %+  %~  put  by
@@ -643,8 +631,7 @@
             ?~  update  ~
             :-  ~
             %+  fact:io
-              :-  %uqbar-indexer-update
-              !>(`update:ui`u.update)
+              [%indexer-update !>(`update:ui`u.update)]
             ~[(snoc path-prefix (scot id-type id))]
           ::
           --

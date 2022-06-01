@@ -75,11 +75,11 @@
     ::
     ;<  ~  bind:m
       %^  watch  indexer-watch-wire
-      [entity.rid %uqbar-indexer]  indexer-watch-path
+      [entity.rid %indexer]  indexer-watch-path
     ~&  >  "waiting for update from indexer..."
     ;<  =cage  bind:m  (take-fact indexer-watch-wire)
     ;<  ~  bind:m
-      (leave indexer-watch-wire [entity.rid %uqbar-indexer])
+      (leave indexer-watch-wire [entity.rid %indexer])
     (pure:m ~)
     ::
     ++  indexer-watch-wire
