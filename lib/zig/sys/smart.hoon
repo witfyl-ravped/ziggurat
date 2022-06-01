@@ -35,7 +35,8 @@
 ::
 +$  account    [=id nonce=@ud zigs=id]
 +$  caller     $@(id account)
-+$  signature  [r=@ux s=@ux type=?(%schnorr %ecdsa)]
+::  currently only using ecdsa [v r s]
+::  +$  signature  [r=@ux s=@ux type=?(%schnorr %ecdsa)]
 ::
 ::  a grain holds either rice (data) or wheat (functions)
 ::
@@ -126,4 +127,63 @@
 ::  new: crow, emit information about transaction to be picked up by interested parties
 +$  rooster  [changed=(map id grain) issued=(map id grain) crow=(list [@tas json])]
 +$  hen      [next=[to=id town-id=@ud args=yolk] roost=rooster]
+::
+::  JSON, from lull.hoon and zuse.hoon
+::  allows read arm of contracts to perform enjs operations
+::
++$  ship  @p
++$  json                                                ::  normal json value
+  $@  ~                                                 ::  null
+  $%  [%a p=(list json)]                                ::  array
+      [%b p=?]                                          ::  boolean
+      [%o p=(map @t json)]                              ::  object
+      [%n p=@ta]                                        ::  number
+      [%s p=@t]                                         ::  string
+  == 
+++  format  ^?
+  |%
+  ++  enjs  ^?                                          ::  json encoders
+    |%
+    ::                                                  ::  ++frond:enjs:format
+    ++  frond                                           ::  object from k-v pair
+      |=  [p=@t q=json]
+      ^-  json
+      [%o [[p q] ~ ~]]
+    ::                                                  ::  ++pairs:enjs:format
+    ++  pairs                                           ::  object from k-v list
+      |=  a=(list [p=@t q=json])
+      ^-  json
+      [%o (~(gas by *(map @t json)) a)]
+    ::                                                  ::  ++tape:enjs:format
+    ++  tape                                            ::  string from tape
+      |=  a=^tape
+      ^-  json
+      [%s (crip a)]
+    ::                                                  ::  ++ship:enjs:format
+    ++  ship                                            ::  string from ship
+      |=  a=^ship
+      ^-  json
+      [%n (rap 3 '"' (rsh [3 1] (scot %p a)) '"' ~)]
+    ::                                                  ::  ++numb:enjs:format
+    ++  numb                                            ::  number from unsigned
+      |=  a=@u
+      ^-  json
+      :-  %n
+      ?:  =(0 a)  '0'
+      %-  crip
+      %-  flop
+      |-  ^-  ^tape
+      ?:(=(0 a) ~ [(add '0' (mod a 10)) $(a (div a 10))])
+    ::                                                  ::  ++path:enjs:format
+    ++  path                                            ::  string from path
+      |=  a=^path
+      ^-  json
+      [%s (spat a)]
+    ::                                                  ::  ++tank:enjs:format
+    ++  tank                                            ::  tank as string arr
+      |=  a=^tank
+      ^-  json
+      [%a (turn (wash [0 80] a) tape)]
+    --  ::enjs
+  --
 --
