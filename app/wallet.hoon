@@ -169,7 +169,7 @@
         tokens  ~
         transaction-store  ~
         metadata-store  ~
-        nodes   (malt ~[[0 ~zod] [1 ~zod] [2 ~zod]])
+        nodes   (malt ~[[0 our.bowl] [1 our.bowl] [2 our.bowl]])
       ==
     ::
         %submit-signed
