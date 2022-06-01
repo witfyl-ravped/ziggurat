@@ -203,13 +203,13 @@
         ::  TODO figure out how to pre-cue this and get good results
         ::
         =/  =contract  (hole contract [nok.crop +:(cue q.q.smart-lib)])
-        ~&  >  embryo
-        ~&  >>>  cart
+        ::  ~&  >  embryo
+        ::  ~&  >>>  cart
         =/  res
           ::  need jet dashboard to run bull:
           ::  (bull |.(;;(chick (~(write contract cart) embryo))) bud)
           (mule |.(;;(chick (~(write contract cart) embryo))))^(sub budget 7)
-        ~&  >>  "write result: {<res>}"
+        ::  ~&  >>  "write result: {<res>}"
         ?:  ?=(%| -.-.res)
           ::  error in contract execution
           [~ budget %6]

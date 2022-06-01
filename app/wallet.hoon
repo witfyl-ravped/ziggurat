@@ -396,7 +396,6 @@
     ?.  ?=(%fact -.sign)       (on-agent:def wire sign)
     ?.  ?=(%uqbar-indexer-update p.cage.sign)  (on-agent:def wire sign)
     =/  update  !<(update:uqbar-indexer q.cage.sign)
-    ~&  >>>  "wallet: id update: {<update>}"
     ?.  ?=(%egg -.update)  `this
     ::  this will give us updates to transactions we send
     ::
