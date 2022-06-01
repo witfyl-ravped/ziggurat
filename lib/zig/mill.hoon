@@ -243,6 +243,7 @@
           ::  id in issued map must be equal to id in grain AND
           ::  all newly issued grains must have properly-hashed id AND
           ::  lord of grain must be contract issuing it AND
+          ::  grain must not yet exist at that id AND
           ::  grain IDs must match defined hashing functions
           ?&  =(id id.grain)
               =(lord lord.grain)
