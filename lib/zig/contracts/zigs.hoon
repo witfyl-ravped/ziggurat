@@ -9,11 +9,11 @@
 ::  /+  *zig-sys-smart
 |_  =cart
 ++  write
-  |=  inp=zygote
+  |=  inp=embryo
   ^-  chick
   |^
   ?~  args.inp  !!
-  (process (hole arguments u.args.inp) (pin caller.inp))
+  (process ;;(arguments u.args.inp) (pin caller.inp))
   ::
   +$  token-metadata
     ::  will be automatically inserted into town state
@@ -47,21 +47,21 @@
         %give
       =/  giv=grain  -:~(val by grains.inp)
       ?>  &(=(lord.giv me.cart) ?=(%& -.germ.giv))
-      =/  giver=account  (hole account data.p.germ.giv)
+      =/  giver=account  ;;(account data.p.germ.giv)
       ?>  (gte balance.giver (add amount.args budget.args))
       ?~  account.args
         ::  if receiver doesn't have an account, must produce one for them
         =+  (fry-rice to.args me.cart town-id.cart salt.p.germ.giv)
         =/  new=grain
           [- me.cart to.args town-id.cart [%& salt.p.germ.giv [0 ~ metadata.giver]]]
-        :^  %|  ~
+        :+  %|
           :+  me.cart  town-id.cart
           [caller.inp `[%give to.args `id.new amount.args budget.args] (silt ~[id.giv]) (silt ~[id.new])]
         [~ (malt ~[[id.new new]]) ~]
       ::  otherwise, add to the existing account for that pubkey
       =/  rec=grain  (~(got by owns.cart) u.account.args)
       ?>  &(=(holder.rec to.args) ?=(%& -.germ.rec))
-      =/  receiver=account  (hole account data.p.germ.rec)
+      =/  receiver=account  ;;(account data.p.germ.rec)
       ?>  =(metadata.receiver metadata.giver)
       =:  data.p.germ.giv  giver(balance (sub balance.giver amount.args))
           data.p.germ.rec  receiver(balance (add balance.receiver amount.args))
@@ -71,7 +71,7 @@
         %take
       =/  giv=grain  (~(got by owns.cart) from-account.args)
       ?>  ?=(%& -.germ.giv)
-      =/  giver=account  (hole account data.p.germ.giv)
+      =/  giver=account  ;;(account data.p.germ.giv)
       =/  allowance=@ud  (~(got by allowances.giver) caller-id)
       ?>  (gte balance.giver amount.args)
       ?>  (gte allowance amount.args)
@@ -79,13 +79,13 @@
         =+  (fry-rice to.args me.cart town-id.cart salt.p.germ.giv)
         =/  new=grain
           [- me.cart to.args town-id.cart [%& salt.p.germ.giv [0 ~ metadata.giver]]]
-        :^  %|  ~
+        :+  %|
           :+  me.cart  town-id.cart
           [caller.inp `[%take to.args `id.new id.giv amount.args] ~ (silt ~[id.giv id.new])]
         [~ (malt ~[[id.new new]]) ~]
       =/  rec=grain  (~(got by owns.cart) u.account.args)
       ?>  &(=(holder.rec to.args) ?=(%& -.germ.rec))
-      =/  receiver=account  (hole account data.p.germ.rec)
+      =/  receiver=account  ;;(account data.p.germ.rec)
       ?>  =(metadata.receiver metadata.giver)
       =:  data.p.germ.rec  receiver(balance (add balance.receiver amount.args))
           data.p.germ.giv
@@ -100,7 +100,7 @@
       =/  acc=grain  -:~(val by grains.inp)
       ?>  !=(who.args holder.acc)
       ?>  &(=(lord.acc me.cart) ?=(%& -.germ.acc))
-      =/  =account  (hole account data.p.germ.acc)
+      =/  =account  ;;(account data.p.germ.acc)
       =.  data.p.germ.acc
         account(allowances (~(put by allowances.account) who.args amount.args))
       [%& (malt ~[[id.acc acc]]) ~ ~]

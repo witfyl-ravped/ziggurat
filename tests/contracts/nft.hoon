@@ -78,12 +78,12 @@
 ::  tests for %give
 ::
 ++  test-give-known-receiver  ^-  tang
-  =/  =zygote
+  =/  =embryo
     :+  owner-1
       `[%give 0xdead `0x1.dead 1]
     (malt ~[[id:`grain`account-1 account-1]])
   =/  =cart
-    [~ `@ux`'nft' 0 1 (malt ~[[id:`grain`account-2 account-2]])]
+    [`@ux`'nft' 0 1 (malt ~[[id:`grain`account-2 account-2]])]
   =/  updated-1  ^-  grain
     :*  0x1.beef
           `@ux`'nft'
@@ -99,18 +99,18 @@
           [%& `@`'salt' [`@ux`'nft' (malt ~[[1 item-1] [2 item-2] [3 item-3]]) ~ ~]]
       ==
   =/  res=chick
-    (~(write cont cart) zygote)
+    (~(write cont cart) embryo)
   =/  correct=chick
     [%& (malt ~[[id.updated-1 updated-1] [id.updated-2 updated-2]]) ~ ~]
   (expect-eq !>(correct) !>(res))
 ::
 ++  test-give-unknown-receiver  ^-  tang
-  =/  =zygote
+  =/  =embryo
     :+  owner-1
       `[%give 0xffff ~ 1]
     (malt ~[[id:`grain`account-1 account-1]])
   =/  =cart
-    [~ `@ux`'nft' 0 1 ~]
+    [`@ux`'nft' 0 1 ~]
   =/  new-id  (fry-rice 0xffff `@ux`'nft' 1 `@`'salt')
   =/  new
     :*  new-id
@@ -120,23 +120,23 @@
         [%& `@`'salt' [`@ux`'nft' ~ ~ ~]]
     ==
   =/  res=chick
-    (~(write cont cart) zygote)
+    (~(write cont cart) embryo)
   =/  correct=chick
-    :^  %|  ~
+    :+  %|
       :+  me.cart  town-id.cart
       [owner-1 `[%give 0xffff `new-id 1] (silt ~[0x1.beef]) (silt ~[new-id])]
     [~ (malt ~[[new-id new]]) ~]
   (expect-eq !>(correct) !>(res))
 ::
 ++  test-give-doesnt-have  ^-  tang
-  =/  =zygote
+  =/  =embryo
     :+  owner-1
       `[%give 0xdead `0x1.dead 2]
     (malt ~[[id:`grain`account-1 account-1]])
   =/  =cart
-    [~ `@ux`'nft' 0 1 (malt ~[[id:`grain`account-2 account-2]])]
+    [`@ux`'nft' 0 1 (malt ~[[id:`grain`account-2 account-2]])]
   =/  res=(each * (list tank))
-    (mule |.((~(write cont cart) zygote)))
+    (mule |.((~(write cont cart) embryo)))
   (expect-eq !>(%.n) !>(-.res))
 ::
 ::  tests for %take

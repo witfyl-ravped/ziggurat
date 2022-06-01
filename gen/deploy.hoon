@@ -1,5 +1,4 @@
 /+  smart=zig-sys-smart
-/*  smart-lib  %noun  /lib/zig/compiled/smart-lib/noun
 :-  %say
 |=  [[now=@da eny=@uvJ bek=beak] [cont=path ~] ~]
 ^-  *

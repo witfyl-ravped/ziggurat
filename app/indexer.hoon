@@ -528,8 +528,8 @@
         $(epochs rest.epoch, cards new-cards, state new-state)
       ::
           %indexer-block
-        %+  consume-slot
-        epoch-num.update  [header.update blk.update]
+        %+  consume-slot  epoch-num.update
+        [header.update blk.update]
       ::
       ::  add %chunk handling? see e.g.
       ::  https://github.com/uqbar-dao/ziggurat/blob/da1d37adf538ee908945557a68387d3c87e1c32e/app/uqbar-indexer.hoon#L923
@@ -554,7 +554,6 @@
                 slots.u.existing-epoch
               block-num
             slot
-          ::
           ==
         ::  store and index the new block
         ::
@@ -589,7 +588,7 @@
         ::
         ++  make-sub-paths
           ^-  (jug @tas @u)
-          %-  %~  gas  ju  *(jug @tas @u)
+          %-  ~(gas ju *(jug @tas @u))
           %+  turn  ~(val by sup.bowl)
           |=  [ship sub-path=path]
           ^-  [@tas @u]
@@ -678,15 +677,15 @@
 ++  get-epoch-catchup
   |=  d=dock
   ^-  card
-  %+  %~  watch  pass:io
-  epochs-catchup-wire  d  /validator/epoch-catchup/0
+  %+  ~(watch pass:io epochs-catchup-wire)
+  d  /validator/epoch-catchup/0
 ::
 ++  watch-chain-source
   |=  d=dock
   ^-  card
-  %+  %~  watch  pass:io
+  %+  ~(watch pass:io chain-update-wire)
   :: TODO: improve (maybe metadata from zig and chunks from seq?)
-  chain-update-wire  d  /indexer/updates
+  d  /indexer/updates
 ::
 ++  get-wex-dock-by-wire
   |=  w=wire
@@ -711,8 +710,8 @@
     (get-wex-dock-by-wire chain-update-wire)
   ?~  old-source  ~
   :-  ~
-  %-  %~  leave  pass:io
-  chain-update-wire  u.old-source
+  %-  ~(leave pass:io chain-update-wire)
+  u.old-source
 ::
 ++  set-chain-source  :: TODO: is this properly generalized?
   |=  d=dock
@@ -755,7 +754,8 @@
   ^-  (map id:smart [egg-location:ui egg:smart])
   ?~  updates  ~
   =/  combined=(map id:smart [egg-location:ui egg:smart])
-    %-  %~  gas  by  *(map id:smart [egg-location:ui egg:smart])
+    %-  %~  gas  by
+        *(map id:smart [egg-location:ui egg:smart])
     %-  zing
     %+  turn  updates
     |=  update=(unit update:ui)
@@ -769,7 +769,8 @@
   ^-  (map id:smart [town-location:ui grain:smart])
   ?~  updates  ~
   =/  combined=(map id:smart [town-location:ui grain:smart])
-    %-  %~  gas  by  *(map id:smart [town-location:ui grain:smart])
+    %-  %~  gas  by
+        *(map id:smart [town-location:ui grain:smart])
     %-  zing
     %+  turn  updates
     |=  update=(unit update:ui)
@@ -852,33 +853,33 @@
       %egg
     ?.  ?=(%egg -.u.two)  %.n
     =/  two-eggs=(set egg:smart)
-      %-  %~  gas  in  *(set egg:smart)
+      %-  ~(gas in *(set egg:smart))
       %+  turn  ~(val by eggs.u.two)
       |=  [egg-location:ui =egg:smart]
       egg
-    %-  %~  all  by  eggs.u.one
+    %-  ~(all by eggs.u.one)
     |=  [egg-location:ui one-egg=egg:smart]
     (~(has in two-eggs) one-egg)
   ::
       %grain
     ?.  ?=(%grain -.u.two)  %.n
     =/  two-grains=(set grain:smart)
-      %-  %~  gas  in  *(set grain:smart)
+      %-  ~(gas in *(set grain:smart))
       %+  turn  ~(val by grains.u.two)
       |=  [town-location:ui =grain:smart]
       grain
-    %-  %~  all  by  grains.u.one
+    %-  ~(all by grains.u.one)
     |=  [town-location:ui one-grain=grain:smart]
     (~(has in two-grains) one-grain)
   ::
       %slot
     ?.  ?=(%slot -.u.two)  %.n
     =/  two-slots=(set slot:zig)
-      %-  %~  gas  in  *(set slot:zig)
+      %-  ~(gas in *(set slot:zig))
       %+  turn  ~(val by slots.u.two)
       |=  [block-location:ui =slot:zig]
       slot
-    %-  %~  all  by  slots.u.one
+    %-  ~(all by slots.u.one)
     |=  [block-location:ui one-slot=slot:zig]
     (~(has in two-slots) one-slot)
   ::
@@ -1054,7 +1055,6 @@
           locations  t.locations
           grains
         (~(put by grains) id.u.grain [location u.grain])
-      ::
       ==
     ::
     ++  get-egg
@@ -1116,7 +1116,6 @@
         %=  u.out
             eggs
           (~(uni by eggs.u.out) eggs.u.next-update)
-        ::
         ==
       ::
           %grain
@@ -1124,7 +1123,6 @@
         %=  u.out
             grains
           (~(uni by grains.u.out) grains.u.next-update)
-        ::
         ==
       ::
       ==

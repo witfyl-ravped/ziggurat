@@ -33,12 +33,18 @@ links to other desks, such as base-dev and garden-dev.
 
 ### To initialize a blockchain:
 
-*Note: make sure the ship you're is in the [whitelist](https://github.com/uqbar-dao/ziggurat/blob/e07ac60c29d94188f7594992b0fac347071a5c85/lib/zig/util.hoon#L14)*
+*Note: make sure the ship you're using is in the [whitelist](https://github.com/uqbar-dao/ziggurat/blob/e07ac60c29d94188f7594992b0fac347071a5c85/lib/zig/util.hoon#L14)*
 
 1. Start by populating the wallet with the correct data (need to do this first, but with block explorer we can make wallet find this itself):
 ```
 :wallet &zig-wallet-poke [%populate 0xbeef]
 ```
+
+1.5. If you're seeking to join an existing chain, set your wallet to send transactions to a sequencer already involved. Use town ID `0` if you're submitting a transaction to join the relay chain.
+```
+:wallet &zig-wallet-poke [%set-node <TOWN ID> <SHIP>]
+```
+
 *for testing: use `0xbeef` for ~zod, `0xdead` for next ship, `0xcafe` for 3rd*
 
 2. Give your validator agent a pubkey to match the data in the wallet:
@@ -63,7 +69,7 @@ where the argument `[our %ziggurat]` is a dock pointing to the ship running the 
 ```
 (to add other ships, follow above instructions with 2nd and 3rd seed/pubkey combos, but use poke `:ziggurat &zig-chain-poke [%start %validator ~ validators=(silt ~[~zod]) [~ ~]]`) here, where `~[~zod]` is some set of ships validating (you only need one that's not you)
 
-6. Start up a town that has the token contract deployed. Wait until the wallet sees an update from the indexer to do this.
+6. Start up a town that has the token contract deployed. Wait until the wallet sees an update from the indexer to do this. Note that you'll have to `%set-node` in %wallet like in step 1.5 to submit transactions to this new town.
 ```
 :sequencer|init 1
 ```

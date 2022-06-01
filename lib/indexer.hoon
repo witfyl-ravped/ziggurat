@@ -301,9 +301,7 @@
     ==
   ::
   ++  block-location
-    |=  jon=json
-    ^-  block-location:ui
-    %.  jon
+    ^-  $-(json block-location:ui)
     %-  ot
     :+  [%epoch-num ni]
       [%block-num ni]
@@ -454,9 +452,7 @@
     ~
   ::
   ++  slots
-    |=  jon=json
-    ^-  (map slot-id=id:smart [location=block-location:ui =slot:zig])
-    %.  jon
+    ^-  $-(json (map slot-id=id:smart [location=block-location:ui =slot:zig]))
     %+  op  hex
     %-  ot
     :+  [%location block-location]

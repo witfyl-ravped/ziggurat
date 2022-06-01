@@ -169,7 +169,7 @@
         tokens  ~
         transaction-store  ~
         metadata-store  ~
-        nodes   (malt ~[[0 ~zod] [1 ~zod] [2 ~zod]])
+        nodes   (malt ~[[0 our.bowl] [1 our.bowl] [2 our.bowl]])
       ==
     ::
         %submit-signed
@@ -396,7 +396,6 @@
     ?.  ?=(%fact -.sign)       (on-agent:def wire sign)
     ?.  ?=(%indexer-update p.cage.sign)  (on-agent:def wire sign)
     =+  !<(=update:ui q.cage.sign)
-    ~&  >>>  "wallet: id update: {<update>}"
     ?.  ?=(%egg -.update)  `this
     ::  this will give us updates to transactions we send
     ::

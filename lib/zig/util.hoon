@@ -160,7 +160,7 @@
   ?.  ?=(%& -.germ.u.found)                      ~
   :-  ~
   %~  key  by
-  (hole:smart ,(map ship [@ux @p life]) data.p.germ.u.found)
+  !<(,(map ship [@ux @p life]) [-:!>(*,(map ship [@ux @p life])) data.p.germ.u.found])
 ::
 ++  next-block-producer
   |=  [slot=@ud order=(list ship) hed=block-header]
@@ -245,8 +245,8 @@
   ?.  =(~(wyt by owns) (lent contract-rice))
     ``noun+!>(~)
   =/  cont
-    (hole:smart contract:smart [u.cont.p.germ.u.res +:(cue q.q.smart-lib)])
-  =/  cart  [~ id blocknum town-id owns]
+    !<(contract:smart [-:!>(*contract:smart) [u.cont.p.germ.u.res +:(cue q.q.smart-lib)]])
+  =/  cart  [id blocknum town-id owns]
   ?+  read-type  ``noun+!>(~)
     %noun  ``noun+!>(`~(noun ~(read cont cart) arg))
     %json  ``json+!>(~(json ~(read cont cart) arg))
