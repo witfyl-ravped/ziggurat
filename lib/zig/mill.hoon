@@ -246,6 +246,7 @@
           ::  grain IDs must match defined hashing functions
           ?&  =(id id.grain)
               =(lord lord.grain)
+              !(~(has by granary) id.grain)
               ?:  ?=(%& -.germ.grain)
                 =(id (fry-rice holder.grain lord.grain town-id.grain salt.p.germ.grain))
               =(id (fry-contract lord.grain town-id.grain cont.p.germ.grain))
