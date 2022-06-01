@@ -7,11 +7,11 @@
 ::  /+  *zig-sys-smart
 |_  =cart
 ++  write
-  |=  inp=zygote
+  |=  inp=embryo
   ^-  chick
   |^
   ?~  args.inp  !!
-  (process (hole arguments u.args.inp) (pin caller.inp))
+  (process ;;(arguments u.args.inp) (pin caller.inp))
   ::
   +$  arguments
     $%  ::  add kelvin versioning to contracts?

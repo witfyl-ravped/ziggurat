@@ -8,7 +8,7 @@
 ^-  contract  :: not strictly necessary but works well
 |_  =cart
 ++  write
-  |=  inp=zygote
+  |=  inp=embryo
   ^-  chick
   |^
   ?~  args.inp  !!

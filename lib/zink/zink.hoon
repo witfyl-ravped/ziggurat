@@ -1,5 +1,5 @@
 /-  *zink
-/+  *zink-pedersen, *zink-json, *mip
+/+  *zink-pedersen, *zink-json
 |%
 ::
 +$  good  (unit *)
@@ -28,8 +28,6 @@
   ::  formula is a cell; do distribution
   ::
       [^ *]
-    ?:  (lth bud 1)  [%&^~ app]
-    =.  bud  (sub bud 1)
     =^  hed=body  app
       $(f -.f)
     ?:  ?=(%| -.hed)  [%|^trace app]
@@ -38,35 +36,36 @@
       $(f +.f)
     ?:  ?=(%| -.tal)  [%|^trace app]
     ?~  p.tal  [%&^~ app]
-    =^  hhed  cax  (hash -.f)
-    =^  htal  cax  (hash +.f)
-    =.  app  (put-hint [%cons hhed htal])
-    [%& ~ u.p.hed^u.p.tal]^app
+    =^  hhed=(unit phash)  app  (hash -.f)
+    ?~  hhed  [%&^~ app]
+    =^  htal=(unit phash)  app  (hash +.f)
+    ?~  htal  [%&^~ app]
+    :-  [%& ~ u.p.hed^u.p.tal]
+    app(hit [%cons u.hhed u.htal]^hit)
   ::
       [%0 axis=@]
-    ?:  (lth bud 1)  [%&^~ app]
-    =.  bud  (sub bud 1)
     =^  part  bud
       (frag axis.f s bud)
     ?~  part  [%&^~ app]
     ?~  u.part  [%|^trace app]
-    =^  hpart  cax  (hash u.u.part)
-    =^  hsibs  cax  (merk-sibs s axis.f)
-    =.  app  (put-hint [%0 axis.f hpart hsibs])
-    [%& ~ u.u.part]^app
+    =^  hpart=(unit phash)         app  (hash u.u.part)
+    ?~  hpart  [%&^~ app]
+    =^  hsibs=(unit (list phash))  app  (merk-sibs s axis.f)
+    ?~  hsibs  [%&^~ app]
+    :-  [%& ~ u.u.part]
+    app(hit [%0 axis.f u.hpart u.hsibs]^hit)
   ::
       [%1 const=*]
-    ?:  (lth bud 1)  [%&^~ app]
-    =.  bud  (sub bud 1)
-    =^  hres  cax  (hash const.f)
-    =.  app  (put-hint [%1 hres])
-    [%& ~ const.f]^app
+    =^  hres=(unit phash)  app  (hash const.f)
+    ?~  hres  [%&^~ app]
+    :-  [%& ~ const.f]
+    app(hit [%1 u.hres]^hit)
   ::
       [%2 sub=* for=*]
-    ?:  (lth bud 1)  [%&^~ app]
-    =.  bud  (sub bud 1)
-    =^  hsub  cax  (hash sub.f)
-    =^  hfor  cax  (hash for.f)
+    =^  hsub=(unit phash)  app  (hash sub.f)
+    ?~  hsub  [%&^~ app]
+    =^  hfor=(unit phash)  app  (hash for.f)
+    ?~  hfor  [%&^~ app]
     =^  subject=body  app
       $(f sub.f)
     ?:  ?=(%| -.subject)  [%|^trace app]
@@ -75,43 +74,45 @@
       $(f for.f)
     ?:  ?=(%| -.formula)  [%|^trace app]
     ?~  p.formula  [%&^~ app]
-    =.  app  (put-hint [%2 hsub hfor])
-    $(s u.p.subject, f u.p.formula)
+    %_  $
+      s    u.p.subject
+      f    u.p.formula
+      hit  [%2 u.hsub u.hfor]^hit
+    ==
   ::
       [%3 arg=*]
-    ?:  (lth bud 1)  [%&^~ app]
-    =.  bud  (sub bud 1)
     =^  argument=body  app
       $(f arg.f)
     ?:  ?=(%| -.argument)  [%|^trace app]
     ?~  p.argument  [%&^~ app]
-    =^  harg  cax  (hash arg.f)
+    =^  harg=(unit phash)  app  (hash arg.f)
+    ?~  harg  [%&^~ app]
     ?@  u.p.argument
-      =.  app  (put-hint [%3 harg %atom u.p.argument])
-      [%& ~ %.n]^app
-    =^  hhash  cax  (hash -.u.p.argument)
-    =^  thash  cax  (hash +.u.p.argument)
-    =.  app  (put-hint [%3 harg %cell hhash thash])
-    [%& ~ %.y]^app
+      :-  [%& ~ %.n]
+      app(hit [%3 u.harg %atom u.p.argument]^hit)
+    =^  hhash=(unit phash)  app  (hash -.u.p.argument)
+    ?~  hhash  [%&^~ app]
+    =^  thash=(unit phash)  app  (hash +.u.p.argument)
+    ?~  thash  [%&^~ app]
+    :-  [%& ~ %.y]
+    app(hit [%3 u.harg %cell u.hhash u.thash]^hit)
   ::
       [%4 arg=*]
-
-    ?:  (lth bud 1)  [%&^~ app]
-    =.  bud  (sub bud 1)
     =^  argument=body  app
       $(f arg.f)
     ?:  ?=(%| -.argument)  [%|^trace app]
-    =^  harg  cax  (hash arg.f)
+    =^  harg=(unit phash)  app  (hash arg.f)
+    ?~  harg  [%&^~ app]
     ?~  p.argument  [%&^~ app]
     ?^  u.p.argument  [%|^trace app]
-    =.  app  (put-hint [%4 harg u.p.argument])
-    [%& ~ .+(u.p.argument)]^app
+    :-  [%& ~ .+(u.p.argument)]
+    app(hit [%4 u.harg u.p.argument]^hit)
   ::
       [%5 a=* b=*]
-    ?:  (lth bud 1)  [%&^~ app]
-    =.  bud  (sub bud 1)
-    =^  ha  cax  (hash a.f)
-    =^  hb  cax  (hash b.f)
+    =^  ha=(unit phash)  app  (hash a.f)
+    ?~  ha  [%&^~ app]
+    =^  hb=(unit phash)  app  (hash b.f)
+    ?~  hb  [%&^~ app]
     =^  a=body  app
       $(f a.f)
     ?:  ?=(%| -.a)  [%|^trace app]
@@ -120,63 +121,63 @@
       $(f b.f)
     ?:  ?=(%| -.b)  [%|^trace app]
     ?~  p.b  [%&^~ app]
-    =.  app  (put-hint [%5 ha hb])
-    [%& ~ =(u.p.a u.p.b)]^app
+    :-  [%& ~ =(u.p.a u.p.b)]
+    app(hit [%5 u.ha u.hb]^hit)
   ::
       [%6 test=* yes=* no=*]
-    ?:  (lth bud 1)  [%&^~ app]
-    =.  bud  (sub bud 1)
-    =^  htest  cax  (hash test.f)
-    =^  hyes   cax  (hash yes.f)
-    =^  hno    cax  (hash no.f)
+    =^  htest=(unit phash)  app  (hash test.f)
+    ?~  htest  [%&^~ app]
+    =^  hyes=(unit phash)   app  (hash yes.f)
+    ?~  hyes  [%&^~ app]
+    =^  hno=(unit phash)    app  (hash no.f)
+    ?~  hno  [%&^~ app]
     =^  result=body  app
       $(f test.f)
     ?:  ?=(%| -.result)  [%|^trace app]
     ?~  p.result  [%&^~ app]
-    =.  app  (put-hint [%6 htest hyes hno])
+    =.  hit  [%6 u.htest u.hyes u.hno]^hit
     ?+  u.p.result  [%|^trace app]
       %&  $(f yes.f)
       %|  $(f no.f)
     ==
   ::
       [%7 subj=* next=*]
-    ?:  (lth bud 1)  [%&^~ app]
-    =.  bud  (sub bud 1)
-    =^  hsubj  cax  (hash subj.f)
-    =^  hnext  cax  (hash next.f)
+    =^  hsubj=(unit phash)  app  (hash subj.f)
+    ?~  hsubj  [%&^~ app]
+    =^  hnext=(unit phash)  app  (hash next.f)
+    ?~  hnext  [%&^~ app]
     =^  subject=body  app
       $(f subj.f)
     ?:  ?=(%| -.subject)  [%|^trace app]
     ?~  p.subject  [%&^~ app]
-    =.  app  (put-hint [%7 hsubj hnext])
-    %=  $
-      s  u.p.subject
-      f  next.f
+    %_  $
+      s    u.p.subject
+      f    next.f
+      hit  [%7 u.hsubj u.hnext]^hit
     ==
   ::
       [%8 head=* next=*]
-    ?:  (lth bud 1)  [%&^~ app]
-    =.  bud  (sub bud 1)
     =^  jax=body  app
       (jet head.f next.f)
     ?:  ?=(%| -.jax)  [%|^trace app]
     ?^  p.jax  [%& p.jax]^app
-    =^  hhead  cax  (hash head.f)
-    =^  hnext  cax  (hash next.f)
+    =^  hhead=(unit phash)  app  (hash head.f)
+    ?~  hhead  [%&^~ app]
+    =^  hnext=(unit phash)  app  (hash next.f)
+    ?~  hnext  [%&^~ app]
     =^  head=body  app
       $(f head.f)
     ?:  ?=(%| -.head)  [%|^trace app]
     ?~  p.head  [%&^~ app]
-    =.  app  (put-hint [%8 hhead hnext])
-    %=  $
-      s  [u.p.head s]
-      f  next.f
+    %_  $
+      s    [u.p.head s]
+      f    next.f
+      hit  [%8 u.hhead u.hnext]^hit
     ==
   ::
       [%9 axis=@ core=*]
-    ?:  (lth bud 1)  [%&^~ app]
-    =.  bud  (sub bud 1)
-    =^  hcore  cax  (hash core.f)
+    =^  hcore=(unit phash)  app  (hash core.f)
+    ?~  hcore  [%&^~ app]
     =^  core=body  app
       $(f core.f)
     ?:  ?=(%| -.core)  [%|^trace app]
@@ -185,19 +186,21 @@
       (frag axis.f u.p.core bud)
     ?~  arm  [%&^~ app]
     ?~  u.arm  [%|^trace app]
-    =^  harm  cax  (hash u.u.arm)
-    =^  sibs  cax  (merk-sibs u.p.core axis.f)
-    =.  app  (put-hint [%9 axis.f hcore harm sibs])
-    %=  $
-      s  u.p.core
-      f  u.u.arm
+    =^  harm=(unit phash)  app  (hash u.u.arm)
+    ?~  harm  [%&^~ app]
+    =^  hsibs=(unit (list phash))  app  (merk-sibs u.p.core axis.f)
+    ?~  hsibs  [%&^~ app]
+    %_  $
+      s    u.p.core
+      f    u.u.arm
+      hit  [%9 axis.f u.hcore u.harm u.hsibs]^hit
     ==
   ::
       [%10 [axis=@ value=*] target=*]
-    ?:  (lth bud 1)  [%&^~ app]
-    =.  bud  (sub bud 1)
-    =^  hval  cax  (hash value.f)
-    =^  htar  cax  (hash target.f)
+    =^  hval=(unit phash)  app  (hash value.f)
+    ?~  hval  [%&^~ app]
+    =^  htar=(unit phash)  app  (hash target.f)
+    ?~  htar  [%&^~ app]
     ?:  =(0 axis.f)  [%|^trace app]
     =^  target=body  app
       $(f target.f)
@@ -215,10 +218,39 @@
       (frag axis.f u.p.target bud)
     ?~  oldleaf  [%&^~ app]
     ?~  u.oldleaf  [%|^trace app]
-    =^  holdleaf  cax  (hash u.u.oldleaf)
-    =^  sibs  cax  (merk-sibs u.p.target axis.f)
-    =.  app  (put-hint [%10 axis.f hval htar holdleaf sibs])
-    [%& ~ u.u.mutant]^app
+    =^  holdleaf=(unit phash)  app  (hash u.u.oldleaf)
+    ?~  holdleaf  [%&^~ app]
+    =^  hsibs=(unit (list phash))  app  (merk-sibs u.p.target axis.f)
+    ?~  hsibs  [%&^~ app]
+    :-  [%& ~ u.u.mutant]
+    app(hit [%10 axis.f u.hval u.htar u.holdleaf u.hsibs]^hit)
+  ::
+       [%11 tag=@ next=*]
+    =^  next=body  app
+      $(f next.f)
+    :_  app
+    ?:  ?=(%| -.next)  %|^trace
+    ?~  p.next  %&^~
+    :+  %&  ~
+    .*  s
+    [11 tag.f 1 u.p.next]
+  ::
+      [%11 [tag=@ clue=*] next=*]
+    =^  clue=body  app
+      $(f clue.f)
+    ?:  ?=(%| -.clue)  [%|^trace app]
+    ?~  p.clue  [%&^~ app]
+    =^  next=body  app
+      =?    trace
+          ?=(?(%hunk %hand %lose %mean %spot) tag.f)
+        [[tag.f u.p.clue] trace]
+      $(f next.f)
+    :_  app
+    ?:  ?=(%| -.next)  %|^trace
+    ?~  p.next  %&^~
+    :+  %&  ~
+    .*  s
+    [11 [tag.f 1 u.p.clue] 1 u.p.next]
   ==
   :: Check if we are calling an arm in a core and if so lookup the axis
   :: in the jet map
@@ -280,20 +312,14 @@
       ?.  ?=([x=@ud y=@ud] sam)  %|^trace
       %&^(some (mul x.sam y.sam))
     ::
-        %double
+        %cain
       ?:  (lth bud 1)  %&^~
       =.  bud  (sub bud 1)
-      ?.  ?=(@ sam)  %|^trace
-      %&^(some (mul 2 sam))
+      =/  vax=(unit vase)
+        ((soft vase) sam)
+      ?~  vax  %|^trace
+      %&^(some (sell u.vax))
     ==
-  ::
-  ++  put-hint
-    |=  hin=cairo-hint
-    ^-  appendix
-    =^  sroot  cax  (hash s)
-    =^  froot  cax  (hash f)
-    =.  hit  (~(put bi hit) sroot froot hin)
-    app
   ::
   ++  frag
     |=  [axis=@ noun=* bud=@ud]
@@ -335,16 +361,22 @@
   ::  where h = pedersen hash
   ++  hash
     |=  n=*
-    ^-  [phash cache]
+    ^-  [(unit phash) appendix]
     =/  mh  (~(get by cax) n)
-    ?^  mh  [u.mh cax]
+    ?^  mh  [mh app]
     ?@  n
       =/  h  (hash:pedersen n 0)
-      [h (~(put by cax) n h)]
-    =^  hh  cax  $(n -.n)
-    =^  ht  cax  $(n +.n)
-    =/  h  (hash:pedersen hh ht)
-    [h (~(put by cax) n h)]
+      ?:  (lth bud 1)  [~ app]
+      =.  bud  (sub bud 1)
+      [`h app(cax (~(put by cax) n h))]
+    =^  hh=(unit phash)  app  $(n -.n)
+    ?~  hh  [~ app]
+    =^  ht=(unit phash)  app  $(n +.n)
+    ?~  ht  [~ app]
+    =/  h  (hash:pedersen u.hh u.ht)
+    ?:  (lth bud 1)  [~ app]
+    =.  bud  (sub bud 1)
+    [`h app(cax (~(put by cax) n h))]
   ::
   ++  cost                                              ::  gas cost of noun
     |^
@@ -367,20 +399,21 @@
   ++  merk-sibs
     |=  [s=* axis=@]
     =|  path=(list phash)
-    |-  ^-  [(list phash) (map * phash)]
+    |-  ^-  [(unit (list phash)) appendix]
     ?:  =(1 axis)
-      [path cax]
+      [`path app]
     ?~  axis  !!
     ?@  s  !!
     =/  pick  (cap axis)
-    =^  sibling=phash  cax
+    =^  sibling=(unit phash)  app
       %-  hash
       ?-(pick %2 +.s, %3 -.s)
+    ?~  sibling  [~ app]
     =/  child  ?-(pick %2 -.s, %3 +.s)
     %=  $
       s     child
       axis  (mas axis)
-      path  [sibling path]
+      path  [u.sibling path]
     ==
   --
 ::
@@ -427,6 +460,7 @@
   =/  src  .^(@t %cx file)
   =/  gun  (slap clib (ream src))
   =/  han  (~(mint ut p.gun) %noun gen)
+  ~&  %compiled
   (eval-noun [q.gun q.han] bud)
 ::
 ::  eval-hoon-with-cache: compile a hoon file and evaluate it with zink
@@ -448,20 +482,95 @@
 ++  create-hints
   |=  [n=^ h=hints]
   ^-  js=json
-  =/  hs  (hash -.n)
-  =/  hf  (hash +.n)
+  =/  hs  (hash -.n ~)
+  =/  hf  (hash +.n ~)
   %-  pairs:enjs:format
-  :~  ['subject' s+(num:enjs hs)]
-      ['formula' s+(num:enjs hf)]
-      ['hints' (all:enjs h)]
+  :~  hints+(hints:enjs h)
+      subject+s+(num:enjs hs)
+      formula+s+(num:enjs hf)
   ==
 ::
 ++  hash
-  |=  n=*
+  |=  [n=* cax=(map * phash)]
   ^-  phash
   ?@  n
+    ?:  (lte n 12)
+      =/  ch  (~(get by cax) n)
+      ?^  ch  u.ch
+      (hash:pedersen n 0)
     (hash:pedersen n 0)
+  ?^  ch=(~(get by cax) n)
+    ~&  %cache-hit
+    u.ch
   =/  hh  $(n -.n)
   =/  ht  $(n +.n)
   (hash:pedersen hh ht)
+::
+++  conq
+  |%
+  ::
+  ::  To use this, pass in a vase of lib/zig/sys/hoon.hoon generated via:
+  ::  (slap !>(~) (ream text-of-hoon))
+  ::
+  ++  layers
+    ^-  (list @t)
+    :~  '..add'
+        '..biff'
+        '..egcd'
+        '..po'
+    ==
+  ::
+  ++  all-arms-to-axes
+    |=  vax=vase
+    %-  ~(gas by *(map term @))
+    %+  turn  (list-arms vax)
+    |=  t=term
+    [t (arm-axis vax t)]
+  ::
+  ++  list-arms
+    |=  vax=vase
+    ^-  (list term)
+    (sloe p.vax)
+  ::
+  ++  arm-axis
+    |=  [vax=vase arm=term]
+    ^-  @
+    =/  r  (~(find ut p.vax) %read ~[arm])
+    ?>  ?=(%& -.r)
+    ?>  ?=(%| -.q.p.r)
+    p.q.p.r
+  ::
+  ++  hash-all-arms
+    |=  [vax=vase cax=(map * phash)]
+    ^-  (map * phash)
+    =/  lis=(list term)  (list-arms vax)
+    |-
+    ?~  lis  cax
+    =*  t  i.lis
+    =/  a=@  (arm-axis vax t)
+    ~&  [t a]
+    =/  n  q:(slot a vax)
+    $(lis t.lis, cax (~(put by cax) n (hash n cax)))
+  ::
+  ++  hash-arms-per-layer
+    |=  [vax=vase layer=@t cax=(map * phash)]
+    ^-  (map * phash)
+    =/  cor  (slap vax (ream layer))
+    (hash-all-arms cor cax)
+  ::
+  ++  main
+    |=  hoonlib-txt=@t
+    =/  hoonlib  (slap !>(~) (ream hoonlib-txt))
+    =/  cax
+      %-  ~(gas by *(map * phash))
+      %+  turn  (gulf 0 12)
+      |=  n=@
+      ^-  [* phash]
+      [n (hash n ~)]
+    =/  l  layers
+    |-
+    ?~  l
+      cax
+    $(l t.l, cax (hash-arms-per-layer hoonlib i.l cax))
+  --
 --

@@ -14,4 +14,3 @@
 `=compiled (slap hoed (ream trivial))`
 
 `.smart-lib q:compiled`
-

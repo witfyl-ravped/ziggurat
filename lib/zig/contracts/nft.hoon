@@ -6,11 +6,11 @@
 ::  /+  *zig-sys-smart
 |_  =cart
 ++  write
-  |=  inp=zygote
+  |=  inp=embryo
   ^-  chick
   |^
   ?~  args.inp  !!
-  (process (hole arguments u.args.inp) (pin caller.inp))
+  (process ;;(arguments u.args.inp) (pin caller.inp))
   ::
   +$  collection-metadata
     $:  name=@t
@@ -67,20 +67,20 @@
         %give
       =/  giv=grain  -:~(val by grains.inp)
       ?>  &(=(lord.giv me.cart) ?=(%& -.germ.giv))
-      =/  giver=account  (hole account data.p.germ.giv)
+      =/  giver=account  ;;(account data.p.germ.giv)
       =/  =item  (~(got by items.giver) item-id.args)
       ?>  transferrable.item  ::  asset item is transferrable
       ?~  account.args
         =+  (fry-rice to.args me.cart town-id.cart salt.p.germ.giv)
         =/  new=grain
           [- me.cart to.args town-id.cart [%& salt.p.germ.giv [metadata.giver ~ ~ ~]]]
-        :^  %|  ~
+        :+  %|
           :+  me.cart  town-id.cart
           [caller.inp `[%give to.args `id.new item-id.args] (silt ~[id.giv]) (silt ~[id.new])]
         [~ (malt ~[[id.new new]]) ~]
       =/  rec=grain  (~(got by owns.cart) u.account.args)
       ?>  &(=(holder.rec to.args) ?=(%& -.germ.rec))
-      =/  receiver=account  (hole account data.p.germ.rec)
+      =/  receiver=account  ;;(account data.p.germ.rec)
       ?>  =(metadata.receiver metadata.giver)
       =:  data.p.germ.giv  giver(items (~(del by items.giver) item-id.args))
           data.p.germ.rec  receiver(items (~(put by items.receiver) item-id.args item))
@@ -90,7 +90,7 @@
         %take
       =/  giv=grain  (~(got by owns.cart) from-rice.args)
       ?>  ?=(%& -.germ.giv)
-      =/  giver=account  (hole account data.p.germ.giv)
+      =/  giver=account  ;;(account data.p.germ.giv)
       ?>  ?|  (~(has in full-allowances.giver) caller-id)
               (~(has in allowances.giver) [caller-id item-id.args])
           ==
@@ -99,13 +99,13 @@
         =+  (fry-rice to.args me.cart town-id.cart salt.p.germ.giv)
         =/  new=grain
           [- me.cart to.args town-id.cart [%& salt.p.germ.giv [metadata.giver ~ ~ ~]]]
-        :^  %|  ~
+        :+  %|
           :+  me.cart  town-id.cart
           [caller.inp `[%take to.args `id.new id.giv item-id.args] ~ (silt ~[id.giv id.new])]
         [~ (malt ~[[id.new new]]) ~]
       =/  rec=grain  (~(got by owns.cart) u.account.args)
       ?>  &(=(holder.rec to.args) ?=(%& -.germ.rec))
-      =/  receiver=account  (hole account data.p.germ.rec)
+      =/  receiver=account  ;;(account data.p.germ.rec)
       ?>  =(metadata.receiver metadata.giver)
       =:  data.p.germ.rec  receiver(items (~(put by items.receiver) item-id.args item))
           data.p.germ.giv
@@ -120,7 +120,7 @@
       =/  acc=grain  -:~(val by grains.inp)
       ?>  !=(who.args holder.acc)
       ?>  &(=(lord.acc me.cart) ?=(%& -.germ.acc))
-      =/  =account  (hole account data.p.germ.acc)
+      =/  =account  ;;(account data.p.germ.acc)
       ?:  full-set.args
         ::  give full permission
         =.  data.p.germ.acc
@@ -146,7 +146,7 @@
       ::  expects token metadata in owns.cart
       =/  tok=grain  (~(got by owns.cart) token.args)
       ?>  &(=(lord.tok me.cart) ?=(%& -.germ.tok))
-      =/  meta  (hole collection-metadata data.p.germ.tok)
+      =/  meta  ;;(collection-metadata data.p.germ.tok)
       ::  first, check if token is mintable
       ?>  &(mintable.meta ?=(^ cap.meta) ?=(^ minters.meta))
       ::  check if mint will surpass supply cap
@@ -174,7 +174,7 @@
         ::  finished but need to mint to newly-issued rices
         =/  call-grains=(set id)
           ~(key by `(map id grain)`issued-rice)
-        :^  %|  ~
+        :+  %|
           :+  me.cart  town-id.cart
           [caller.inp `[%mint token.args next-mints] ~ call-grains]
         [changed-rice issued-rice ~]
@@ -192,7 +192,7 @@
       ::  have rice, can modify
       =/  =grain  (~(got by owns.cart) u.account.i.mints)
       ?>  &(=(lord.grain me.cart) ?=(%& -.germ.grain))
-      =/  acc  (hole account data.p.germ.grain)
+      =/  acc  ;;(account data.p.germ.grain)
       ?>  =(metadata.acc token.args)
       ::  create map of items in this mint to unify with accounts
       =/  mint-list  ~(tap in items.i.mints)

@@ -1,4 +1,4 @@
-/-  *wallet, uqbar-indexer
+/-  *wallet, ui=indexer
 =>  |%
     +$  card  card:agent:gall
     --
@@ -22,12 +22,12 @@
     %+  turn
       ~(tap in pubkeys)
     |=  k=@ux
-    =-  [%pass - %agent [indexer %uqbar-indexer] %watch -]
+    =-  [%pass - %agent [indexer %indexer] %watch -]
     /id/(scot %ux k)
   %+  turn
     ~(tap in pubkeys)
   |=  k=@ux
-  =-  [%pass - %agent [indexer %uqbar-indexer] %watch -]
+  =-  [%pass - %agent [indexer %indexer] %watch -]
   /holder/(scot %ux k)
 ::
 ++  clear-holder-and-id-sub
@@ -59,7 +59,7 @@
     |=  [@ux =book]
     ~(val by book)
   |=  [=token-type =grain:smart]
-  =-  [%pass - %agent [indexer %uqbar-indexer] %watch -]
+  =-  [%pass - %agent [indexer %indexer] %watch -]
   /grain/(scot %ux id.grain)
 ::
 ++  clear-asset-subscriptions
@@ -72,14 +72,14 @@
   `[%pass wire %agent [ship term] %leave ~]
 ::
 ++  indexer-update-to-books
-  |=  [=update:uqbar-indexer our=@ux =metadata-store]
+  |=  [=update:ui our=@ux =metadata-store]
   ::  get most recent version of the grain
   ::  TODO replace this with a (way) more efficient strategy
   ::  preferably adding a type to indexer that only contains
   ::  most recent data
   =/  =book  *book
   ?.  ?=(%grain -.update)  book
-  =/  grains-list  `(list [=town-location:uqbar-indexer =grain:smart])`~(tap in grains.update)
+  =/  grains-list  `(list [=town-location:ui =grain:smart])`~(val by grains.update)
   |-  ^-  ^book
   ?~  grains-list  book
   =/  =grain:smart  grain.i.grains-list
@@ -125,12 +125,13 @@
   |=  [=token-type =id:smart [our=ship now=time]]
   ^-  (unit asset-metadata)
   ::  manually import metadata for a token
-  =+  .^((unit update:uqbar-indexer) %gx /(scot %p our)/uqbar-indexer/(scot %da now)/grain/(scot %ux id)/noun)
-  ?~  -
+  =/  has-grain  .^(? %gx /(scot %p our)/indexer/(scot %da now)/has-grain/(scot %ux id)/noun)
+  ?.  has-grain
     ~&  >>>  "%wallet: failed to find matching metadata for a grain we hold"
     ~
-  ?>  ?=(%grain -.u.-)
-  =/  meta-grain=grain:smart  +.-:~(tap in grains.u.-)
+  =+  .^(update:ui %gx /(scot %p our)/indexer/(scot %da now)/grain/(scot %ux id)/noun)
+  ?>  ?=(%grain -.-)
+  =/  meta-grain=grain:smart  +.+.-:~(tap by grains.-)
   ?>  ?=(%& -.germ.meta-grain)
   =/  found=(unit asset-metadata)
     ?+  token-type  ~
