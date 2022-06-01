@@ -69,12 +69,12 @@
 ::  tests for %give
 ::
 ++  test-give-known-receiver  ^-  tang
-  =/  =zygote
+  =/  =embryo
     :+  owner-1
       `[%give 0xdead `0x1.dead 30]
     (malt ~[[id:`grain`account-1 account-1]])
   =/  =cart
-    [~ `@ux`'fungible' 0 1 (malt ~[[id:`grain`account-2 account-2]])]
+    [`@ux`'fungible' 0 1 (malt ~[[id:`grain`account-2 account-2]])]
   =/  updated-1
     :*  0x1.beef
         `@ux`'fungible'
@@ -90,18 +90,18 @@
         [%& `@`'salt' [60 ~ `@ux`'simple']]
     ==
   =/  res=chick
-    (~(write cont cart) zygote)
+    (~(write cont cart) embryo)
   =/  correct=chick
     [%& (malt ~[[id:`grain`updated-1 updated-1] [id:`grain`updated-2 updated-2]]) ~ ~]
   (expect-eq !>(res) !>(correct))
 ::
 ++  test-give-unknown-receiver  ^-  tang
-  =/  =zygote
+  =/  =embryo
     :+  owner-1
       `[%give 0xffff ~ 30]
     (malt ~[[id:`grain`account-1 account-1]])
   =/  =cart
-    [~ `@ux`'fungible' 0 1 ~]
+    [`@ux`'fungible' 0 1 ~]
   =/  new-id  (fry-rice 0xffff `@ux`'fungible' 1 `@`'salt')
   =/  new
     :*  new-id
@@ -111,34 +111,34 @@
         [%& `@`'salt' [0 ~ `@ux`'simple']]
     ==
   =/  res=chick
-    (~(write cont cart) zygote)
+    (~(write cont cart) embryo)
   =/  correct=chick
-    :^  %|  ~
+    :+  %|
       :+  me.cart  town-id.cart
       [owner-1 `[%give 0xffff `new-id 30] (silt ~[0x1.beef]) (silt ~[new-id])]
     [~ (malt ~[[new-id new]]) ~]
   (expect-eq !>(res) !>(correct))
 ::
 ++  test-give-not-enough  ^-  tang
-  =/  =zygote
+  =/  =embryo
     :+  owner-1
       `[%give 0xdead `0x1.dead 51]
     (malt ~[[id:`grain`account-1 account-1]])
   =/  =cart
-    [~ `@ux`'fungible' 0 1 (malt ~[[id:`grain`account-2 account-2]])]
+    [`@ux`'fungible' 0 1 (malt ~[[id:`grain`account-2 account-2]])]
   =/  res=(each * (list tank))
-    (mule |.((~(write cont cart) zygote)))
+    (mule |.((~(write cont cart) embryo)))
   (expect-eq !>(%.n) !>(-.res))
 ::
 ++  test-give-metadata-mismatch  ^-  tang
-  =/  =zygote
+  =/  =embryo
     :+  owner-1
       `[%give 0xface `0x1.face 10]
     (malt ~[[id:`grain`account-1 account-1]])
   =/  =cart
-    [~ `@ux`'fungible' 0 1 (malt ~[[id:`grain`account-4 account-4]])]
+    [`@ux`'fungible' 0 1 (malt ~[[id:`grain`account-4 account-4]])]
   =/  res=(each * (list tank))
-    (mule |.((~(write cont cart) zygote)))
+    (mule |.((~(write cont cart) embryo)))
   (expect-eq !>(%.n) !>(-.res))
 ::
 ::  tests for %take

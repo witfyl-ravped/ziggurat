@@ -9,7 +9,7 @@
 ::  /+  *zig-sys-smart
 |_  =cart
 ++  write
-  |=  inp=zygote
+  |=  inp=embryo
   ^-  chick
   |^
   ?~  args.inp  !!
@@ -54,7 +54,7 @@
         =+  (fry-rice to.args me.cart town-id.cart salt.p.germ.giv)
         =/  new=grain
           [- me.cart to.args town-id.cart [%& salt.p.germ.giv [0 ~ metadata.giver]]]
-        :^  %|  ~
+        :+  %|
           :+  me.cart  town-id.cart
           [caller.inp `[%give to.args `id.new amount.args budget.args] (silt ~[id.giv]) (silt ~[id.new])]
         [~ (malt ~[[id.new new]]) ~]
@@ -79,7 +79,7 @@
         =+  (fry-rice to.args me.cart town-id.cart salt.p.germ.giv)
         =/  new=grain
           [- me.cart to.args town-id.cart [%& salt.p.germ.giv [0 ~ metadata.giver]]]
-        :^  %|  ~
+        :+  %|
           :+  me.cart  town-id.cart
           [caller.inp `[%take to.args `id.new id.giv amount.args] ~ (silt ~[id.giv id.new])]
         [~ (malt ~[[id.new new]]) ~]

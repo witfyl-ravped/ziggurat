@@ -31,7 +31,7 @@
 ::  /+  *zig-sys-smart
 |_  =cart
 ++  write
-  |=  inp=zygote
+  |=  inp=embryo
   ^-  chick
   |^
   ?~  args.inp  !!
@@ -101,11 +101,11 @@
         =/  new=grain
           [- me.cart to.args town-id.cart [%& salt.p.germ.giv [0 ~ metadata.giver]]]
         ::  continuation call: %give to rice we issued
-        :^  %|  ~
+        :+  %|
           :+  me.cart  town-id.cart
           [caller.inp `[%give to.args `id.new amount.args] (silt ~[id.giv]) (silt ~[id.new])]
         [~ (malt ~[[id.new new]]) ~]
-      ::  giving account in zygote, and receiving one in owns.cart
+      ::  giving account in embryo, and receiving one in owns.cart
       =/  rec=grain  (~(got by owns.cart) u.to-rice.args)
       ?>  ?=(%& -.germ.rec)
       =/  receiver=account  ;;(account data.p.germ.rec)
@@ -135,7 +135,7 @@
         =/  new=grain
           [- me.cart to.args town-id.cart [%& salt.p.germ.giv [amount.args ~ metadata.giver]]]
         ::  continuation call: %take to rice found in book
-        :^  %|  ~
+        :+  %|
           :+  me.cart  town-id.cart
           [caller.inp `[%take to.args `id.new id.giv amount.args] ~ (silt ~[id.giv id.new])]
         [~ (malt ~[[id.new new]]) ~]
@@ -206,7 +206,7 @@
         ::  finished but need to mint to newly-issued rices
         =/  call-grains=(set id)
           ~(key by `(map id grain)`issued-rice)
-        :^  %|  ~
+        :+  %|
           :+  me.cart  town-id.cart
           [caller.inp `[%mint token.args next-mints] ~ call-grains]
         [changed-rice issued-rice ~]
