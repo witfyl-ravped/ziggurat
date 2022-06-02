@@ -36,7 +36,7 @@
   %+  murn  ~(tap by wex)
   |=  [[=wire =ship =term] *]
   ^-  (unit card)
-  ?.  |(=([%from id] wire) =([%holder id] wire))  ~
+  ?.  |(=([%id id] wire) =([%holder id] wire))  ~
   `[%pass wire %agent [ship term] %leave ~]
 ::
 ++  clear-all-holder-and-id-subs
@@ -45,7 +45,7 @@
   %+  murn  ~(tap by wex)
   |=  [[=wire =ship =term] *]
   ^-  (unit card)
-  ?.  |(?=([%from *] wire) ?=([%holder *] wire))  ~
+  ?.  |(?=([%id *] wire) ?=([%holder *] wire))  ~
   `[%pass wire %agent [ship term] %leave ~]  
 ::
 ++  create-asset-subscriptions

@@ -262,6 +262,7 @@
       =/  our-nonces     (~(gut by nonces.state) from.act ~)
       =/  nonce=@ud      (~(gut by our-nonces) town.act 0)
       =/  node=ship      (~(gut by nodes.state) town.act our.bowl)
+      ~|  "wallet: can't find tokens for that address!"
       =/  =book          (~(got by tokens.state) from.act)
       =/  =caller:smart  :+  from.act  +(nonce)
                         (fry-rice:smart from.act `@ux`'zigs-contract' town.act `@`'zigs')
@@ -380,7 +381,6 @@
     ?.  ?=(%indexer-update p.cage.sign)  (on-agent:def wire sign)
     =+  pub=(slav %ux i.t.wire)
     =/  =update:ui  !<(=update:ui q.cage.sign)
-    ~&  >>>  update
     ::  TODO: this is awful, replace with scrys to contract that give token types. see wallet/util.hoon
     =/  found=book
       (indexer-update-to-books update pub metadata-store.state)
@@ -403,7 +403,6 @@
     ?.  ?=(%fact -.sign)       (on-agent:def wire sign)
     ?.  ?=(%indexer-update p.cage.sign)  (on-agent:def wire sign)
     =/  =update:ui  !<(=update:ui q.cage.sign)
-    ~&  >>>  update
     ?.  ?=(%egg -.update)  `this
     =/  our-id=@ux  (slav %ux i.t.wire)
     =+  our-txs=(~(gut by transaction-store.state) our-id [sent=~ received=~])
