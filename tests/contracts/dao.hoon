@@ -390,11 +390,9 @@
 |%
 ++  test-matches-type
   =+  [is-success chick]=(mule |.(;;(contract:smart cont)))
-  ;:  weld
-    %+  expect-eq
-      !>  %.y
-      !>  is-success
-  ==
+  %+  expect-eq
+    !>  %.y
+    !>  is-success
 ::
 ::  tests for %add-dao
 ::
@@ -404,14 +402,13 @@
   =/  =cart:smart                 make-test-cart
   =/  =zygote:smart               make-zygote
   =+  [is-success chick]=(mule |.((~(write cont cart) zygote)))
-  ;:  weld
+  %+  weld
     %+  expect-eq
       !>  %.y
       !>  is-success
     %+  expect-eq
       !>  expected-chick
       !>  chick
-  ==
   ::
   ++  new-dao-salt
     0xda.0da0
@@ -469,14 +466,13 @@
   =/  =cart:smart                 make-test-cart
   =/  =zygote:smart               make-zygote
   =+  [is-success chick]=(mule |.((~(write cont cart) zygote)))
-  ;:  weld
+  %+  weld
     %+  expect-eq
       !>  %.y
       !>  is-success
     %+  expect-eq
       !>  expected-chick
       !>  chick
-  ==
   ::
   ++  make-expected-chick
     ^-  chick:smart
@@ -512,11 +508,9 @@
   =/  =cart:smart    make-test-cart
   =/  =zygote:smart  make-zygote
   =+  [is-success chick]=(mule |.((~(write cont cart) zygote)))
-  ;:  weld
-    %+  expect-eq
-      !>  %.n
-      !>  is-success
-  ==
+  %+  expect-eq
+    !>  %.n
+    !>  is-success
   ::
   ++  make-test-cart
     ^-  cart:smart
@@ -536,11 +530,9 @@
   =/  =cart:smart    make-test-cart
   =/  =zygote:smart  make-zygote
   =+  [is-success chick]=(mule |.((~(write cont cart) zygote)))
-  ;:  weld
-    %+  expect-eq
-      !>  %.n
-      !>  is-success
-  ==
+  %+  expect-eq
+    !>  %.n
+    !>  is-success
   ::
   ++  make-test-cart
     ^-  cart:smart
@@ -561,11 +553,9 @@
   =/  =cart:smart    make-test-cart
   =/  =zygote:smart  make-zygote
   =+  [is-success chick]=(mule |.((~(write cont cart) zygote)))
-  ;:  weld
-    %+  expect-eq
-      !>  %.n
-      !>  is-success
-  ==
+  %+  expect-eq
+    !>  %.n
+    !>  is-success
   ::
   ++  make-test-cart
     ^-  cart:smart
@@ -590,14 +580,13 @@
   =/  =cart:smart                 make-test-cart
   =/  =zygote:smart               make-zygote
   =+  [is-success chick]=(mule |.((~(write cont cart) zygote)))
-  ;:  weld
+  %+  weld
     %+  expect-eq
       !>  %.y
       !>  is-success
     %+  expect-eq
       !>  expected-chick
       !>  chick
-  ==
   ::
   ++  make-expected-chick
     ^-  chick:smart
@@ -648,14 +637,13 @@
   =/  =cart:smart                 make-test-cart
   =/  =zygote:smart               make-zygote
   =+  [is-success chick]=(mule |.((~(write cont cart) zygote)))
-  ;:  weld
+  %+  weld
     %+  expect-eq
       !>  %.y
       !>  is-success
     %+  expect-eq
       !>  expected-chick
       !>  chick
-  ==
   ::
   ++  make-expected-chick
     ^-  chick:smart
@@ -713,11 +701,9 @@
   =/  =cart:smart                 make-test-cart
   =/  =zygote:smart               make-zygote
   =+  [is-success chick]=(mule |.((~(write cont cart) zygote)))
-  ;:  weld
-    %+  expect-eq
-      !>  %.n
-      !>  is-success
-  ==
+  %+  expect-eq
+    !>  %.n
+    !>  is-success
   ::
   ++  make-test-cart
     ^-  cart:smart
@@ -743,11 +729,9 @@
   =/  =cart:smart                 make-test-cart
   =/  =zygote:smart               make-zygote
   =+  [is-success chick]=(mule |.((~(write cont cart) zygote)))
-  ;:  weld
-    %+  expect-eq
-      !>  %.n
-      !>  is-success
-  ==
+  %+  expect-eq
+    !>  %.n
+    !>  is-success
   ::
   ++  make-test-cart
     ^-  cart:smart
@@ -781,11 +765,9 @@
   =/  =cart:smart                 make-test-cart
   =/  =zygote:smart               make-zygote
   =+  [is-success chick]=(mule |.((~(write cont cart) zygote)))
-  ;:  weld
-    %+  expect-eq
-      !>  %.n
-      !>  is-success
-  ==
+  %+  expect-eq
+    !>  %.n
+    !>  is-success
   ::
   ++  make-test-cart
     ^-  cart:smart
@@ -817,11 +799,9 @@
   =/  =cart:smart                 make-test-cart
   =/  =zygote:smart               make-zygote
   =+  [is-success chick]=(mule |.((~(write cont cart) zygote)))
-  ;:  weld
-    %+  expect-eq
-      !>  %.n
-      !>  is-success
-  ==
+  %+  expect-eq
+    !>  %.n
+    !>  is-success
   ::
   ++  make-test-cart
     ^-  cart:smart
@@ -857,14 +837,13 @@
   =/  =zygote:smart
     (make-megacorp-ceo-vote-zygote make-proposal-id)
   =+  [is-success chick]=(mule |.((~(write cont cart) zygote)))
-  ;:  weld
+  %+  weld
     %+  expect-eq
       !>  %.y
       !>  is-success
     %+  expect-eq
       !>  expected-chick
       !>  chick
-  ==
   ::
   ++  make-proposal-id
     ^-  id:smart
@@ -909,14 +888,13 @@
   =/  =zygote:smart
     (make-megacorp-ceo-vote-zygote make-proposal-id)
   =+  [is-success chick]=(mule |.((~(write cont cart) zygote)))
-  ;:  weld
+  %+  weld
     %+  expect-eq
       !>  %.y
       !>  is-success
     %+  expect-eq
       !>  expected-chick
       !>  chick
-  ==
   ::
   ++  make-proposal-id
     ^-  id:smart
@@ -961,14 +939,13 @@
   =/  =zygote:smart
     (make-megacorp-ceo-vote-zygote make-proposal-id)
   =+  [is-success chick]=(mule |.((~(write cont cart) zygote)))
-  ;:  weld
+  %+  weld
     %+  expect-eq
       !>  %.y
       !>  is-success
     %+  expect-eq
       !>  expected-chick
       !>  chick
-  ==
   ::
   ++  make-proposal-id
     ^-  id:smart
@@ -1007,14 +984,13 @@
   =/  =zygote:smart
     (make-megacorp-ceo-vote-zygote make-proposal-id)
   =+  [is-success chick]=(mule |.((~(write cont cart) zygote)))
-  ;:  weld
+  %+  weld
     %+  expect-eq
       !>  %.y
       !>  is-success
     %+  expect-eq
       !>  expected-chick
       !>  chick
-  ==
   ::
   ++  make-proposal-id
     ^-  id:smart
@@ -1054,14 +1030,13 @@
   =/  =zygote:smart
     (make-megacorp-ceo-vote-zygote make-proposal-id)
   =+  [is-success chick]=(mule |.((~(write cont cart) zygote)))
-  ;:  weld
+  %+  weld
     %+  expect-eq
       !>  %.y
       !>  is-success
     %+  expect-eq
       !>  expected-chick
       !>  chick
-  ==
   ::
   ++  make-proposal-id
     ^-  id:smart
@@ -1098,14 +1073,13 @@
   =/  =zygote:smart
     (make-megacorp-ceo-vote-zygote make-proposal-id)
   =+  [is-success chick]=(mule |.((~(write cont cart) zygote)))
-  ;:  weld
+  %+  weld
     %+  expect-eq
       !>  %.y
       !>  is-success
     %+  expect-eq
       !>  expected-chick
       !>  chick
-  ==
   ::
   ++  make-proposal-id
     ^-  id:smart
@@ -1142,14 +1116,13 @@
   =/  =zygote:smart
     (make-megacorp-ceo-vote-zygote make-proposal-id)
   =+  [is-success chick]=(mule |.((~(write cont cart) zygote)))
-  ;:  weld
+  %+  weld
     %+  expect-eq
       !>  %.y
       !>  is-success
     %+  expect-eq
       !>  expected-chick
       !>  chick
-  ==
   ::
   ++  make-proposal-id
     ^-  id:smart
@@ -1186,14 +1159,13 @@
   =/  =zygote:smart
     (make-megacorp-ceo-vote-zygote make-proposal-id)
   =+  [is-success chick]=(mule |.((~(write cont cart) zygote)))
-  ;:  weld
+  %+  weld
     %+  expect-eq
       !>  %.y
       !>  is-success
     %+  expect-eq
       !>  expected-chick
       !>  chick
-  ==
   ::
   ++  make-proposal-id
     ^-  id:smart
@@ -1230,14 +1202,13 @@
   =/  =zygote:smart
     (make-megacorp-ceo-vote-zygote make-proposal-id)
   =+  [is-success chick]=(mule |.((~(write cont cart) zygote)))
-  ;:  weld
+  %+  weld
     %+  expect-eq
       !>  %.y
       !>  is-success
     %+  expect-eq
       !>  expected-chick
       !>  chick
-  ==
   ::
   ++  make-proposal-id
     ^-  id:smart
