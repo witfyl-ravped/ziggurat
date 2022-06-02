@@ -618,7 +618,10 @@
               (make-one-block-serve-update previous-parsed-block)
             =/  serve-most-recent-update=_serve-update
               (make-one-block-serve-update most-recent-parsed-block)
-            %+  murn  ~(tap in (~(get ju sub-paths) query-type))
+            ::  for id-based subscriptions, get cards from both from and to.
+            =/  path-type
+              ?:(?=(?(%from %to) query-type) %id query-type)
+            %+  murn  ~(tap in (~(get ju sub-paths) path-type))
             |=  id=@u
             =/  payload=?(@u [@ud @ud @u])
               ?~  payload-prefix  id

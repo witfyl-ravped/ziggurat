@@ -73,10 +73,7 @@
 ::
 ++  indexer-update-to-books
   |=  [=update:ui our=@ux =metadata-store]
-  ::  get most recent version of the grain
-  ::  TODO replace this with a (way) more efficient strategy
-  ::  preferably adding a type to indexer that only contains
-  ::  most recent data
+  ^-  book
   =/  =book  *book
   ?.  ?=(%grain -.update)  book
   =/  grains-list  `(list [=town-location:ui =grain:smart])`~(val by grains.update)
@@ -98,6 +95,8 @@
     ::
     grains-list  t.grains-list
   ==
+::
+::  TODO: replace this whole janky system with a contract read that returns the type of the its rice
 ::
 ++  find-new-metadata
   |=  [=book our=ship =metadata-store [our=ship now=time]]
