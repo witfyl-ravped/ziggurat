@@ -5,32 +5,28 @@
 |^
 =/  contract-text  .^(@t %cx pax)
 =/  [raw=(list [face=term =path]) contract-hoon=hoon]  (parse-pile (trip contract-text))
+::
+=/  hoon-path    /(scot %p p.bek)/zig/(scot %da now)/lib/zig/sys/hoon/hoon
+=/  smart-path   /(scot %p p.bek)/zig/(scot %da now)/lib/zig/sys/smart/hoon
+=/  hoon-txt     .^(@t %cx hoon-path)
+=/  smart-txt    .^(@t %cx smart-path)
+=/  smart-lib    (slap (slap !>(~) (rain hoon-path hoon-txt)) (rain smart-path smart-txt))
+::
 ~&  >  raw
-::  take raw list, grab from paths, and slap.
-=/  hoon-path  /(scot %p p.bek)/zig/(scot %da now)/lib/zig/sys/hoon/hoon
-=/  hoon-txt  .^(@t %cx hoon-path)
-=/  so-far  (slap !>(~) (rain hoon-path hoon-txt))
+=/  braw=(list hoon)
+  %+  turn  raw
+  |=  [face=term =path]
+  =/  pax  (weld /(scot %p p.bek)/zig/(scot %da now) path)
+  =/  txt  .^(@t %cx pax)
+  `hoon`[%ktts face (rain pax txt)]
+=/  full=hoon  [%clsg (weld ~[(rain smart-path smart-txt)] braw)]
+=/  background=vase  (slap smart-lib full)
+::
 :-  %noun
-|-
-?~  raw
-  =+  (slap so-far contract-hoon)
-  q:(slap - (ream '-'))
-::  TODO make desk-agnostic
-~&  "adding {<face.i.raw>}"
-::  TODO make faces real
-=+  .^(@t %cx (weld /(scot %p p.bek)/zig/(scot %da now) path.i.raw))
-$(so-far (slap so-far (ream -)), raw t.raw)
+=+  (slap background contract-hoon)
+q:(slap - (ream '-'))
 ::
-::  this seems to work nicely for getting the contract nock. now, there's the
-::  question of being able to insert the resulting battery into a matching payload
-::  when a sequencer wishes to run the contract.
-::
-::  PLAN:
-::  automatically compile all contracts against hoon.hoon and smart.hoon
-::  if a contract imports smart.hoon, ignore that specific /=
-::  (letting them import in-file makes it easier for them to test)
-::  grab all compiled nock for every real import
-::  return that noun
+::  helpers
 ::
 +$  small-pile
     $:  raw=(list [face=term =path])

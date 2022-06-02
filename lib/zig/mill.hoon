@@ -172,6 +172,9 @@
         ?.  =(lord.u.res find)          ~
         ?.  =(town-id.u.res town-id)    ~
         `[id u.res]
+      ::  ++  telescope
+      ::    |=  =wheat
+      ::    cons together the library nocks against q.q.smart-lib
       --
     ::  +grow: recursively apply any calls stemming from egg, return on rooster or failure
     ++  grow

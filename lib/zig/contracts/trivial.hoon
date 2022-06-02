@@ -1,9 +1,11 @@
-/=  smart  /lib/zig/sys/smart/hoon
+/=  library    /lib/zig/contracts/library/hoon
+/=  library-2  /lib/zig/contracts/library-2/hoon
 |_  =cart
 ++  write
   |=  =embryo
   ^-  chick
-  =+  (dec 100)
+  =/  number  (adding-arm:library-2 (special-arm:library 100))
+  =.  number  (dec number)
   [%& ~ ~ ~]
 ++  read
   |_  =path
