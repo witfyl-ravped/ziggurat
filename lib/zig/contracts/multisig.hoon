@@ -137,22 +137,29 @@
       ::  The following must be sent by the contract itself
       ::
         %add-member
-      ?:  !(is-me caller-id)            !!
+      ?:  !(is-me caller-id)                 !!
       ?:  (~(has in members.state) id.args)  !!  :: adding existing member is disallowed
       =.  members.state         (~(put in members.state) id.args)
       =.  data.p.germ.my-grain  state
       [%& (malt ~[[id.my-grain my-grain]]) ~ ~]
     ::
         %remove-member
-      ?:  !(is-me caller-id)                !!
-      ?:  !(~(has in members.state) id.args)     !!
-      ?:  !(gth ~(wyt in members.state) 1)  !!  :: multisig cannot have 0 members
+      =/  member-count  ~(wyt in members.state)
+      ?:  !(is-me caller-id)                  !!
+      ?:  !(~(has in members.state) id.args)  !!
+      ?:  !(gth member-count 1)               !!  :: multisig cannot have 0 members
+      ::  5:5, lose 1, 5:4 -> 4:4
+      ::  (member-count - 1) < threshold
+      ::  invariant: threshold must be <= member-count
+      =/  new-member-count  (dec member-count)
+      =?  threshold.state   (gth new-member-count threshold.state)
+        new-member-count
       =.  members.state         (~(del in members.state) id)
       =.  data.p.germ.my-grain  state
       [%& (malt ~[[id.my-grain my-grain]]) ~ ~]
     ::
         %set-threshold
-      ?:  !(is-me caller-id)                       !!
+      ?:  !(is-me caller-id)                             !!
       ?:  (gth threshold.state ~(wyt in members.state))  !!  :: cannot set threshold higher than member count
       =.  threshold.state       new-thresh.args
       =.  data.p.germ.my-grain  state
