@@ -279,9 +279,99 @@
   --
 ::
 ++  read
-  |_  =path
+  |_  args=path
   ++  json
-    ~
+    |^  ^-  ^json
+    ?+    args  !!
+    ::
+        [%rice-data ~]
+      ?>  =(1 ~(wyt by owns.cart))
+      =/  g=grain  -:~(val by owns.cart)
+      ?>  ?=(%& -.germ.g)
+      ?.  ?=([@ @ @ @ ?(~ [~ @]) ? ?(~ ^) @ @] data.p.germ.g)
+        (enjs-account ;;(account data.p.germ.g))
+      (enjs-token-metadata ;;(token-metadata data.p.germ.g))
+    ::
+        [%egg-args ~]
+      ~
+    ::
+    ==
+    ::
+    ++  enjs-account
+      =,  enjs:format
+      |^
+      |=  acct=account
+      ^-  ^json
+      %-  pairs
+      :^    [%balance (numb balance.acct)]
+          [%allowances (allowances allowances.acct)]
+        [%metadata (metadata metadata.acct)]
+      ~
+      ::
+      ++  allowances
+        |=  a=(map id @ud)
+        ^-  ^json
+        %-  pairs
+        %+  turn  ~(tap by a)
+        |=  [i=id allowance=@ud]
+        [(scot %ux i) (numb allowance)]
+      ::
+      ++  metadata  ::  TODO: grab token-metadata?
+        |=  md-id=id
+        [%s (scot %ux md-id)]
+      ::
+      --
+    ::
+    ++  enjs-token-metadata
+      =,  enjs:format
+      |^
+      |=  md=token-metadata
+      ^-  ^json
+      %-  pairs
+      :~  [%name %s name.md]
+          [%symbol %s symbol.md]
+          [%decimals (numb decimals.md)]
+          [%supply (numb supply.md)]
+          [%cap ?~(cap.md ~ (numb u.cap.md))]
+          [%mintable %b mintable.md]
+          [%minters (minters minters.md)]
+          [%deployer %s (scot %ux deployer.md)]
+          [%salt (numb salt.md)]
+      ==
+      ::
+      ++  minters
+        set-id
+      ::
+      ++  set-id
+        |=  set-id=(set id)
+        ^-  ^json
+        :-  %a
+        %+  turn  ~(tap in set-id)
+        |=  i=id
+        [%s (scot %ux i)]
+      ::
+      --
+    ::
+    +$  token-metadata
+      $:  name=@t           ::  the name of a token (not unique!)
+          symbol=@t         ::  abbreviation (also not unique)
+          decimals=@ud      ::  granularity, minimum 0, maximum 18
+          supply=@ud        ::  total amount of token in existence
+          cap=(unit @ud)    ::  supply cap (~ if mintable is false)
+          mintable=?        ::  whether or not more can be minted
+          minters=(set id)  ::  pubkeys permitted to mint, if any
+          deployer=id       ::  pubkey which first deployed token
+          salt=@            ::  data added to hash for rice IDs of this token
+                            ::  (currently hashed: symbol+deployer)
+      ==
+    ::
+    +$  account
+      $:  balance=@ud                     ::  the amount of tokens someone has
+          allowances=(map sender=id @ud)  ::  a map of pubkeys they've permitted to spend their tokens and how much
+          metadata=id                     ::  address of the rice holding this token's metadata
+      ==
+    ::
+    --
   ++  noun
     ~
   --
