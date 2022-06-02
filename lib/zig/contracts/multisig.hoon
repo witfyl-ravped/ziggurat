@@ -88,9 +88,12 @@
         %-  sham
         (cat 3 caller-id (shamspin members.args))
       ::  im pretty sure salt is supposed to go in the germ as well
+      ::  TODO should holder be me.cart or caller-id
+      =/  lord               me.cart
+      =/  holder             me.cart
       =/  new-sig-germ=germ  [%& salt [members.args init-thresh.args ~]]
-      =/  new-sig-id=id      (fry-rice caller-id me.cart town-id.cart salt)
-      =/  new-sig=grain      [new-sig-id me.cart me.cart town-id.cart new-sig-germ]
+      =/  new-sig-id=id      (fry-rice holder lord town-id.cart salt)
+      =/  new-sig=grain      [new-sig-id lord holder town-id.cart new-sig-germ]
       [%& ~ (malt ~[[new-sig-id new-sig]]) ~]
     =/  my-grain=grain  -:~(val by owns.cart)
     ?>  =(lord.my-grain me.cart)
