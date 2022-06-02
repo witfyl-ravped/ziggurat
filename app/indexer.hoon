@@ -638,10 +638,9 @@
             ::  %.y if non-location portion of update is same
             ::  %.n if different
             |=  [one=(unit update:ui) two=(unit update:ui)]
-            ^-  ?
+            |^  ^-  ?
             ?~  one  ?=(~ two)
             ?~  two  %.n
-            :: ?.  ?=(-.u.one -.u.two)  %.n  ::  different update type?
             ?+    -.u.one  !!
             ::
                 %chunk
@@ -650,38 +649,46 @@
             ::
                 %egg
               ?.  ?=(%egg -.u.two)  %.n
-              =/  two-eggs=(set egg:smart)
-                %-  ~(gas in *(set egg:smart))
-                %+  turn  ~(val by eggs.u.two)
-                |=  [egg-location:ui =egg:smart]
-                egg
-              %-  ~(all by eggs.u.one)
-              |=  [egg-location:ui one-egg=egg:smart]
-              (~(has in two-eggs) one-egg)
+              .=  (make-id-egg-set eggs.u.one)
+              (make-id-egg-set eggs.u.two)
             ::
                 %grain
               ?.  ?=(%grain -.u.two)  %.n
-              =/  two-grains=(set grain:smart)
-                %-  ~(gas in *(set grain:smart))
-                %+  turn  ~(val by grains.u.two)
-                |=  [town-location:ui =grain:smart]
-                grain
-              %-  ~(all by grains.u.one)
-              |=  [town-location:ui one-grain=grain:smart]
-              (~(has in two-grains) one-grain)
+              .=  (make-id-grain-set grains.u.one)
+              (make-id-grain-set grains.u.two)
             ::
                 %slot
               ?.  ?=(%slot -.u.two)  %.n
-              =/  two-slots=(set slot:zig)
-                %-  ~(gas in *(set slot:zig))
-                %+  turn  ~(val by slots.u.two)
-                |=  [block-location:ui =slot:zig]
-                slot
-              %-  ~(all by slots.u.one)
-              |=  [block-location:ui one-slot=slot:zig]
-              (~(has in two-slots) one-slot)
+              .=  (make-id-slot-set slots.u.one)
+              (make-id-slot-set slots.u.two)
             ::
             ==
+            ::
+            ++  make-id-egg-set
+              |=  eggs=(map id:smart [egg-location:ui egg:smart])
+              ^-  (set [id:smart egg:smart])
+              %-  silt
+              %+  turn  ~(tap by eggs)
+              |=  [=id:smart egg-location:ui =egg:smart]
+              [id egg]
+            ::
+            ++  make-id-grain-set
+              |=  grains=(map id:smart [town-location:ui grain:smart])
+              ^-  (set [id:smart grain:smart])
+              %-  silt
+              %+  turn  ~(tap by grains)
+              |=  [=id:smart town-location:ui =grain:smart]
+              [id grain]
+            ::
+            ++  make-id-slot-set
+              |=  slots=(map id:smart [block-location:ui slot:zig])
+              ^-  (set [id:smart slot:zig])
+              %-  silt
+              %+  turn  ~(tap by slots)
+              |=  [=id:smart block-location:ui =slot:zig]
+              [id slot]
+            ::
+            --
           ::
           --
         ::
