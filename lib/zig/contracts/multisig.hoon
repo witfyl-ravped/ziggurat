@@ -84,6 +84,7 @@
     ^-  chick
     ?:  ?=(%create-multisig -.args)
       ::  issue a new multisig rice
+      ?>  (gth init-thresh.args 0)  :: threshold of 0 is disallowed
       =/  salt=@             (sham (cat 3 caller-id (shamspin members.args)))
       =/  lord               me.cart  
       =/  holder             me.cart  ::  TODO should holder be me.cart or caller-id
@@ -103,12 +104,10 @@
     ::  TODO find a good alias name for data.p.germ.my-grain
     ?-    -.args
         %vote
-      ?:  !(is-member caller-id state)  !!
+      ?>  (is-member caller-id state)
       =*  tx-hash  tx-hash.args
       =/  prop     (~(got by pending.state) tx-hash)
-      ?:  (~(has in votes.prop) caller-id)
-        :: cannot vote for prop you already voted for
-        !!
+      ?>  !(~(has in votes.prop) caller-id)            :: cannot vote for prop you already voted for
       =.  votes.prop     (~(put in votes.prop) caller-id)
       =.  pending.state  (~(put by pending.state) tx-hash prop)
       ::  if proposal is not at threshold, just update state
@@ -126,10 +125,10 @@
 
     ::
         %submit-tx
-      ?:  !(is-member caller-id state)  !!
+      ?>  (is-member caller-id state)
       ::  XX mug is non-cryptographic, so if a new tx hashes to the same as an
       ::  old one, it will be erroneously overwritten and have a vote added
-      ::  but sham etc. call jam which is expensive. what do?
+      ::  but sham etc. calls jam which is expensive. what do?
       =.  pending.state         (~(put by pending.state) (mug egg.args) [egg.args (silt ~[caller-id])])
       =.  data.p.germ.my-grain  state
       [%& (malt ~[[id.my-grain my-grain]]) ~ ~]
@@ -137,19 +136,18 @@
       ::  The following must be sent by the contract itself
       ::
         %add-member
-      ?:  !(is-me caller-id)                 !!
-      ?:  (~(has in members.state) id.args)  !!  :: adding existing member is disallowed
+      ?>  (is-me caller-id)
+      ?>  (~(has in members.state) id.args)  :: adding an existing member is disallowed
       =.  members.state         (~(put in members.state) id.args)
       =.  data.p.germ.my-grain  state
       [%& (malt ~[[id.my-grain my-grain]]) ~ ~]
     ::
         %remove-member
       =/  member-count  ~(wyt in members.state)
-      ?:  !(is-me caller-id)                  !!
-      ?:  !(~(has in members.state) id.args)  !!
-      ?:  !(gth member-count 1)               !!  :: multisig cannot have 0 members
+      ?>  (is-me caller-id)
+      ?>  (~(has in members.state) id.args)
+      ?>  (gth member-count 1)              :: multisig cannot have 0 members
       ::  5:5, lose 1, 5:4 -> 4:4
-      ::  (member-count - 1) < threshold
       ::  invariant: threshold must be <= member-count
       =/  new-member-count  (dec member-count)
       =?  threshold.state   (gth new-member-count threshold.state)
@@ -159,8 +157,8 @@
       [%& (malt ~[[id.my-grain my-grain]]) ~ ~]
     ::
         %set-threshold
-      ?:  !(is-me caller-id)                             !!
-      ?:  (gth threshold.state ~(wyt in members.state))  !!  :: cannot set threshold higher than member count
+      ?>  (is-me caller-id)
+      ?>  (gth threshold.state ~(wyt in members.state))  :: cannot set threshold higher than member count
       =.  threshold.state       new-thresh.args
       =.  data.p.germ.my-grain  state
       [%& (malt ~[[id.my-grain my-grain]]) ~ ~]
