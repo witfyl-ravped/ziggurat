@@ -5,6 +5,7 @@
 ::
 /-  ui=indexer
 /+  *ziggurat, *wallet-util, wallet-parsing, default-agent, dbug, verb, bip32, bip39
+/*  smart-lib  %noun  /lib/zig/compiled/smart-lib/noun
 |%
 +$  card  card:agent:gall
 +$  state-0
@@ -210,7 +211,7 @@
       =/  node=ship      (~(gut by nodes.state) town.act our.bowl)
       =/  =caller:smart  :+  from.act  +(nonce)
                          (fry-rice:smart from.act `@ux`'zigs-contract' town.act `@`'zigs')
-      =/  =yolk:smart    [caller `q:(slap !>(~) (ream args.act)) my-grains.act cont-grains.act]
+      =/  =yolk:smart    [caller `q:(slap !>(+:(cue q.q.smart-lib)) (ream args.act)) my-grains.act cont-grains.act]
       =/  keypair        (~(got by keys.state) from.act)
       =/  =egg:smart
         :_  yolk
@@ -244,7 +245,7 @@
             nonces  (~(put by nonces) from.act (~(put by our-nonces) town.act +(nonce)))
           ==
       :~  (tx-update-card egg `[%custom args.act])
-          :*  %pass  /submit-tx/(scot %ux egg-hash)
+          :*  %pass  /submit-tx/(scot %ux from.act)/(scot %ux egg-hash)
               %agent  [node ?:(=(0 town.act) %ziggurat %sequencer)]
               %poke  %zig-weave-poke
               !>([%forward (silt ~[egg])])
