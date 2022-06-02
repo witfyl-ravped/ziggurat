@@ -5,6 +5,7 @@
 ::
 /-  ui=indexer
 /+  *ziggurat, *wallet-util, wallet-parsing, default-agent, dbug, verb, bip32, bip39
+/*  smart-lib  %noun  /lib/zig/compiled/smart-lib/noun
 |%
 +$  card  card:agent:gall
 +$  state-0
@@ -178,7 +179,7 @@
       ?>  =(hash.act yolk-hash.p)
       =:  sig.p.egg.p  sig.act
           eth-hash.p.egg.p  `eth-hash.act
-      ==  
+      ==
       ?>  ?=(account:smart from.p.egg.p)
       =*  from   id.from.p.egg.p
       =*  nonce  nonce.from.p.egg.p
@@ -210,7 +211,7 @@
       =/  node=ship      (~(gut by nodes.state) town.act our.bowl)
       =/  =caller:smart  :+  from.act  +(nonce)
                          (fry-rice:smart from.act `@ux`'zigs-contract' town.act `@`'zigs')
-      =/  =yolk:smart    [caller `(ream args.act) my-grains.act cont-grains.act]
+      =/  =yolk:smart    [caller `q:(slap !>(+:(cue q.q.smart-lib)) (ream args.act)) my-grains.act cont-grains.act]
       =/  keypair        (~(got by keys.state) from.act)
       =/  =egg:smart
         :_  yolk
@@ -225,7 +226,7 @@
             rate.gas.act
             bud.gas.act
             town.act
-            status=100
+            status=%100
         ==
       ?~  priv.keypair
         ::  if we don't have private key for this address, set as pending
@@ -244,7 +245,7 @@
             nonces  (~(put by nonces) from.act (~(put by our-nonces) town.act +(nonce)))
           ==
       :~  (tx-update-card egg `[%custom args.act])
-          :*  %pass  /submit-tx/(scot %ux egg-hash)
+          :*  %pass  /submit-tx/(scot %ux from.act)/(scot %ux egg-hash)
               %agent  [node ?:(=(0 town.act) %ziggurat %sequencer)]
               %poke  %zig-weave-poke
               !>([%forward (silt ~[egg])])
@@ -262,6 +263,7 @@
       =/  our-nonces     (~(gut by nonces.state) from.act ~)
       =/  nonce=@ud      (~(gut by our-nonces) town.act 0)
       =/  node=ship      (~(gut by nodes.state) town.act our.bowl)
+      ~|  "wallet: can't find tokens for that address!"
       =/  =book          (~(got by tokens.state) from.act)
       =/  =caller:smart  :+  from.act  +(nonce)
                         (fry-rice:smart from.act `@ux`'zigs-contract' town.act `@`'zigs')
@@ -276,10 +278,12 @@
           =/  our-account=grain:smart  +:(~(got by book) [town.act to.act salt.metadata])
           =/  their-account-id  (fry-rice:smart to.args.act to.act town.act salt.metadata)
           =/  exists  .^(? %gx /(scot %p our.bowl)/indexer/(scot %da now.bowl)/has-grain/(scot %ux their-account-id)/noun)
-          ?:  exists
+          ?.  exists
+            ::  they don't have an account for this token
             ?:  =(to.act `@ux`'zigs-contract')  ::  zigs special case
               [`[%give to.args.act ~ amount.args.act bud.gas.act] (silt ~[id.our-account]) ~]
             [`[%give to.args.act ~ amount.args.act] (silt ~[id.our-account]) ~]
+          ::  they have an account for this token, include it in transaction
           :+  ?:  =(to.act `@ux`'zigs-contract')  ::  zigs special case
                 `[%give to.args.act `their-account-id amount.args.act bud.gas.act]
               `[%give to.args.act `their-account-id amount.args.act]
@@ -294,7 +298,7 @@
           =/  our-account=grain:smart  +:(~(got by book) [town.act to.act salt.metadata])
           =/  their-account-id  (fry-rice:smart to.args.act to.act town.act salt.metadata)
           =/  exists  .^(? %gx /(scot %p our.bowl)/indexer/(scot %da now.bowl)/has-grain/(scot %ux their-account-id)/noun)
-          ?:  exists
+          ?.  exists
             [`[%give to.args.act ~ item-id.args.act] (silt ~[id.our-account]) ~]
           :+  `[%give to.args.act `their-account-id item-id.args.act]
             (silt ~[id.our-account])
@@ -312,7 +316,7 @@
       =/  sig           ?~  priv.keypair
                           [0 0 0]
                         (ecdsa-raw-sign:secp256k1:secp:crypto (sham (jam yolk)) u.priv.keypair)
-      =/  =egg:smart    [[caller sig ~ to.act rate.gas.act bud.gas.act town.act status=100] yolk]
+      =/  =egg:smart    [[caller sig ~ to.act rate.gas.act bud.gas.act town.act status=%100] yolk]
       ?~  priv.keypair
         ::  if we don't have private key for this address, set as pending
         ::  and allow frontend to sign with HW wallet or otherwise
@@ -354,10 +358,10 @@
         ?~  p.sign
           ::  got it
           ~&  >>  "wallet: tx was received by sequencer"
-          this-tx(status.p.egg 101)
+          this-tx(status.p.egg %101)
         ::  failed
         ~&  >>>  "wallet: tx was rejected by sequencer"
-        this-tx(status.p.egg 103)
+        this-tx(status.p.egg %103)
       :-  ~[(tx-update-card egg.this-tx `args.this-tx)]
       %=    this
           transaction-store
@@ -365,7 +369,7 @@
         [from our-txs(sent (~(put by sent.our-txs) hash this-tx))]
       ::
           nonces
-        ?:  =(status.p.egg.this-tx 101)
+        ?:  =(status.p.egg.this-tx %101)
           nonces
         ::  dec nonce on this town, tx was rejected
         (~(put by nonces) from (~(jab by (~(got by nonces) from)) town-id.p.egg.this-tx |=(n=@ud (dec n))))
@@ -377,28 +381,30 @@
     ?.  ?=(%fact -.sign)       (on-agent:def wire sign)
     ?.  ?=(%indexer-update p.cage.sign)  (on-agent:def wire sign)
     =+  pub=(slav %ux i.t.wire)
-    =+  !<(=update:ui q.cage.sign)
+    =/  =update:ui  !<(=update:ui q.cage.sign)
+    ::  TODO: this is awful, replace with scrys to contract that give token types. see wallet/util.hoon
     =/  found=book
       (indexer-update-to-books update pub metadata-store.state)
+    =/  metadata-search  (find-new-metadata found our.bowl metadata-store.state [our now]:bowl)
+    =/  found-again=book
+      (indexer-update-to-books update pub metadata-search)
     =/  curr=(unit book)  (~(get by tokens.state) pub)
     =+  %+  ~(put by tokens.state)  pub
-        ?~  curr  found
-        (~(uni by u.curr) found)
+        ?~  curr  found-again
+        (~(uni by u.curr) found-again)
     :-  ~[[%give %fact ~[/book-updates] %zig-wallet-update !>([%new-book -])]]
     %=  this
       tokens  -
-      metadata-store  (find-new-metadata found our.bowl metadata-store [our now]:bowl)
+      metadata-store  metadata-search
     ==
   ::
       [%id @ ~]
-    ::  update to a tracked account
+    ::  update to a transaction from a tracked account
     ?:  ?=(%watch-ack -.sign)  (on-agent:def wire sign)
     ?.  ?=(%fact -.sign)       (on-agent:def wire sign)
     ?.  ?=(%indexer-update p.cage.sign)  (on-agent:def wire sign)
-    =+  !<(=update:ui q.cage.sign)
+    =/  =update:ui  !<(=update:ui q.cage.sign)
     ?.  ?=(%egg -.update)  `this
-    ::  this will give us updates to transactions we send
-    ::
     =/  our-id=@ux  (slav %ux i.t.wire)
     =+  our-txs=(~(gut by transaction-store.state) our-id [sent=~ received=~])
     =/  eggs=(list [@ux =egg:smart])
@@ -408,16 +414,10 @@
     =^  tx-status-cards=(list card)  our-txs
       %^  spin  eggs  our-txs
       |=  [[hash=@ux =egg:smart] _our-txs]
-      ?.  =(our-id (pin:smart from.p.egg))
-        ::  this is a transaction sent to us / not from us
-        ^-  [card _our-txs]
-        :-  (tx-update-card egg ~)
-        our-txs(received (~(put by received.our-txs) hash egg))
-      ::  tx sent by us, update status code and send to frontend
-      ::  following error code spec in smart.hoon, eventually
-      ^-  [card _our-txs]
-      =/  this-tx  (~(get by sent.our-txs) hash)
-      :-  ?~  this-tx
+      ::  update status code and send to frontend
+      ::  following error code spec in smart.hoon
+      ^-  [card _our-txs] 
+      :-  ?~  this-tx=(~(get by sent.our-txs) hash)
             (tx-update-card egg ~)
           (tx-update-card egg `args.u.this-tx)
       %=    our-txs
