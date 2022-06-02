@@ -276,10 +276,12 @@
           =/  our-account=grain:smart  +:(~(got by book) [town.act to.act salt.metadata])
           =/  their-account-id  (fry-rice:smart to.args.act to.act town.act salt.metadata)
           =/  exists  .^(? %gx /(scot %p our.bowl)/indexer/(scot %da now.bowl)/has-grain/(scot %ux their-account-id)/noun)
-          ?:  exists
+          ?.  exists
+            ::  they don't have an account for this token
             ?:  =(to.act `@ux`'zigs-contract')  ::  zigs special case
               [`[%give to.args.act ~ amount.args.act bud.gas.act] (silt ~[id.our-account]) ~]
             [`[%give to.args.act ~ amount.args.act] (silt ~[id.our-account]) ~]
+          ::  they have an account for this token, include it in transaction
           :+  ?:  =(to.act `@ux`'zigs-contract')  ::  zigs special case
                 `[%give to.args.act `their-account-id amount.args.act bud.gas.act]
               `[%give to.args.act `their-account-id amount.args.act]
@@ -294,7 +296,7 @@
           =/  our-account=grain:smart  +:(~(got by book) [town.act to.act salt.metadata])
           =/  their-account-id  (fry-rice:smart to.args.act to.act town.act salt.metadata)
           =/  exists  .^(? %gx /(scot %p our.bowl)/indexer/(scot %da now.bowl)/has-grain/(scot %ux their-account-id)/noun)
-          ?:  exists
+          ?.  exists
             [`[%give to.args.act ~ item-id.args.act] (silt ~[id.our-account]) ~]
           :+  `[%give to.args.act `their-account-id item-id.args.act]
             (silt ~[id.our-account])
@@ -377,32 +379,32 @@
     ?.  ?=(%fact -.sign)       (on-agent:def wire sign)
     ?.  ?=(%indexer-update p.cage.sign)  (on-agent:def wire sign)
     =+  pub=(slav %ux i.t.wire)
-    =+  !<(=update:ui q.cage.sign)
+    =/  =update:ui  !<(=update:ui q.cage.sign)
+    ~&  >>>  update
+    ::  TODO: this is awful, replace with scrys to contract that give token types. see wallet/util.hoon
     =/  found=book
       (indexer-update-to-books update pub metadata-store.state)
+    =/  metadata-search  (find-new-metadata found our.bowl metadata-store.state [our now]:bowl)
+    =/  found-again=book
+      (indexer-update-to-books update pub metadata-search)
     =/  curr=(unit book)  (~(get by tokens.state) pub)
     =+  %+  ~(put by tokens.state)  pub
-        ?~  curr  found
-        (~(uni by u.curr) found)
+        ?~  curr  found-again
+        (~(uni by u.curr) found-again)
     :-  ~[[%give %fact ~[/book-updates] %zig-wallet-update !>([%new-book -])]]
     %=  this
       tokens  -
-      metadata-store  (find-new-metadata found our.bowl metadata-store [our now]:bowl)
+      metadata-store  metadata-search
     ==
   ::
-  ::  currently asking indexer for updates to transactions we've sent
-  ::  in future, can subscribe to `to` path and get updates about
-  ::  transactions sent to us from others
-  ::
-      [%from @ ~]
+      [%id @ ~]
     ::  update to a transaction from a tracked account
     ?:  ?=(%watch-ack -.sign)  (on-agent:def wire sign)
     ?.  ?=(%fact -.sign)       (on-agent:def wire sign)
     ?.  ?=(%indexer-update p.cage.sign)  (on-agent:def wire sign)
-    =+  !<(=update:ui q.cage.sign)
+    =/  =update:ui  !<(=update:ui q.cage.sign)
+    ~&  >>>  update
     ?.  ?=(%egg -.update)  `this
-    ::  this will give us updates to transactions we send
-    ::
     =/  our-id=@ux  (slav %ux i.t.wire)
     =+  our-txs=(~(gut by transaction-store.state) our-id [sent=~ received=~])
     =/  eggs=(list [@ux =egg:smart])
@@ -414,9 +416,8 @@
       |=  [[hash=@ux =egg:smart] _our-txs]
       ::  update status code and send to frontend
       ::  following error code spec in smart.hoon
-      ^-  [card _our-txs]
-      =/  this-tx  (~(get by sent.our-txs) hash)
-      :-  ?~  this-tx
+      ^-  [card _our-txs] 
+      :-  ?~  this-tx=(~(get by sent.our-txs) hash)
             (tx-update-card egg ~)
           (tx-update-card egg `args.u.this-tx)
       %=    our-txs
