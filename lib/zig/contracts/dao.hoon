@@ -7,7 +7,7 @@
 ::  contract can serve unlimited DAOs, who simply store their
 ::  structure as rice held and ruled by this contract on-chain.
 ::
-/+  *zig-sys-smart
+:: /+  *zig-sys-smart
 |_  =cart
 ++  write
   |=  inp=embryo
