@@ -121,8 +121,9 @@
         (enjs-account ;;(account data.p.germ.g))
       (enjs-token-metadata ;;(token-metadata data.p.germ.g))
     ::
-        [%egg-args ~]
-      ~
+        [%egg-args @ ~]
+      %-  enjs-arguments
+      ;;(arguments (cue (slav %ud i.t.args)))
     ::
     ==
     ::
@@ -181,6 +182,51 @@
       ::
       --
     ::
+    ++  enjs-arguments
+      =,  enjs:format
+      |=  a=arguments
+      |^
+      ^-  ^json
+      ?-    -.a
+      ::
+          %give
+        (frond %give give)
+      ::
+          %take
+        (frond %take take)
+      ::
+          %set-allowance
+        (frond %set-allowance set-allowance)
+      ::
+      ==
+      ::
+      ++  give
+        ?>  ?=(%give -.a)  ::  TODO: remove
+        %-  pairs
+        :~  [%to %s (scot %ux to.a)]
+            [%account ?~(account.a ~ [%s (scot %ux u.account.a)])]
+            [%amount (numb amount.a)]
+            [%budget (numb budget.a)]
+        ==
+      ::
+      ++  take
+        ?>  ?=(%take -.a)  ::  TODO: remove
+        %-  pairs
+        :~  [%to %s (scot %ux to.a)]
+            [%account ?~(account.a ~ [%s (scot %ux u.account.a)])]
+            [%from-account %s (scot %ux from-account.a)]
+            [%amount (numb amount.a)]
+        ==
+      ::
+      ++  set-allowance
+        ?>  ?=(%set-allowance -.a)  ::  TODO: remove
+        %-  pairs
+        :+  [%who %s (scot %ux who.a)]
+          [%amount (numb amount.a)]
+        ~
+      ::
+      --
+    ::
     +$  token-metadata
       ::  will be automatically inserted into town state
       ::  at instantiation, along with this contract
@@ -199,6 +245,12 @@
       $:  balance=@ud
           allowances=(map sender=id @ud)
           metadata=id
+      ==
+    ::
+    +$  arguments
+      $%  [%give to=id account=(unit id) amount=@ud budget=@ud]
+          [%take to=id account=(unit id) from-account=id amount=@ud]
+          [%set-allowance who=id amount=@ud]  ::  (to revoke, call with amount=0)
       ==
     ::
     --

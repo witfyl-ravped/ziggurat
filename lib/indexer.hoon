@@ -200,7 +200,7 @@
       %-  pairs
       :^    [%is-rice %b %&]
           [%salt (numb salt.p.germ)]
-        [%data (numb 0)]
+        [%data ~]
       ~
     %-  pairs
     :^    [%is-rice %b %|]

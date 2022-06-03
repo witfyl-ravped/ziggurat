@@ -225,10 +225,15 @@
   ?>  ?=([%wheat @ @tas @ta ^] path)
   =/  id  (slav %ux i.t.path)
   =/  read-type  (slav %tas i.t.t.path)
-  =/  arg=^path  [i.t.t.t.path ~]
+  =/  arg=^path
+    ?:  =('~' i.t.t.t.t.path)
+      [i.t.t.t.path ~]
+    [i.t.t.t.path i.t.t.t.t.path ~]
   =/  contract-rice=(list @ux)
-    %+  turn  t.t.t.t.path
-    |=(addr=@ (slav %ux addr))
+    %+  murn  t.t.t.t.t.path
+    |=  addr=@
+    ?:  =('~' addr)  ~
+    `(slav %ux addr)
   ?~  res=(~(get by granary) id)  ``noun+!>(~)
   ?.  ?=(%| -.germ.u.res)         ``noun+!>(~)
   ?~  cont.p.germ.u.res           ``noun+!>(~)

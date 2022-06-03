@@ -594,7 +594,7 @@
       [%rice @ ~]
     (read-rice t.path height.state relay-town-id p.globe.state)
   ::
-      [%wheat @ @tas @ta ^]  :: grain id, %noun/%json, argument @ta, then any associated rice IDs
+      [%wheat @ @tas @ta @ ^]  :: grain id, %noun/%json, argument @ta, other +jam'd data, like tx args, then any associated rice IDs
     (read-wheat t.path height.state relay-town-id p.globe.state)
   ::
       [%sizeof @ ~]

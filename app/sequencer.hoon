@@ -272,7 +272,7 @@
       [%rice @ ~]
     (read-rice t.path 0 (need town-id.state) p.town.state)
   ::
-      [%wheat @ @tas @ta ^]
+      [%wheat @ @tas @ta @ ^]  :: grain id, %noun/%json, argument @ta, other +jam'd data, like tx args, then any associated rice IDs
     (read-wheat t.path 0 (need town-id.state) p.town.state)
   ::
       [%sizeof @ ~]

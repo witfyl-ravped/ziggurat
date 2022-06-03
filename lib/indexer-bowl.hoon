@@ -108,7 +108,7 @@
     ^-  json
     %-  pairs
     :+  [%shell (shell p.egg)]
-      [%yolk (yolk q.egg)]
+      [%yolk (yolk egg)]
     ~
   ::
   ++  shell
@@ -127,12 +127,21 @@
     ==
   ::
   ++  yolk
-    |=  =yolk:smart
+    |=  [=shell:smart =yolk:smart]
     ^-  json
     ?>  ?=(account:smart caller.yolk)
     %-  pairs
     :~  [%caller (account caller.yolk)]
-        [%args ~]  :: TODO: rewrite when can mold
+        :-  %args
+        ?~  args.yolk  ~
+        .^  json
+            %gx
+            %-  zing
+            :^    /(scot %p our.bowl)/sequencer
+                /(scot %da now.bowl)/wheat/(scot %ux to.shell)
+              /json/egg-args/(scot %ud (jam u.args.yolk))/~/noun
+            ~
+        ==
         [%my-grains (ids my-grains.yolk)]
         [%cont-grains (ids cont-grains.yolk)]
     ==
@@ -193,28 +202,25 @@
     ==
   ::
   ++  germ
-    ::  TODO: rewrite when can get data/cont molds
-    :: |=  =germ:smart
     |=  [=germ:smart wheat-id=id:smart rice-id=id:smart]
     ^-  json
     ?:  ?=(%& -.germ)
       %-  pairs
       :^    [%is-rice %b %&]
           [%salt (numb salt.p.germ)]
-        :: [%data (numb 0)]
         :-  %data
         .^  json
             %gx
             %-  zing
             :^    /(scot %p our.bowl)/sequencer
                 /(scot %da now.bowl)/wheat/(scot %ux wheat-id)
-              /json/rice-data/(scot %ux rice-id)/noun
+              /json/rice-data/~/(scot %ux rice-id)/noun
             ~
         ==
       ~
     %-  pairs
     :^    [%is-rice %b %|]
-        [%cont ~]
+        [%cont ~]  ::  TODO
         :: [%cont .^(json %gx /=sequencer=/wheat/[wheat-id]/json/[read-arg]/[rice-list])]
       [%owns (ids owns.p.germ)]
     ~
