@@ -11,7 +11,7 @@
   !<(typ [-:!>(*typ) val])
 ::
 ++  mill
-  |_  [miller=account town-id=@ud blocknum=@ud now=time]
+  |_  [miller=account town-id=@ud blocknum=@ud]
   ::
   ::  +mill-all: mills all eggs in basket
   ::

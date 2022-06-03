@@ -547,7 +547,7 @@
       =+  /(scot %p our.bowl)/wallet/(scot %da now.bowl)/account/(scot %ux (need address.state))/(scot %ud relay-town-id)/noun
       =+  .^(account:smart %gx -)
       =/  globe-chunk
-        (~(mill-all mil - relay-town-id height.state now.bowl) globe.state ~(tap in basket.state))
+        (~(mill-all mil - relay-town-id height.state) globe.state ~(tap in basket.state))
       =+  :_  height.state
           %+  ~(put by (~(gut by queue.state) slot-num ~))
           relay-town-id  globe-chunk
