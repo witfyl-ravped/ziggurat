@@ -61,12 +61,12 @@
   ::  patterns of arguments supported by this contract
   ::  "args" in input must fit one of these molds
   ::
-  +$  mint  [to=id to-rice=(unit id) amount=@ud]  ::  helper type for mint
+  +$  mint  [to=id account=(unit id) amount=@ud]  ::  helper type for mint
   +$  arguments
     $%  ::  token holder actions
         ::
-        [%give to=id to-rice=(unit id) amount=@ud]
-        [%take to=id to-rice=(unit id) from-rice=id amount=@ud]
+        [%give to=id account=(unit id) amount=@ud]
+        [%take to=id account=(unit id) from-rice=id amount=@ud]
         [%set-allowance who=id amount=@ud]  ::  (to revoke, call with amount=0)
         ::  token management actions
         ::
@@ -95,7 +95,7 @@
       ?>  &(=(lord.giv me.cart) ?=(%& -.germ.giv))
       =/  giver=account  ;;(account data.p.germ.giv)
       ?>  (gte balance.giver amount.args)
-      ?~  to-rice.args
+      ?~  account.args
         ::  create new rice for reciever and add it to state
         =+  (fry-rice to.args me.cart town-id.cart salt.p.germ.giv)
         =/  new=grain
@@ -106,7 +106,7 @@
           [caller.inp `[%give to.args `id.new amount.args] (silt ~[id.giv]) (silt ~[id.new])]
         [~ (malt ~[[id.new new]]) ~]
       ::  giving account in embryo, and receiving one in owns.cart
-      =/  rec=grain  (~(got by owns.cart) u.to-rice.args)
+      =/  rec=grain  (~(got by owns.cart) u.account.args)
       ?>  ?=(%& -.germ.rec)
       =/  receiver=account  ;;(account data.p.germ.rec)
       ::  assert that tokens match
@@ -129,7 +129,7 @@
       ::  assert caller is permitted to spend this amount of token
       ?>  (gte balance.giver amount.args)
       ?>  (gte allowance amount.args)
-      ?~  to-rice.args
+      ?~  account.args
         ::  create new rice for reciever and add it to state
         =+  (fry-rice to.args me.cart town-id.cart salt.p.germ.giv)
         =/  new=grain
@@ -140,7 +140,7 @@
           [caller.inp `[%take to.args `id.new id.giv amount.args] ~ (silt ~[id.giv id.new])]
         [~ (malt ~[[id.new new]]) ~]
       ::  direct send
-      =/  rec=grain  (~(got by owns.cart) u.to-rice.args)
+      =/  rec=grain  (~(got by owns.cart) u.account.args)
       ?>  ?=(%& -.germ.rec)
       =/  receiver=account  ;;(account data.p.germ.rec)
       ?>  =(metadata.receiver metadata.giver)
@@ -211,7 +211,7 @@
           [caller.inp `[%mint token.args next-mints] ~ call-grains]
         [changed-rice issued-rice ~]
       ::
-      ?~  to-rice.i.mints
+      ?~  account.i.mints
         ::  need to issue
         =+  (fry-rice to.i.mints me.cart town-id.cart salt.meta)
         =/  new=grain
@@ -222,7 +222,7 @@
           next-mints   (~(put in next-mints) [to.i.mints `id.new amount.i.mints])
         ==
       ::  have rice, can modify
-      =/  =grain  (~(got by owns.cart) u.to-rice.i.mints)
+      =/  =grain  (~(got by owns.cart) u.account.i.mints)
       ?>  &(=(lord.grain me.cart) ?=(%& -.germ.grain))
       =/  acc  ;;(account data.p.germ.grain)
       ?>  =(metadata.acc token.args)
@@ -368,17 +368,12 @@
       ++  give
         ?>  ?=(%give -.a)  ::  TODO: remove
         (give-or-mint +.a)
-        :: %-  pairs
-        :: :^    [%to %s (scot %ux to.a)]
-        ::     [%to-rice ?~(to-rice.a ~ [%s (scot %ux u.to-rice.a)])]
-        ::   [%amount (numb amount.a)]
-        :: ~
       ::
       ++  take
         ?>  ?=(%take -.a)  ::  TODO: remove
         %-  pairs
         :~  [%to %s (scot %ux to.a)]
-            [%to-rice ?~(to-rice.a ~ [%s (scot %ux u.to-rice.a)])]
+            [%account ?~(account.a ~ [%s (scot %ux u.account.a)])]
             [%from-rice %s (scot %ux from-rice.a)]
             [%amount (numb amount.a)]
         ==
@@ -410,10 +405,10 @@
         ==
       ::
       ++  give-or-mint
-        |=  [to=id to-rice=(unit id) amount=@ud]
+        |=  [to=id account=(unit id) amount=@ud]
         %-  pairs
         :^    [%to %s (scot %ux to)]
-            [%to-rice ?~(to-rice ~ [%s (scot %ux u.to-rice)])]
+            [%account ?~(account ~ [%s (scot %ux u.account)])]
           [%amount (numb amount)]
         ~
       ::
@@ -472,12 +467,12 @@
     ::  patterns of arguments supported by this contract
     ::  "args" in input must fit one of these molds
     ::
-    +$  mint  [to=id to-rice=(unit id) amount=@ud]  ::  helper type for mint
+    +$  mint  [to=id account=(unit id) amount=@ud]  ::  helper type for mint
     +$  arguments
       $%  ::  token holder actions
           ::
-          [%give to=id to-rice=(unit id) amount=@ud]
-          [%take to=id to-rice=(unit id) from-rice=id amount=@ud]
+          [%give to=id account=(unit id) amount=@ud]
+          [%take to=id account=(unit id) from-rice=id amount=@ud]
           [%set-allowance who=id amount=@ud]  ::  (to revoke, call with amount=0)
           ::  token management actions
           ::
