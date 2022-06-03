@@ -635,7 +635,10 @@
               (make-one-block-serve-update previous-parsed-block)
             =/  serve-most-recent-update=_serve-update
               (make-one-block-serve-update most-recent-parsed-block)
-            %+  murn  ~(tap in (~(get ju sub-paths) query-type))
+            ::  for id-based subscriptions, get cards from both from and to.
+            =/  path-type
+              ?:(?=(?(%from %to) query-type) %id query-type)
+            %+  murn  ~(tap in (~(get ju sub-paths) path-type))
             |=  id=@u
             =/  payload=?(@u [@ud @ud @u])
               ?~  payload-prefix  id
@@ -651,11 +654,184 @@
               [%indexer-update !>(`update:ui`u.update)]
             ~[(snoc path-prefix (scot id-type id))]
           ::
+          ++  are-updates-same
+            ::  %.y if non-location portion of update is same
+            ::  %.n if different
+            |=  [one=(unit update:ui) two=(unit update:ui)]
+            |^  ^-  ?
+            ?~  one  ?=(~ two)
+            ?~  two  %.n
+            ?+    -.u.one  !!
+            ::
+                %chunk
+              ?.  ?=(%chunk -.u.two)  %.n
+              =(chunk.u.one chunk.u.two)
+            ::
+                %egg
+              ?.  ?=(%egg -.u.two)  %.n
+              .=  (make-id-egg-set eggs.u.one)
+              (make-id-egg-set eggs.u.two)
+            ::
+                %grain
+              ?.  ?=(%grain -.u.two)  %.n
+              .=  (make-id-grain-set grains.u.one)
+              (make-id-grain-set grains.u.two)
+            ::
+                %slot
+              ?.  ?=(%slot -.u.two)  %.n
+              .=  (make-id-slot-set slots.u.one)
+              (make-id-slot-set slots.u.two)
+            ::
+            ==
+            ::
+            ++  make-id-egg-set
+              |=  eggs=(map id:smart [egg-location:ui egg:smart])
+              ^-  (set [id:smart egg:smart])
+              %-  silt
+              %+  turn  ~(tap by eggs)
+              |=  [=id:smart egg-location:ui =egg:smart]
+              [id egg]
+            ::
+            ++  make-id-grain-set
+              |=  grains=(map id:smart [town-location:ui grain:smart])
+              ^-  (set [id:smart grain:smart])
+              %-  silt
+              %+  turn  ~(tap by grains)
+              |=  [=id:smart town-location:ui =grain:smart]
+              [id grain]
+            ::
+            ++  make-id-slot-set
+              |=  slots=(map id:smart [block-location:ui slot:zig])
+              ^-  (set [id:smart slot:zig])
+              %-  silt
+              %+  turn  ~(tap by slots)
+              |=  [=id:smart block-location:ui =slot:zig]
+              [id slot]
+            ::
+            --
+          ::
           --
         ::
         --
       ::
+      ::  parse a given block into hash:location
+      ::  pairs to be added to *-index
+      ::
+      ++  parse-block
+        |_  [epoch-num=@ud block-num=@ud]
+        ++  $
+          |=  [=slot:zig]
+          ^-  parsed-block
+          ?>  ?=(^ q.slot)
+          =*  block-header  p.slot
+          =*  block         u.q.slot
+          =/  block-hash=(list [@ux block-location:ui])
+            ~[[`@ux`data-hash.block-header epoch-num block-num]]  :: TODO: should key be @uvH?
+          =|  egg=(list [@ux egg-location:ui])
+          =|  from=(list [@ux second-order-location:ui])
+          =|  grain=(list [@ux town-location:ui])
+          =|  holder=(list [@ux second-order-location:ui])
+          =|  lord=(list [@ux second-order-location:ui])
+          =|  to=(list [@ux second-order-location:ui])
+          =/  chunks=(list [town-id=@ud =chunk:zig])
+            ~(tap by chunks.block)
+          :-  block-hash
+          |-
+          ?~  chunks  [egg from grain holder lord to]
+          =*  town-id  town-id.i.chunks
+          =*  chunk    chunk.i.chunks
+          ::
+          =+  ^=  [new-egg new-from new-grain new-holder new-lord new-to]
+              (parse-chunk town-id chunk)
+          %=  $
+              chunks  t.chunks
+              egg     (weld egg new-egg)
+              from    (weld from new-from)
+              grain   (weld grain new-grain)
+              holder  (weld holder new-holder)
+              lord    (weld lord new-lord)
+              to      (weld to new-to)
+          ==
+        ::
+        ++  parse-chunk
+          |=  [town-id=@ud =chunk:zig]
+          ^-  $:  (list [@ux egg-location:ui])
+                  (list [@ux second-order-location:ui])
+                  (list [@ux town-location:ui])
+                  (list [@ux second-order-location:ui])
+                  (list [@ux second-order-location:ui])
+                  (list [@ux second-order-location:ui])
+              ==
+          =*  txs      -.chunk
+          =*  granary  p.+.chunk
+          ::
+          =+  [new-grain new-holder new-lord]=(parse-granary town-id granary)
+          =+  [new-egg new-from new-to]=(parse-transactions town-id txs)
+          [new-egg new-from new-grain new-holder new-lord new-to]
+        ::
+        ++  parse-granary
+          |=  [town-id=@ud =granary:smart]
+          ^-  $:  (list [@ux town-location:ui])
+                  (list [@ux second-order-location:ui])
+                  (list [@ux second-order-location:ui])
+              ==
+          =|  parsed-grain=(list [@ux town-location:ui])
+          =|  parsed-holder=(list [@ux second-order-location:ui])
+          =|  parsed-lord=(list [@ux second-order-location:ui])
+          =/  grains=(list [@ux grain:smart])
+            ~(tap by granary)
+          |-
+          ?~  grains  [parsed-grain parsed-holder parsed-lord]
+          =*  grain-id   id.i.grains
+          =*  holder-id  holder.i.grains
+          =*  lord-id    lord.i.grains
+          %=  $
+              grains  t.grains
+              parsed-grain
+            :_  parsed-grain
+            :-  grain-id
+            [epoch-num block-num town-id]
+          ::
+              parsed-holder
+            [[holder-id grain-id] parsed-holder]
+          ::
+              parsed-lord
+            [[lord-id grain-id] parsed-lord]
+          ::
+          ==
+        ::
+        ++  parse-transactions
+          |=  [town-id=@ud txs=(list [@ux egg:smart])]
+          ^-  $:  (list [@ux egg-location:ui])
+                  (list [@ux second-order-location:ui])
+                  (list [@ux second-order-location:ui])
+              ==
+          =|  parsed-egg=(list [@ux egg-location:ui])
+          =|  parsed-from=(list [@ux second-order-location:ui])
+          =|  parsed-to=(list [@ux second-order-location:ui])
+          =/  egg-num=@ud  0
+          |-
+          ?~  txs  [parsed-egg parsed-from parsed-to]
+          =*  tx-hash  -.i.txs
+          =*  egg      +.i.txs
+          =*  to       to.p.egg
+          =*  from
+            ?:  ?=(@ux from.p.egg)  from.p.egg
+            id.from.p.egg
+          =/  =egg-location:ui
+            [epoch-num block-num town-id egg-num]
+          %=  $
+              txs          t.txs
+              parsed-egg   [[tx-hash egg-location] parsed-egg]
+              parsed-from  [[from tx-hash] parsed-from]
+              parsed-to    [[to tx-hash] parsed-to]
+              egg-num      +(egg-num)
+          ==
+        ::
+        --
+      ::
       --
+    ::
     --
   ::
   ++  on-arvo  on-arvo:def
@@ -664,7 +840,7 @@
   --
 ::
 |_  =bowl:gall
-+*  io   ~(. agentio bowl)
++*  io  ~(. agentio bowl)
 ::
 ++  epochs-catchup-wire
   ^-  wire
@@ -833,55 +1009,6 @@
   ::
       to-index
     (~(gas ju *(jug @ux second-order-location:ui)) to)
-  ::
-  ==
-::
-++  are-updates-same
-  ::  %.y if non-location portion of update is same
-  ::  %.n if different
-  |=  [one=(unit update:ui) two=(unit update:ui)]
-  ^-  ?
-  ?~  one  ?=(~ two)
-  ?~  two  %.n
-  :: ?.  ?=(-.u.one -.u.two)  %.n  ::  different update type?
-  ?+    -.u.one  !!
-  ::
-      %chunk
-    ?.  ?=(%chunk -.u.two)  %.n
-    =(chunk.u.one chunk.u.two)
-  ::
-      %egg
-    ?.  ?=(%egg -.u.two)  %.n
-    =/  two-eggs=(set egg:smart)
-      %-  ~(gas in *(set egg:smart))
-      %+  turn  ~(val by eggs.u.two)
-      |=  [egg-location:ui =egg:smart]
-      egg
-    %-  ~(all by eggs.u.one)
-    |=  [egg-location:ui one-egg=egg:smart]
-    (~(has in two-eggs) one-egg)
-  ::
-      %grain
-    ?.  ?=(%grain -.u.two)  %.n
-    =/  two-grains=(set grain:smart)
-      %-  ~(gas in *(set grain:smart))
-      %+  turn  ~(val by grains.u.two)
-      |=  [town-location:ui =grain:smart]
-      grain
-    %-  ~(all by grains.u.one)
-    |=  [town-location:ui one-grain=grain:smart]
-    (~(has in two-grains) one-grain)
-  ::
-      %slot
-    ?.  ?=(%slot -.u.two)  %.n
-    =/  two-slots=(set slot:zig)
-      %-  ~(gas in *(set slot:zig))
-      %+  turn  ~(val by slots.u.two)
-      |=  [block-location:ui =slot:zig]
-      slot
-    %-  ~(all by slots.u.one)
-    |=  [block-location:ui one-slot=slot:zig]
-    (~(has in two-slots) one-slot)
   ::
   ==
 ::
@@ -1157,119 +1284,5 @@
     ::
     ==
   ::
-  --
-::  parse a given block into hash:location
-::  pairs to be added to *-index
-::
-++  parse-block
-  |_  [epoch-num=@ud block-num=@ud]
-  ++  $
-    |=  [=slot:zig]
-    ^-  parsed-block
-    ?>  ?=(^ q.slot)
-    =*  block-header  p.slot
-    =*  block         u.q.slot
-    =/  block-hash=(list [@ux block-location:ui])
-      ~[[`@ux`data-hash.block-header epoch-num block-num]]  :: TODO: should key be @uvH?
-    =|  egg=(list [@ux egg-location:ui])
-    =|  from=(list [@ux second-order-location:ui])
-    =|  grain=(list [@ux town-location:ui])
-    =|  holder=(list [@ux second-order-location:ui])
-    =|  lord=(list [@ux second-order-location:ui])
-    =|  to=(list [@ux second-order-location:ui])
-    =/  chunks=(list [town-id=@ud =chunk:zig])
-      ~(tap by chunks.block)
-    :-  block-hash
-    |-
-    ?~  chunks  [egg from grain holder lord to]
-    =*  town-id  town-id.i.chunks
-    =*  chunk    chunk.i.chunks
-    ::
-    =+  ^=  [new-egg new-from new-grain new-holder new-lord new-to]
-        (parse-chunk town-id chunk)
-    %=  $
-        chunks  t.chunks
-        egg     (weld egg new-egg)
-        from    (weld from new-from)
-        grain   (weld grain new-grain)
-        holder  (weld holder new-holder)
-        lord    (weld lord new-lord)
-        to      (weld to new-to)
-    ==
-  ::
-  ++  parse-chunk
-    |=  [town-id=@ud =chunk:zig]
-    ^-  $:  (list [@ux egg-location:ui])
-            (list [@ux second-order-location:ui])
-            (list [@ux town-location:ui])
-            (list [@ux second-order-location:ui])
-            (list [@ux second-order-location:ui])
-            (list [@ux second-order-location:ui])
-        ==
-    =*  txs      -.chunk
-    =*  granary  p.+.chunk
-    ::
-    =+  [new-grain new-holder new-lord]=(parse-granary town-id granary)
-    =+  [new-egg new-from new-to]=(parse-transactions town-id txs)
-    [new-egg new-from new-grain new-holder new-lord new-to]
-  ::
-  ++  parse-granary
-    |=  [town-id=@ud =granary:smart]
-    ^-  $:  (list [@ux town-location:ui])
-            (list [@ux second-order-location:ui])
-            (list [@ux second-order-location:ui])
-        ==
-    =|  parsed-grain=(list [@ux town-location:ui])
-    =|  parsed-holder=(list [@ux second-order-location:ui])
-    =|  parsed-lord=(list [@ux second-order-location:ui])
-    =/  grains=(list [@ux grain:smart])
-      ~(tap by granary)
-    |-
-    ?~  grains  [parsed-grain parsed-holder parsed-lord]
-    =*  grain-id   id.i.grains
-    =*  holder-id  holder.i.grains
-    =*  lord-id    lord.i.grains
-    %=  $
-        grains  t.grains
-        parsed-grain
-      :_  parsed-grain
-      :-  grain-id
-      [epoch-num block-num town-id]
-    ::
-        parsed-holder
-      [[holder-id grain-id] parsed-holder]
-    ::
-        parsed-lord
-      [[lord-id grain-id] parsed-lord]
-    ::
-    ==
-  ::
-  ++  parse-transactions
-    |=  [town-id=@ud txs=(list [@ux egg:smart])]
-    ^-  $:  (list [@ux egg-location:ui])
-            (list [@ux second-order-location:ui])
-            (list [@ux second-order-location:ui])
-        ==
-    =|  parsed-egg=(list [@ux egg-location:ui])
-    =|  parsed-from=(list [@ux second-order-location:ui])
-    =|  parsed-to=(list [@ux second-order-location:ui])
-    =/  egg-num=@ud  0
-    |-
-    ?~  txs  [parsed-egg parsed-from parsed-to]
-    =*  tx-hash  -.i.txs
-    =*  egg      +.i.txs
-    =*  to       to.p.egg
-    =*  from
-      ?:  ?=(@ux from.p.egg)  from.p.egg
-      id.from.p.egg
-    =/  =egg-location:ui
-      [epoch-num block-num town-id egg-num]
-    %=  $
-        txs          t.txs
-        parsed-egg   [[tx-hash egg-location] parsed-egg]
-        parsed-from  [[from tx-hash] parsed-from]
-        parsed-to    [[to tx-hash] parsed-to]
-        egg-num      +(egg-num)
-    ==
   --
 --

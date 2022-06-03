@@ -1,5 +1,7 @@
 # Development Instructions
 
+##  Initial Installation
+
 1. Start by cloning the urbit/urbit repository from github.
 `git clone git@github.com:urbit/urbit.git`
 
@@ -31,51 +33,51 @@ links to other desks, such as base-dev and garden-dev.
 10. Now, install the desk in your Urbit, which will run the agents.
 `|install our %zig`
 
-### To initialize a blockchain:
+---
+## Running a Blockchain
 
-*Note: make sure the ship you're using is in the [whitelist](https://github.com/uqbar-dao/ziggurat/blob/e07ac60c29d94188f7594992b0fac347071a5c85/lib/zig/util.hoon#L14)*
+*Note: make sure the ship you're using is in the [whitelist](https://github.com/uqbar-dao/ziggurat/blob/77579b1924e51774c168ba19356f3b807f607861/lib/zig/util.hoon#L14-L26)*
 
-1. Start by populating the wallet with the correct data (need to do this first, but with block explorer we can make wallet find this itself):
-```
-:wallet &zig-wallet-poke [%populate 0xbeef]
-```
+**To start up a new testnet:**
 
-1.5. If you're seeking to join an existing chain, set your wallet to send transactions to a sequencer already involved. Use town ID `0` if you're submitting a transaction to join the relay chain.
-```
-:wallet &zig-wallet-poke [%set-node <TOWN ID> <SHIP>]
-```
-
-*for testing: use `0xbeef` for ~zod, `0xdead` for next ship, `0xcafe` for 3rd*
-
-2. Give your validator agent a pubkey to match the data in the wallet:
+We'll use a pubkey/seed combo here that has tokens pre-minted for us.
+Enter these commands in dojo after following the setup instructions above:
 ```
 :ziggurat &zig-chain-poke [%set-addr 0x3.e87b.0cbb.431d.0e8a.2ee2.ac42.d9da.cab8.063d.6bb6.2ff9.b2aa.e1b9.0f56.9c3f.3423]
-
-0xbeef  0x3.e87b.0cbb.431d.0e8a.2ee2.ac42.d9da.cab8.063d.6bb6.2ff9.b2aa.e1b9.0f56.9c3f.3423
-0xdead  0x2.eaea.cffd.2bbe.e0c0.02dd.b5f8.dd04.e63f.297f.14cf.d809.b616.2137.126c.da9e.8d3d
-0xcafe  0x2.4a1c.4643.b429.dc12.6f3b.03f3.f519.aebb.5439.08d3.e0bf.8fc3.cb52.b92c.9802.636e
-```
-*This is one of 3 addresses with zigs already added, and corresponds to the seed `0xbeef`. to test with more, find matching pubkey in wallet*
-
-3. To start the indexer/block explorer backend, use:
-```
-:indexer &set-chain-source [our %ziggurat]
-```
-where the argument `[our %ziggurat]` is a dock pointing to the ship running the `%ziggurat` agent to receive block updates from.
-
-4. Start up a new main chain:
-```
 :ziggurat|start-testnet now
+:indexer &set-chain-source [our %ziggurat]
+:wallet &zig-wallet-poke [%populate 0xbeef]
 ```
-(to add other ships, follow above instructions with 2nd and 3rd seed/pubkey combos, but use poke `:ziggurat &zig-chain-poke [%start %validator ~ validators=(silt ~[~zod]) [~ ~]]`) here, where `~[~zod]` is some set of ships validating (you only need one that's not you)
-
-6. Start up a town that has the token contract deployed. Wait until the wallet sees an update from the indexer to do this. Note that you'll have to `%set-node` in %wallet like in step 1.5 to submit transactions to this new town.
+You can initialize a town on your new testnet with the generator in `/gen/sequencer/init.hoon`. Use this as a template to create your own town with pre-generated data if you desire to test a specific contract.
 ```
 :sequencer|init 1
 ```
 (1 here is the town-id)
 
-# To use the wallet
+---
+
+**To join an existing testnet:**
+
+1. Start by setting your local indexer to track from a ship that's already in the testnet: `:indexer &set-chain-source [<SHIP> %ziggurat]`
+
+2. Populate your wallet with an account. If you know of a pubkey/seed combo with existing tokens, you can use it here: `:wallet &zig-wallet-poke [%populate <SEED>]` Otherwise, you can use the wallet frontend to generate a hot wallet and ask someone in the testnet to send tokens to your address -- you'll need them to submit your chain-join transaction. Here is the set of accounts with tokens pre-minted in the default testnet init script:
+```
+seed: 0xbeef  public key: 0x3.e87b.0cbb.431d.0e8a.2ee2.ac42.d9da.cab8.063d.6bb6.2ff9.b2aa.e1b9.0f56.9c3f.3423
+seed: 0xdead  public key: 0x2.eaea.cffd.2bbe.e0c0.02dd.b5f8.dd04.e63f.297f.14cf.d809.b616.2137.126c.da9e.8d3d
+seed: 0xcafe  public key: 0x2.4a1c.4643.b429.dc12.6f3b.03f3.f519.aebb.5439.08d3.e0bf.8fc3.cb52.b92c.9802.636e
+```
+
+3. Set your wallet to submit transactions to a ship already in the testnet: `:wallet &zig-wallet-poke [%set-node 0 <SHIP>]`
+
+4. Give your validator agent a pubkey to match either the data you populated the wallet with, or generated and had tokens sent to:
+`:ziggurat &zig-chain-poke [%set-addr <PUBLIC KEY>]` (this is the address which gas fees earned by your sequencing will be sent to)
+
+5. Submit a transaction to join the testnet. Once again, use a ship here that's already active in the testnet you wish to join: `:ziggurat &zig-chain-poke [%start %validator ~ validators=(silt ~[<SHIP>]) [~ ~]]`
+
+You should see `%ziggurat: attempting to join relay chain`, and if the transaction was accepted, you will begin participating in the relay chain at the beginning of the next epoch.
+
+---
+## Using the Wallet
 
 1. Scry for a JSON dict of accounts, keyed by address, containing private key, nickname, and nonces:
 `.^(json %gx /=wallet=/accounts/noun)`
@@ -90,7 +92,7 @@ where the argument `[our %ziggurat]` is a dock pointing to the ship running the 
 `.^(json %gx /=wallet=/seed/json)`
 
 
-### Wallet pokes available:
+**Wallet pokes available:**
 (only those with JSON support shown)
 
 ```
@@ -122,17 +124,20 @@ where the argument `[our %ziggurat]` is a dock pointing to the ship running the 
    }
 }
 ```
-(example pokes that will work upon chain initialization in dojo):
+Example pokes that will work upon chain initialization in dojo):
 ```
 #  ZIGS
-:wallet &zig-wallet-poke [%submit 0x3.e87b.0cbb.431d.0e8a.2ee2.ac42.d9da.cab8.063d.6bb6.2ff9.b2aa.e1b9.0f56.9c3f.3423 0x74.6361.7274.6e6f.632d.7367.697a 1 [1 10.000] [%give 1.936.157.050 0x2.eaea.cffd.2bbe.e0c0.02dd.b5f8.dd04.e63f.297f.14cf.d809.b616.2137.126c.da9e.8d3d 777]]
+:wallet &zig-wallet-poke [%submit 0x3.e87b.0cbb.431d.0e8a.2ee2.ac42.d9da.cab8.063d.6bb6.2ff9.b2aa.e1b9.0f56.9c3f.3423 0x74.6361.7274.6e6f.632d.7367.697a 0 [1 10.000] [%give 1.936.157.050 0x2.eaea.cffd.2bbe.e0c0.02dd.b5f8.dd04.e63f.297f.14cf.d809.b616.2137.126c.da9e.8d3d 777]]
 
 #  NFT
 :wallet &zig-wallet-poke [%submit 0x3.e87b.0cbb.431d.0e8a.2ee2.ac42.d9da.cab8.063d.6bb6.2ff9.b2aa.e1b9.0f56.9c3f.3423 0xcafe.babe 1 [1 10.000] [%give 32.770.263.103.071.854 0x2.eaea.cffd.2bbe.e0c0.02dd.b5f8.dd04.e63f.297f.14cf.d809.b616.2137.126c.da9e.8d3d 1]]
+
+#  CUSTOM TRANSACTION
+:wallet &zig-wallet-poke [%submit-custom from=0x3.e87b.0cbb.431d.0e8a.2ee2.ac42.d9da.cab8.063d.6bb6.2ff9.b2aa.e1b9.0f56.9c3f.3423 to=0x74.6361.7274.6e6f.632d.7367.697a town=0 gas=[1 1.000] args='[%give 0x2.eaea.cffd.2bbe.e0c0.02dd.b5f8.dd04.e63f.297f.14cf.d809.b616.2137.126c.da9e.8d3d `0x532c.d5cf.befc.5c0f.0d88.3e91.f6da.0181 777 1.000]' my-grains=(silt ~[0x532c.d5cf.befc.5c0f.86e1.40bb.6e89.c2d8]) cont-grains=(silt ~[0x532c.d5cf.befc.5c0f.0d88.3e91.f6da.0181])]
 ```
 
-
-### Build DAO contracts
+---
+## Build DAO contracts
 
 If run on a fakezod located at `~/urbit/zod`, the following will create the compiled DAO contract at `~/urbit/zod/.urb/put/dao.noun`:`
 ```

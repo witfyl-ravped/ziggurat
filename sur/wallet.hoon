@@ -8,15 +8,20 @@
 ::
 +$  token-type  ?(%token %nft %unknown)
 ::
+::  TODO: move this to smart.hoon?
++$  egg-status-code
+  ::  TX status codes:
+  $%  %100  ::  100: transaction submitted from wallet to sequencer
+      %101  ::  101: transaction received by sequencer
+      %103  ::  103: failure: transaction rejected by sequencer
+      ::  see smart.hoon: mill errorcodes
+      %0  %1  %2  %3
+      %4  %5  %6  %7
+  ==
+::
 +$  wallet-update
   $%  [%new-book tokens=(map pub=id:smart =book)]
       [%tx-status hash=@ux =egg:smart args=(unit supported-args)]
-      ::  TX status codes:
-      ::  100: transaction submitted from wallet to sequencer
-      ::  101: transaction received by sequencer
-      ::  103: failure: transaction rejected by sequencer
-      ::  105: alert: transaction sent *to our address*
-      ::  0-7: see smart.hoon -- contract execution error codes
   ==
 ::
 +$  wallet-poke
