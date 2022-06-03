@@ -281,7 +281,7 @@
       ?>  =(1 ~(wyt by owns.cart))
       =/  g=grain  -:~(val by owns.cart)
       ?>  ?=(%& -.germ.g)
-      ?.  ?=([@ @ @ @ ?(~ [~ @]) ? ?(~ ^) @ @] data.p.germ.g)
+      ?.  ?=([@ @ ?(~ ^) @ ?(~ [~ @]) ? ?(~ ^) @ @] data.p.germ.g)
         (enjs-account ;;(account data.p.germ.g))
       (enjs-collection-metadata ;;(collection-metadata data.p.germ.g))
     ::
