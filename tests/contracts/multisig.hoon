@@ -35,12 +35,28 @@
     --
 ::  testing arms
 |%
-++  test-adding-member  ^-  tang
-  !!
+++  test-scenario-1  ^-  tang
+  =/  thresh=@ud        1
+  ::~!  id.owner-1
+  =/  id-owner-1  (id.owner-1)  :: wtf ???
+  =/  members=(set id)  (silt ~[id-owner-1])
+  =/  =embryo
+    :*  caller=owner-1 
+        args=`[%create-multisig thresh members]
+        grains=~
+    ==
+  =/  =cart  [0x2222.2222 block=0 town-id=1 owns=~]
+  =/  res=chick  (~(write cont cart) embryo)
+  =/  expected-state
+    :*  members
+        thresh
+        pending=~
+    ==
+  =/  state
+    ?>  ?=(%.y -.res)
+    =/  grain  (snag 0 ~(val by issued.p.res))
+    ?>  ?=(%.y -.germ.grain)
+    data.p.germ.grain
+  (expect-eq !>(expected-state) !>(state))
 ::
-++  test-submitting-tx  ^-  tang
-  !!
-::
-++  test-submitting-vote
-  !!
 --
