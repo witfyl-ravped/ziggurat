@@ -1,6 +1,6 @@
 /+  *zink-zink, smart=zig-sys-smart, ethereum
 /*  smart-lib  %noun  /lib/zig/compiled/smart-lib/noun
-/*  zink-cax   %noun  /lib/zig/sys/hoon-arm-cache/noun
+/*  zink-cax   %noun  /lib/zig/compiled/hash-cache/noun
 =,  smart
 |_  library=*
 ::
