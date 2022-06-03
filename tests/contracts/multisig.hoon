@@ -35,7 +35,7 @@
     --
 ::  testing arms
 |%
-++  test-scenario-1  ^-  tang
+++  test-create-multisig  ^-  tang
   =/  thresh=@ud        1
   ::~!  id.owner-1
   =/  id-owner-1  (id.owner-1)  :: wtf ???
