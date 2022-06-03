@@ -1,5 +1,5 @@
-/-  ui=uqbar-indexer
-/+  ui-lib=uqbar-indexer
+/-  ui=indexer
+/+  ui-lib=indexer
 ::
 |_  =update:ui
 ++  grab

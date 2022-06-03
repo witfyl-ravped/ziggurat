@@ -7,7 +7,7 @@
 ::  possibly we can show that no logic can result in unwanted secret
 ::  manipulation
 ::
-/-  uqbar-indexer
+/-  indexer
 /+  *ziggurat, default-agent, dbug, verb
 /*  smart-lib  %noun  /lib/zig/compiled/smart-lib/noun
 =,  util
@@ -151,7 +151,7 @@
       ::  so we can subscribe to them all
       ~|  "%ziggurat: error: can't find validators on-chain"
       =/  capitol-search
-        .^(update:uqbar-indexer %gx /(scot %p our.bowl)/uqbar-indexer/(scot %da now.bowl)/grain/(scot %ux 'ziggurat')/noun)
+        .^(update:indexer %gx /(scot %p our.bowl)/indexer/(scot %da now.bowl)/grain/(scot %ux 'ziggurat')/noun)
       ?>  ?=(%grain -.capitol-search)
       =/  capitol-grain=grain:smart  +.+.-:~(tap by grains.capitol-search)
       ?>  ?=(%& -.germ.capitol-grain)
@@ -271,6 +271,9 @@
         %forward
       ::  only accepts transactions from possible validators/sequencers
       =.  eggs.act  (filter eggs.act |=(=egg:smart =(relay-town-id town-id.p.egg)))
+      ::  TODO FIX: if transaction is submitted after this ship has made their block,
+      ::  the transaction gets stuck in limbo. Can fix by having ziggurats forward their basket
+      ::  at beginning of epoch if it isn't empty.
       =+  final-producer=(get-second-to-last order.cur)
       ?:  =(our.bowl final-producer)
         `state(basket (~(uni in basket) eggs.act))
@@ -592,10 +595,10 @@
   ::  scries for contracts
   ::
       [%rice @ ~]
-    (read-rice +.path height.state relay-town-id p.globe.state)
+    (read-rice t.path height.state relay-town-id p.globe.state)
   ::
       [%wheat @ @tas @ta ^]  :: grain id, %noun/%json, argument @ta, then any associated rice IDs
-    (read-wheat +.path height.state relay-town-id p.globe.state)
+    (read-wheat t.path height.state relay-town-id p.globe.state)
   ::
       [%sizeof @ ~]
     ::  give size of item in global granary

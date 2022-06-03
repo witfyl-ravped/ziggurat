@@ -29,9 +29,9 @@
 ::
 ::
 /-  push-hook,
-    uqbar-indexer,
     d=dao,
-    res=resource
+    res=resource,
+    ui=indexer
 /+  agentio,
     dbug,
     default-agent,
@@ -234,7 +234,7 @@
         ~[u.wi]
       ::
           %fact
-        =+  !<(=update:uqbar-indexer q.cage.sign)
+        =+  !<(=update:ui q.cage.sign)
         =/  [dao-id=id:smart new-dao=dao:d]
           (get-dao-from-update update)
         ?~  (peek-dao dao-id)
@@ -339,10 +339,10 @@
       [new-host %dao]  sub-path
     ::
     ++  get-dao-from-update
-      |=  =update:uqbar-indexer
+      |=  =update:ui
       ^-  [id:smart dao:d]
       ?>  ?=(%grain -.update)
-      =/  grains=(list [town-location:uqbar-indexer grain:smart])
+      =/  grains=(list [town-location:ui grain:smart])
         ~(val by grains.update)
       ?>  =(1 (lent grains))
       =/  [* dao-grain=grain:smart]  (snag 0 grains)

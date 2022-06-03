@@ -229,7 +229,6 @@
         =/  =cart  [to blocknum town-id owns.crop]
         ::  TODO figure out how to pre-cue this and get good results
         ::
-        ::=/  =contract  (hole contract [nok.crop +:(cue q.q.smart-lib)])
         ~&  >  %contract-compiled
         =/  cax=(map * phash)  ;;(cache (cue q.q.zink-cax))
         ~&  >  %cax-compiled
