@@ -70,38 +70,32 @@
     ?.  ?=(account from.p.egg)  [town 0 %1]
     ::  validate transaction signature
     ::  using ecdsa-raw-sign in wallet, TODO review this
-    ::  comment this out for tests
+    ::  comment this out if testing mill
+    ::  TODO figure out how to guarantee raw-recover non-crashing
     =?  v.sig.p.egg  (gte v.sig.p.egg 27)  (sub v.sig.p.egg 27)
-    ~&  >>  egg
-    ::  ecdsa-raw-recover crashes so we virtualize
     =/  recovered
+      %+  ecdsa-raw-recover:secp256k1:secp:crypto
+        ?~(eth-hash.p.egg (sham (jam q.egg)) u.eth-hash.p.egg)
+      sig.p.egg
+    =/  caller-address
       ?~  eth-hash.p.egg
-        %-  mule
-        |.
         %-  compress-point:secp256k1:secp:crypto
-        %+  ecdsa-raw-recover:secp256k1:secp:crypto
-          (sham (jam q.egg))
-        sig.p.egg
-      %-  mule
-      |.
+        recovered
       %-  address-from-pub:key:ethereum
       %-  serialize-point:secp256k1:secp:crypto
-      %+  ecdsa-raw-recover:secp256k1:secp:crypto
-        u.eth-hash.p.egg
-      sig.p.egg
-    ?:  ?=(%| -.recovered)
-      ~&  >>>  "FAILED TX"
-      [town 0 %2]  ::  signature is broken in some way
-    ?.  =(id.from.p.egg p.recovered)
-    ~&  >>>  "mismatch: {<id.from.p.egg>}, {<`@ux`p.recovered>}"
+      recovered
+    ?.  =(id.from.p.egg caller-address)
+    ~&  >>>  "mill: signature mismatch: expected {<id.from.p.egg>}, got {<`@ux`caller-address>}"
       [town 0 %2]  ::  signed tx doesn't match account
-    =/  curr-nonce=@ud  (~(gut by q.town) id.from.p.egg 0)
-    ?.  =(nonce.from.p.egg +(curr-nonce))
+    ::
+    ?.  =(nonce.from.p.egg +((~(gut by q.town) id.from.p.egg 0)))
       ~&  >>>  "tx rejected; bad nonce"
       [town 0 %3]  ::  bad nonce
+    ::
     ?.  (~(audit tax p.town) egg)
       ~&  >>>  "tx rejected; not enough budget"
       [town 0 %4]  ::  can't afford gas
+    ::
     =+  [gan rem err]=(~(work farm p.town) egg)
     =/  fee=@ud   (sub budget.p.egg rem)
     :_  [fee err]
@@ -150,11 +144,11 @@
       (~(put by granary) zigs.miller u.zigs)
     --
   ::
-  ::  +farm: execute a call to a contract within a wheat
+  ::  +farm: execute a call to a contract
   ::
   ++  farm
     |_  =granary
-    ::
+    ::  +work: take egg and return updated granary, remaining budget, and errorcode (0=success)
     ++  work
       |=  =egg
       ^-  [(unit ^granary) rem=@ud =errorcode]
@@ -163,20 +157,20 @@
       ?~  final.hatchling
         [~ rem.hatchling errorcode.hatchling]
       +.hatchling
-    ::
+    ::  +incubate: fertilize and germinate, then grow
     ++  incubate
       |=  =egg
       ^-  [(unit rooster) final=(unit ^granary) rem=@ud =errorcode]
       |^
       =/  args  (fertilize q.egg)
       ?~  stalk=(germinate to.p.egg cont-grains.q.egg)
-        ~&  >>>  "failed to germinate"
+        ~&  >>>  "mill: failed to germinate"
         [~ ~ budget.p.egg %5]
       (grow u.stalk args egg)
-      ::
+      ::  +fertilize: take yolk (contract arguments) and populate with granary data
       ++  fertilize
         |=  =yolk
-        ^-  zygote
+        ^-  embryo
         ?.  ?=(account caller.yolk)  !!
         :+  caller.yolk
           args.yolk
@@ -188,7 +182,7 @@
         ?.  =(holder.u.res id.caller.yolk)  ~
         ?.  =(town-id.u.res town-id)        ~
         `[id u.res]
-      ::
+      ::  +germinate: take contract-owned grains in egg and populate with granary data
       ++  germinate
         |=  [find=id grains=(set id)]
         ^-  (unit crop)
@@ -205,26 +199,14 @@
         ?.  =(lord.u.res find)          ~
         ?.  =(town-id.u.res town-id)    ~
         `[id u.res]
-      ::
-      ::  ++  compile
-      ::    |=  nok=*
-      ::    ^-  contract
-      ::    ::=/  cued  (cue q.q.smart-lib)
-      :::   idea:  run this in mule outside mill
-      ::    ::  crazy weird issue: importing this way results in unjetted execution (my guess)
-      ::    ::  ~&  >>>  "smart-lib size: {<(met 3 (jam cued))>}"
-      ::    ::  ~&  >>>  "library size: {<(met 3 (jam library))>}"
-      ::    ::  ~&  >>>  "are they equal? {<=(cued library)>}"
-      ::    ::  contract execution with this is ~10x slower :/
-      ::    (hole contract [nok library])
       --
-    ::
+    ::  +grow: recursively apply any calls stemming from egg, return on rooster or failure
     ++  grow
-      |=  [=crop =zygote =egg]
+      |=  [=crop =embryo =egg]
       ~>  %bout
       ^-  [(unit rooster) final=(unit ^granary) rem=@ud =errorcode]
       |^
-      =+  [chick rem err]=(weed to.p.egg ~ budget.p.egg)
+      =+  [chick rem err]=(weed to.p.egg budget.p.egg)
       ?~  chick  [~ ~ rem err]
       ?:  ?=(%& -.u.chick)
         ::  rooster result, finished growing
@@ -233,7 +215,6 @@
         [`p.u.chick gan rem err]
       ::  hen result, continuation
       =*  next  next.p.u.chick
-      =*  mem   mem.p.u.chick  :: FIX! USE THIS SOMEWHERE??
       ::  continuation calls can alter grains
       ?~  gan=(harvest roost.p.u.chick to.p.egg from.p.egg)
         [~ ~ rem %7]
@@ -243,9 +224,9 @@
       ::  +weed: run contract formula with arguments and memory, bounded by bud
       ::
       ++  weed
-        |=  [to=id mem=(unit vase) budget=@ud]
+        |=  [to=id budget=@ud]
         ^-  [(unit chick) rem=@ud =errorcode]
-        =/  =cart  [mem to blocknum town-id owns.crop]
+        =/  =cart  [to blocknum town-id owns.crop]
         ::  TODO figure out how to pre-cue this and get good results
         ::
         ::=/  =contract  (hole contract [nok.crop +:(cue q.q.smart-lib)])
@@ -257,7 +238,7 @@
           :^    [p:!>(*contract) [nok.crop +:(cue q.q.smart-lib)]]
               %write
             !>(cart)
-          !>(zygote)
+          !>(embryo)
         =/  =book
           ::  need jet dashboard to run bull:
           ::  (bull |.(;;(chick (~(write contract cart) zygote))) bud)
@@ -274,6 +255,8 @@
           [~ 0 %0]
         [`(hole chick u.p.p.book) bud.q.book %0]
       --
+    ::
+    ::  +harvest: take a completed execution and validate all changes and additions to granary state
     ::
     ++  harvest
       |=  [res=rooster lord=id from=caller]
@@ -298,10 +281,12 @@
           |=  [=id =grain]
           ::  id in issued map must be equal to id in grain AND
           ::  all newly issued grains must have properly-hashed id AND
-          ::  lord of grain must be contract issuing it
-          ::  (rice and wheat have different hashing functions)
+          ::  lord of grain must be contract issuing it AND
+          ::  grain must not yet exist at that id AND
+          ::  grain IDs must match defined hashing functions
           ?&  =(id id.grain)
               =(lord lord.grain)
+              !(~(has by granary) id.grain)
               ?:  ?=(%& -.germ.grain)
                 =(id (fry-rice holder.grain lord.grain town-id.grain salt.p.germ.grain))
               =(id (fry-contract lord.grain town-id.grain cont.p.germ.grain))
