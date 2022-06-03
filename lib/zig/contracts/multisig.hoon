@@ -18,6 +18,7 @@
   ::
   ::  XX potentially add [%remove-tx tx-hash=@ux] if it makes sense?
   ::  XX potentially add expired txs?
+  +$  tx-hash   @ux
   +$  action
     $%
       ::  any id can call the following
@@ -28,7 +29,7 @@
       :: 
       ::::  the following can be called by anyone in `members`
         ::
-      [%vote tx-hash=@ux]
+      [%vote =tx-hash]
       [%submit-tx =egg]
         ::
         ::  the following must be sent by the contract
@@ -40,10 +41,14 @@
   ::
   +$  event
     $%
-      [%vote-passed tx-hash=@ux votes=(set id)]
+      [%new-vote =tx-hash voter=id multisig=id]
+      [%new-tx =tx-hash multisig=id]
+      [%vote-passed =tx-hash votes=(set id) multisig=id]
+      [%threshold-changed threshold=@ud multisig=id]
+      [%member-added new-member=id multisig=id]
+      [%member-removed removed=id multisig=id]
     ==
   ::
-  +$  tx-hash   @ux
   +$  proposal  [=egg votes=(set id)]
   +$  multisig-state
     $:  members=(set id)
@@ -118,7 +123,7 @@
       =.  pending.state         (~(del by pending.state) tx-hash)
       =.  data.p.germ.my-grain  state
       =/  crow=(list [@tas json])
-        :~  (event-to-json [%vote-passed tx-hash votes.prop])
+        :~  (event-to-json [%vote-passed tx-hash votes.prop id.my-grain])
         ==
       =/  roost=rooster  [changed=(malt ~[[id.my-grain my-grain]]) issued=~ crow]
       [%| [next=[to.p.egg town-id.p.egg q.egg]:prop roost]]
