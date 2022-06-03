@@ -122,10 +122,11 @@
     %+  ~(mill mill [0xcafe 1 0x1.cafe] 0 1)
       fake-town:zigs
     egg
-  ::  ?>  =(fee set-fee:zigs)
-  ::  ?>  =(errorcode %0)
+  ?>  =(fee (mul 2 set-fee:zigs))
+  ?>  =(errorcode %0)
   =/  correct-id  (fry-rice 0x1234 zigs-wheat-id:smart 0 `@`'zigs')
   =/  correct
+    ^-  grain:smart
     :*  correct-id
         zigs-wheat-id:smart
         0x1234

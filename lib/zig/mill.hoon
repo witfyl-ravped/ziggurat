@@ -1,5 +1,5 @@
 /+  *bink, smart=zig-sys-smart, ethereum
-/*  smart-lib  %noun  /lib/zig/compiled/smart-lib/noun
+/*  smart-lib  %noun  /lib/zig/compiled/smart-lib-testing/noun
 =,  smart
 |_  library=*
 ::
@@ -200,14 +200,15 @@
         [`roost.p.u.chick gan rem %0]
       ::  continue continuing
       ::
-      =/  intermediate
+      =/  inter
         %-  ~(incubate farm u.gan)
         egg(from.p to.p.egg, to.p to.i.next, budget.p rem, q args.i.next)
-      ?.  =(%0 errorcode.intermediate)
-        [~ ~ rem errorcode.intermediate]
+      ?.  =(%0 errorcode.inter)
+        [~ ~ rem.inter errorcode.inter]
       %=  $
         next  t.next
-        gan   final.intermediate
+        rem   rem.inter
+        gan   final.inter
       ==
       ::
       ::  +weed: run contract formula with arguments and memory, bounded by bud
@@ -219,13 +220,13 @@
         ::  TODO figure out how to pre-cue this and get good results
         ::
         =/  =contract  (hole contract [nok.crop +:(cue q.q.smart-lib)])
-        ~&  >  embryo
-        ~&  >>>  cart
+        ::  ~&  >  embryo
+        ::  ~&  >>>  cart
         =/  res
           ::  need jet dashboard to run bull:
           ::  (bull |.(;;(chick (~(write contract cart) embryo))) bud)
           (mule |.(;;(chick (~(write contract cart) embryo))))^(sub budget 7)
-        ~&  >>  "write result: {<res>}"
+        ::  ~&  >>  "write result: {<res>}"
         ?:  ?=(%| -.-.res)
           ::  error in contract execution
           [~ +.res %6]

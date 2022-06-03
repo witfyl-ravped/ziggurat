@@ -55,6 +55,7 @@
         =/  new=grain
           [- me.cart to.args town-id.cart [%& salt.p.germ.giv [0 ~ metadata.giver]]]
         :+  %|
+          :_  ~
           :+  me.cart  town-id.cart
           [caller.inp `[%give to.args `id.new amount.args budget.args] (silt ~[id.giv]) (silt ~[id.new])]
         [~ (malt ~[[id.new new]]) ~]
@@ -80,6 +81,7 @@
         =/  new=grain
           [- me.cart to.args town-id.cart [%& salt.p.germ.giv [0 ~ metadata.giver]]]
         :+  %|
+          :_  ~
           :+  me.cart  town-id.cart
           [caller.inp `[%take to.args `id.new id.giv amount.args] ~ (silt ~[id.giv id.new])]
         [~ (malt ~[[id.new new]]) ~]
