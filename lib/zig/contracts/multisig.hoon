@@ -14,12 +14,11 @@
   ^-  chick
   |^
   ?~  args.inp  !!
-  (process ;;(arguments u.args.inp) (pin caller.inp))
+  (process ;;(action u.args.inp) (pin caller.inp))
   ::
   ::  XX potentially add [%remove-tx tx-hash=@ux] if it makes sense?
   ::  XX potentially add expired txs?
-  ::  XX potentially rename `arguments` to action/command??
-  +$  arguments
+  +$  action
     $%
       ::  any id can call the following
       ::
@@ -44,13 +43,14 @@
       [%vote-passed tx-hash=@ux votes=(set id)]
     ==
   ::
-  +$  tx-hash  @ux
+  +$  tx-hash   @ux
+  +$  proposal  [=egg votes=(set id)]
   +$  multisig-state
-      $:  members=(set id)
-          threshold=@ud
-          pending=(map tx-hash [=egg votes=(set id)])
-          :: submitted=(set tx-hash) could add this if it makes sense
-      ==
+    $:  members=(set id)
+        threshold=@ud
+        pending=(map tx-hash proposal)
+        :: submitted=(set tx-hash) could add this if it makes sense
+    ==
   ::
   ++  is-member
     |=  [=id state=multisig-state]
@@ -80,7 +80,7 @@
     [tag jon]
   ::
   ++  process
-    |=  [args=arguments caller-id=id]
+    |=  [args=action caller-id=id]
     ^-  chick
     ?:  ?=(%create-multisig -.args)
       ::  issue a new multisig rice
@@ -129,7 +129,10 @@
       ::  XX mug is non-cryptographic, so if a new tx hashes to the same as an
       ::  old one, it will be erroneously overwritten and have a vote added
       ::  but sham etc. calls jam which is expensive. what do?
-      =.  pending.state         (~(put by pending.state) (mug egg.args) [egg.args (silt ~[caller-id])])
+      ::
+      ::  N.B: Due to separation of concerns, we do not automatically record
+      ::       a vote on caller-id's part. they must send a vote tx as well.
+      =.  pending.state         (~(put by pending.state) (mug egg.args) [egg.args *(set id)])
       =.  data.p.germ.my-grain  state
       [%& (malt ~[[id.my-grain my-grain]]) ~ ~]
     ::
