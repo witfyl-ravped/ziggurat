@@ -2,7 +2,7 @@
 |%
 ::
 ++  hash
-  |=  [n=* cax=(map * phash)]
+  |=  [n=* cax=cache]
   ^-  phash
   ?@  n
     ?:  (lte n 12)
@@ -11,7 +11,6 @@
       (hash:pedersen n 0)
     (hash:pedersen n 0)
   ?^  ch=(~(get by cax) n)
-    ~&  %cache-hit
     u.ch
   =/  hh  $(n -.n)
   =/  ht  $(n +.n)
@@ -27,50 +26,55 @@
     |=  n=@
     ^-  [* phash]
     [n (hash n ~)]
+  ~&  >>  %compiling-hoon
   =/  hoonlib   (slap !>(~) (ream hoonlib-txt))
+  ~&  >>  %compiling-smart
   =/  smartlib  (slap hoonlib (ream smartlib-txt))
-  =.  cax  (cache-hoon hoonlib cax)
-  =.  cax  (cache-smart smartlib cax)
+  ~&  >>  %hashing-hoon-arms
+  =.  cax
+    %^  cache-file  hoonlib
+      cax
+    :~  'add'
+        'biff'
+        'egcd'
+        'po'
+    ==
+  ~&  >>  %hashing-smart-arms
+  =.  cax
+    %^  cache-file  smartlib
+      cax
+    'fry-contract'^~
+  ~&  >>  %core-hashing
   =/  gun  (~(mint ut p.smartlib) %noun (ream '~'))
   =/  =book  (zebra bud cax [q.smartlib q.gun])
   cax.q.book
   ::
-  ++  cache-hoon
-    |=  [hoonlib=vase cax=cache]
-    ^-  (map * phash)
-    =/  l=(list @t)
-      :~  '..add'
-          '..biff'
-          '..egcd'
-          '..po'
-      ==
+  ++  cache-file
+    |=  [vax=vase cax=cache layers=(list @t)]
+    ^-  cache
     |-
-    ?~  l
+    ?~  layers
       cax
-    $(l t.l, cax (hash-arms-per-layer hoonlib i.l cax))
+    =/  cor  (slap vax (ream (cat 3 '..' i.layers)))
+    $(layers t.layers, cax (hash-arms cor cax))
   ::
-  ++  cache-smart
-    |=  [smartlib=vase cax=cache]
+  ++  hash-arms
+    |=  [vax=vase cax=(map * phash)]
     ^-  (map * phash)
-    =/  l=(list @t)
-      :~  '..fry-contract'
-      ==
+    =/  lis  (sloe p.vax)
+    =/  len  (lent lis)
+    =/  i  1
     |-
-    ?~  l
-      cax
-    $(l t.l, cax (hash-arms-per-layer smartlib i.l cax))
-  ::
-  ++  all-arms-to-axes
-    |=  vax=vase
-    %-  ~(gas by *(map term @))
-    %+  turn  (list-arms vax)
-    |=  t=term
-    [t (arm-axis vax t)]
-  ::
-  ++  list-arms
-    |=  vax=vase
-    ^-  (list term)
-    (sloe p.vax)
+    ?~  lis  cax
+    =*  t  i.lis
+    ~&  >  %-  crip
+           %-  zing
+           :~  (trip t)
+               (reap (sub 20 (met 3 t)) ' ')
+               (trip (rap 3 (scot %ud i) '/' (scot %ud len) ~))
+           ==
+    =/  n  q:(slot (arm-axis vax t) vax)
+    $(lis t.lis, cax (~(put by cax) n (hash n cax)), i +(i))
   ::
   ++  arm-axis
     |=  [vax=vase arm=term]
@@ -79,23 +83,5 @@
     ?>  ?=(%& -.r)
     ?>  ?=(%| -.q.p.r)
     p.q.p.r
-  ::
-  ++  hash-all-arms
-    |=  [vax=vase cax=(map * phash)]
-    ^-  (map * phash)
-    =/  lis=(list term)  (list-arms vax)
-    |-
-    ?~  lis  cax
-    =*  t  i.lis
-    =/  a=@  (arm-axis vax t)
-    ~&  [t a]
-    =/  n  q:(slot a vax)
-    $(lis t.lis, cax (~(put by cax) n (hash n cax)))
-  ::
-  ++  hash-arms-per-layer
-    |=  [vax=vase layer=@t cax=(map * phash)]
-    ^-  (map * phash)
-    =/  cor  (slap vax (ream layer))
-    (hash-all-arms cor cax)
   --
 --
