@@ -16,9 +16,9 @@
 ::  * (test all constraints in contract: balance, gas, +give, etc)
 ::  * executing multiple calls with +mill-all
 ::
-/+  *test, *zig-mill, smart=zig-sys-smart, deploy=zig-deploy :: , *zig-contracts-zigs
-/*  capitol-contract  %txt  /lib/zig/contracts/capitol/hoon
-/*  trivial-contract  %txt  /lib/zig/contracts/trivial/hoon
+/+  *test, *zig-mill, smart=zig-sys-smart
+/*  zigs-contract     %noun  /lib/zig/compiled/zigs/noun
+/*  trivial-contract  %noun  /lib/zig/compiled/trivial/noun
 |%
 ++  zigs
   |%
@@ -56,13 +56,12 @@
     ==
   ++  wheat-grain
     ^-  grain:smart
-    =/  cont  (of-wain:format trivial-contract)
     :*  zigs-wheat-id:smart  ::  id
         zigs-wheat-id:smart  ::  lord
         zigs-wheat-id:smart  ::  holders
         town-id              ::  town-id
-        :+    %|             ::  germ
-          `(~(text-deploy deploy ~zod ~2022.4.13..22.58.15..3862) cont)
+        :+  %|               ::  germ
+          `(cue q.q.zigs-contract)
         ~  ::  (silt ~[0x1.beef 0x1.dead 0x1.cafe])
     ==
   ++  fake-granary
@@ -90,9 +89,9 @@
     [[0xbeef 1 0x1.beef] [0 0 0] ~ zigs-wheat-id:smart 1 500 0 0]
   =/  egg  [shel yok]
   =/  res
-    %+  ~(mill mill [0xdead 1 0x1.dead] 0 1 now)
+    %+  ~(mill mill [0xdead 1 0x1.dead] 0 1)
       fake-town:zigs
-    `egg:smart`egg
+    egg
   %+  expect-eq
     !>(1)
   !>(1)
