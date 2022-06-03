@@ -89,6 +89,10 @@
     ^-  chick
     ?:  ?=(%create-multisig -.args)
       ::  issue a new multisig rice
+      =/  member-count  ~(wyt in members.args)
+      ?>  (gth member-count 0)
+      ::  invariant: threshold must be <= member-count
+      ?>  (lte init-thresh.args member-count)
       ?>  (gth init-thresh.args 0)  :: threshold of 0 is disallowed
       =/  salt=@             (sham (cat 3 caller-id (shamspin members.args)))
       =/  lord               me.cart  
