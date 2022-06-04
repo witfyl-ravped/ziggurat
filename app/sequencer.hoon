@@ -219,7 +219,7 @@
       =/  =height
         .^(height %gx /(scot %p our.bowl)/ziggurat/(scot %da now.bowl)/block-height/noun)
       =/  our-chunk=chunk
-        %+  ~(mill-all mil me (need town-id.state) height now.bowl)
+        %+  ~(mill-all mil me (need town-id.state) height)
           town.state
         ~(tap in basket.state)
       ::  currently clearing mempool with every chunk, but

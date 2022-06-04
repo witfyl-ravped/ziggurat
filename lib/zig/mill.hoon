@@ -1,5 +1,5 @@
 /+  *bink, smart=zig-sys-smart, ethereum
-/*  smart-lib  %noun  /lib/zig/compiled/smart-lib/noun
+/*  smart-lib  %noun  /lib/zig/compiled/smart-lib-testing/noun
 =,  smart
 |_  library=*
 ::
@@ -11,7 +11,7 @@
   !<(typ [-:!>(*typ) val])
 ::
 ++  mill
-  |_  [miller=account town-id=@ud blocknum=@ud now=time]
+  |_  [miller=account town-id=@ud blocknum=@ud]
   ::
   ::  +mill-all: mills all eggs in basket
   ::
@@ -144,16 +144,17 @@
       ++  fertilize
         |=  =yolk
         ^-  embryo
-        ?.  ?=(account caller.yolk)  !!
+        ::  this stops contracts from grabbing grains they hold!
+        ::  ?.  ?=(account caller.yolk)  !!
         :+  caller.yolk
           args.yolk
         %-  ~(gas by *(map id grain))
         %+  murn  ~(tap in my-grains.yolk)
         |=  =id
-        ?~  res=(~(get by granary) id)      ~
-        ?.  ?=(%& -.germ.u.res)             ~
-        ?.  =(holder.u.res id.caller.yolk)  ~
-        ?.  =(town-id.u.res town-id)        ~
+        ?~  res=(~(get by granary) id)         ~
+        ?.  ?=(%& -.germ.u.res)                ~
+        ?.  =(holder.u.res (pin caller.yolk))  ~
+        ?.  =(town-id.u.res town-id)           ~
         `[id u.res]
       ::  +germinate: take contract-owned grains in egg and populate with granary data
       ++  germinate
@@ -186,13 +187,29 @@
         ?~  gan=(harvest p.u.chick to.p.egg from.p.egg)
           [~ ~ rem %7]
         [`p.u.chick gan rem err]
-      ::  hen result, continuation
-      =*  next  next.p.u.chick
-      ::  continuation calls can alter grains
-      ?~  gan=(harvest roost.p.u.chick to.p.egg from.p.egg)
+      ::  hen result, continuation calls
+      =/  next  next.p.u.chick
+      =/  gan  (harvest roost.p.u.chick to.p.egg from.p.egg)
+      |-
+      ?~  gan
+        ::  harvest checks from last call failed
         [~ ~ rem %7]
-      %-  ~(incubate farm u.gan)
-      egg(from.p to.p.egg, to.p to.next, budget.p rem, q args.next)
+      ?~  next
+        ::  all continuations complete
+        ::
+        [`roost.p.u.chick gan rem %0]
+      ::  continue continuing
+      ::
+      =/  inter
+        %-  ~(incubate farm u.gan)
+        egg(from.p to.p.egg, to.p to.i.next, budget.p rem, q args.i.next)
+      ?.  =(%0 errorcode.inter)
+        [~ ~ rem.inter errorcode.inter]
+      %=  $
+        next  t.next
+        rem   rem.inter
+        gan   final.inter
+      ==
       ::
       ::  +weed: run contract formula with arguments and memory, bounded by bud
       ::
@@ -212,9 +229,9 @@
         ::  ~&  >>  "write result: {<res>}"
         ?:  ?=(%| -.-.res)
           ::  error in contract execution
-          [~ budget %6]
+          [~ +.res %6]
         ::  chick result
-        [`p.-.res budget %0]
+        [`p.-.res +.res %0]
       --
     ::
     ::  +harvest: take a completed execution and validate all changes and additions to granary state

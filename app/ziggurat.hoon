@@ -271,6 +271,9 @@
         %forward
       ::  only accepts transactions from possible validators/sequencers
       =.  eggs.act  (filter eggs.act |=(=egg:smart =(relay-town-id town-id.p.egg)))
+      ::  TODO FIX: if transaction is submitted after this ship has made their block,
+      ::  the transaction gets stuck in limbo. Can fix by having ziggurats forward their basket
+      ::  at beginning of epoch if it isn't empty.
       =+  final-producer=(get-second-to-last order.cur)
       ?:  =(our.bowl final-producer)
         `state(basket (~(uni in basket) eggs.act))
@@ -544,7 +547,7 @@
       =+  /(scot %p our.bowl)/wallet/(scot %da now.bowl)/account/(scot %ux (need address.state))/(scot %ud relay-town-id)/noun
       =+  .^(account:smart %gx -)
       =/  globe-chunk
-        (~(mill-all mil - relay-town-id height.state now.bowl) globe.state ~(tap in basket.state))
+        (~(mill-all mil - relay-town-id height.state) globe.state ~(tap in basket.state))
       =+  :_  height.state
           %+  ~(put by (~(gut by queue.state) slot-num ~))
           relay-town-id  globe-chunk

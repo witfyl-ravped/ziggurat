@@ -126,7 +126,8 @@
 +$  chick    (each rooster hen)
 ::  new: crow, emit information about transaction to be picked up by interested parties
 +$  rooster  [changed=(map id grain) issued=(map id grain) crow=(list [@tas json])]
-+$  hen      [next=[to=id town-id=@ud args=yolk] roost=rooster]
+::  new:  next is a *list* of continuation calls, to be attempted in order
++$  hen      [next=(list [to=id town-id=@ud args=yolk]) roost=rooster]
 ::
 ::  JSON, from lull.hoon and zuse.hoon
 ::  allows read arm of contracts to perform enjs operations
