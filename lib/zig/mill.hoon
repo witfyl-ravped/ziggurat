@@ -250,11 +250,6 @@
         ?~  p.p.book
           [~ 0 %0]
         [`(hole chick u.p.p.book) bud.q.book %0]
-::        ?~  res
-::          ~&  >>  %crashed
-::          [~ budget %6]
-::        ~&  >>  u.res
-::        [`;;(chick u.res) budget %0]
       --
     ::
     ::  +harvest: take a completed execution and validate all changes and additions to granary state
