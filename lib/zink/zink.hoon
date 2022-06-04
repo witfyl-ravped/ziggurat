@@ -318,8 +318,7 @@
     |=  [arm=@tas sam=*]
     ^-  body
     ~&  arm
-    ?+  arm  %|^trace
-    ::
+    ?+    arm  %|^trace
         %dec
       ?:  (lth bud 1)  %&^~
       =.  bud  (sub bud 1)
@@ -328,18 +327,6 @@
       ::  make all jets crash safe
       ?.  (gth sam 0)  %|^trace
       %&^(some (dec sam))
-    ::
-        %add
-      ?:  (lth bud 1)  %&^~
-      =.  bud  (sub bud 1)
-      ?.  ?=([x=@ud y=@ud] sam)  %|^trace
-      %&^(some (add x.sam y.sam))
-    ::
-        %mul
-      ?:  (lth bud 1)  %&^~
-      =.  bud  (sub bud 1)
-      ?.  ?=([x=@ud y=@ud] sam)  %|^trace
-      %&^(some (mul x.sam y.sam))
     ==
   ::
   ++  frag
