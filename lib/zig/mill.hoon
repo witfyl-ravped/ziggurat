@@ -229,6 +229,8 @@
         =/  =cart  [to blocknum town-id owns.crop]
         ::  TODO figure out how to pre-cue this and get good results
         ::
+        ::~&  >  embryo
+        ::~&  >>>  cart
         ~&  >  %contract-compiled
         =/  cax=(map * phash)  ;;(cache (cue q.q.zink-cax))
         ~&  >  %cax-compiled
@@ -245,13 +247,16 @@
           (zebra budget cax gun)
           ::|.(;;(chick (~(write contract cart) zygote)))
         ~&  >>  chick+(hole (unit chick) p.p.book)
-        ::~&  >>  "write result: {<res>}"
         ?:  ?=(%| -.p.book)
           ::  error in contract execution
+          ::~&  >>  "write result (stacktrace):"
+          ::%-  (slog ~[leaf+"{<p.p.book>}"])
           [~ budget %6]
         ::  chick result
         ?~  p.p.book
           [~ 0 %0]
+        ::~&  >>  "write result:"
+        ::~&  >>  (hole chick u.p.p.book)
         [`(hole chick u.p.p.book) bud.q.book %0]
       --
     ::
