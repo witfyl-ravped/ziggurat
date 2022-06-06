@@ -5,9 +5,9 @@
   |=  =embryo
   ^-  chick
   ::  =/  number  (adding-arm:library-2 (special-arm:library 100))
-  =/  number  (special-arm:library 100)
-  =.  number  (dec number)
-  [%& ~ ~ crow=~[[%test [%s `@t`number]]]]
+  ::  =/  number  (special-arm:library 100)
+  ::  =.  number  (dec number)
+  [%& ~ ~ crow=~[[%test [%s `@t`1]]]]
 ++  read
   |_  =path
   ++  json
