@@ -4,6 +4,7 @@
 ::  New multisigs can be generated through the %create
 ::  argument, and are stored in account-controlled rice.
 ::
+::  Uncomment the following line to run tests
 ::/+  *zig-sys-smart
 !:
 ^-  contract  :: not strictly necessary but works well
@@ -54,7 +55,7 @@
     $:  members=(set id)
         threshold=@ud
         pending=(map tx-hash proposal)
-        :: submitted=(set tx-hash) could add this if it makes sense
+    ::  submitted=(set tx-hash) could add this if it makes sense
     ==
   ::
   ++  is-member
