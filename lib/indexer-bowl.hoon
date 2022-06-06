@@ -3,6 +3,44 @@
 /+  smart=zig-sys-smart
 ::
 |_  =bowl:gall
+++  scry-contract-read-arm-agent
+  |=  $:  scry-dock=[host=@p agent=?(%sequencer %ziggurat)]
+          to=id:smart
+          query-type=?(%egg-args %rice-data)  ::  TODO: generalize to @tas?
+          query-arg=@ta
+      ==
+  .^  json
+      %gx
+      %-  zing
+      :^    /(scot %p host.scry-dock)/[agent.scry-dock]
+          /(scot %da now.bowl)/wheat/(scot %ux to)/json
+        ?:  ?=(%egg-args query-type)
+          /egg-args/[query-arg]/~/noun
+        /rice-data/~/[query-arg]/noun
+      ~
+  ==
+++  scry-contract-read-arm
+  |=  $:  scry-host=@p
+          to=id:smart
+          query-type=?(%egg-args %rice-data)  ::  TODO: generalize to @tas?
+          query-arg=@ta
+      ==
+  =/  from-sequencer=json
+    %:  scry-contract-read-arm-agent
+        [scry-host %sequencer]
+        to
+        query-type
+        query-arg
+    ==
+  ?.  ?=(~ from-sequencer)
+    from-sequencer
+  %:  scry-contract-read-arm-agent
+      [scry-host %ziggurat]
+      to
+      query-type
+      query-arg
+  ==
+::
 ++  enjs
   =,  enjs:format
   |%
@@ -130,18 +168,17 @@
     |=  [=shell:smart =yolk:smart]
     ^-  json
     ?>  ?=(account:smart caller.yolk)
+    =/  args=json
+      ?~  args.yolk  ~
+      %:  scry-contract-read-arm
+          our.bowl
+          to.shell
+          %egg-args
+          (scot %ud (jam u.args.yolk))
+      ==
     %-  pairs
     :~  [%caller (account caller.yolk)]
-        :-  %args
-        ?~  args.yolk  ~
-        .^  json
-            %gx
-            %-  zing
-            :^    /(scot %p our.bowl)/sequencer
-                /(scot %da now.bowl)/wheat/(scot %ux to.shell)
-              /json/egg-args/(scot %ud (jam u.args.yolk))/~/noun
-            ~
-        ==
+        [%args args]
         [%my-grains (ids my-grains.yolk)]
         [%cont-grains (ids cont-grains.yolk)]
     ==
@@ -205,18 +242,17 @@
     |=  [=germ:smart wheat-id=id:smart rice-id=id:smart]
     ^-  json
     ?:  ?=(%& -.germ)
+      =/  data=json
+        %:  scry-contract-read-arm
+            our.bowl
+            wheat-id
+            %rice-data
+            (scot %ux rice-id)
+        ==
       %-  pairs
       :^    [%is-rice %b %&]
           [%salt (numb salt.p.germ)]
-        :-  %data
-        .^  json
-            %gx
-            %-  zing
-            :^    /(scot %p our.bowl)/sequencer
-                /(scot %da now.bowl)/wheat/(scot %ux wheat-id)
-              /json/rice-data/~/(scot %ux rice-id)/noun
-            ~
-        ==
+        [%data data]
       ~
     %-  pairs
     :^    [%is-rice %b %|]
