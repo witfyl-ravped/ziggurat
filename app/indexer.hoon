@@ -1118,7 +1118,7 @@
     ?>  =(1 (lent locations))
     =/  =location:ui  (snag 0 locations)
     ?.  ?=(town-location:ui location)  ~
-    ?~  chunk=(get-chunk location)                ~
+    ?~  chunk=(get-chunk location)     ~
     `[%chunk location u.chunk]
   ::
   ++  get-from-index
@@ -1154,6 +1154,15 @@
     ::
     ++  get-grain
       =|  grains=(map grain-id=id:smart [town-location:ui grain:smart])
+      =.  locations
+        %+  sort  ;;((list town-location:ui) locations)
+        |=  [p=town-location:ui q=town-location:ui]
+        ^-  ?
+        ?:  (lth epoch-num.p epoch-num.q)  %.y
+        ?.  =(epoch-num.p epoch-num.q)     %.n
+        ?:  (lth block-num.p block-num.q)  %.y
+        ?.  =(block-num.p block-num.q)     %.n
+        (gte town-id.p town-id.q)
       |-
       ?~  locations
         ?~  grains  ~
