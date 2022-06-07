@@ -3,6 +3,8 @@
 /+  *test, cont=zig-contracts-multisig, *zig-sys-smart
 =>  ::  test data
     |%
+    +$  address   @ux 
+    ::
     ::  XX import these when /= drops
     +$  tx-hash   @ux
     +$  proposal  [=egg votes=(set id)]
@@ -22,27 +24,32 @@
           town-id
           [%& salt=`@`'zigs' data=[50 ~ `@ux`'zigs']]
       ==
-    ++  owner-1  ^-  account
+    ++  owner-1
+      ^-  account
       [id=0xbeef nonce=0 zigs=0x1234.5678]
     ::
-    ++  account-2  ^-  grain
+    ++  account-2
+      ^-  grain
       :*  0x1.dead
           `@ux`'zigs'
           0xdead
           town-id
           [%& `@`'zigs' [30 ~ `@ux`'zigs']]
       ==
-    ++  owner-2  ^-  account
+    ++  owner-2
+      ^-  account
       [0xdead 0 0x1234.5678]
     ::
-    ++  account-3  ^-  grain
+    ++  account-3
+      ^-  grain
       :*  0x1.cafe
           `@ux`'zigs'
           0xcafe
           town-id
           [%& `@`'zigs' [20 ~ `@ux`'zigs']]
       ==
-    ++  owner-3  ^-  account
+    ++  owner-3
+      ^-  account
       [0xcafe 0 0x1234.5678]
     ::
     ::

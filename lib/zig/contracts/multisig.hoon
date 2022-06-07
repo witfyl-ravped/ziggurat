@@ -20,9 +20,29 @@
   ::  XX potentially add [%remove-tx tx-hash=@ux] if it makes sense?
   ::  XX potentially add expired txs?
   +$  tx-hash   @ux
+  +$  proposal  [=egg votes=(set id)]
+  +$  multisig-state
+    $:  members=(set id)
+        threshold=@ud
+        pending=(map tx-hash proposal)
+    ::  submitted=(set tx-hash) could add this if it makes sense. could let off chain index this and save on chain space
+    ==
+  ::
+  ::::  XX could use the following in proposal instead of egg
+  ::+$  partial-egg  (pair partial-shell partial-yolk)
+  ::+$  partial-shell
+  ::  $:  to=id
+  ::      town-id=@ud
+  ::  ==    
+  ::+$  partial-yolk 
+  ::  $:  args=(unit *)
+  ::      my-grains=(set id)
+  ::      cont-grains=(set id)
+  ::  ==
+  ::::
   +$  action
     $%
-      ::  any id can call the following
+      ::  any id can call the following, and requires no grains
       ::
       [%create-multisig init-thresh=@ud members=(set id)]
       ::  All of the following expect the grain of the deployed multisig
@@ -42,20 +62,13 @@
   ::
   +$  event
     $%
+      ::  we need multisig=id for each event to disambiguate between each multisig that exists
       [%new-vote =tx-hash voter=id multisig=id]
       [%new-tx =tx-hash multisig=id]
       [%vote-passed =tx-hash votes=(set id) multisig=id]
       [%threshold-changed threshold=@ud multisig=id]
       [%member-added new-member=id multisig=id]
       [%member-removed removed=id multisig=id]
-    ==
-  ::
-  +$  proposal  [=egg votes=(set id)]
-  +$  multisig-state
-    $:  members=(set id)
-        threshold=@ud
-        pending=(map tx-hash proposal)
-    ::  submitted=(set tx-hash) could add this if it makes sense
     ==
   ::
   ++  is-member
