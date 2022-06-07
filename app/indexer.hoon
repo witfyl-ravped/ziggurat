@@ -342,16 +342,21 @@
       =/  hash=@ux  (slav %ux i.t.t.path)
       =/  egg=(unit update:ui)
         (serve-update %egg hash)
-      =/  grain=(unit update:ui)
-        (serve-update %grain hash)
       =/  from=(unit update:ui)
         (serve-update %from hash)
+      =/  grain=(unit update:ui)
+        (serve-update %grain hash)
+      =/  holder=(unit update:ui)
+        (serve-update %holder hash)
+      =/  lord=(unit update:ui)
+        (serve-update %lord hash)
       =/  slot=(unit update:ui)
         (serve-update %block-hash hash)
       =/  to=(unit update:ui)
         (serve-update %to hash)
       =/  up=(unit update:ui)
-        (combine-updates ~[egg from to] ~[grain] slot)
+        %^  combine-updates  ~[egg from to]
+        ~[grain holder lord]  slot
       ?~  up  [~ ~]
       [~ ~ %indexer-update !>(`update:ui`u.up)]
     ::
