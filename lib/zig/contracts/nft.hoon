@@ -374,35 +374,17 @@
       |=  a=arguments
       |^
       ^-  ^json
+      %+  frond  -.a
       ?-    -.a
       ::
           %give
-        (frond %give enjs-give)
-      ::
-          %take
-        (frond %take enjs-take)
-      ::
-          %set-allowance
-        (frond %set-allowance enjs-set-allowance)
-      ::
-          %mint
-        (frond %mint enjs-mint)
-      ::
-          %deploy
-        (frond %deploy enjs-deploy)
-      ::
-      ==
-      ::
-      ++  enjs-give
-        ?>  ?=(%give -.a)  ::  TODO: remove
         %-  pairs
         :^    [%to %s (scot %ux to.a)]
             [%account ?~(account.a ~ [%s (scot %ux u.account.a)])]
           [%item-id (numb item-id.a)]
         ~
       ::
-      ++  enjs-take
-        ?>  ?=(%take -.a)  ::  TODO: remove
+          %take
         %-  pairs
         :~  [%to %s (scot %ux to.a)]
             [%account ?~(account.a ~ [%s (scot %ux u.account.a)])]
@@ -410,23 +392,20 @@
             [%item-id (numb item-id.a)]
         ==
       ::
-      ++  enjs-set-allowance
-        ?>  ?=(%set-allowance -.a)  ::  TODO: remove
+          %set-allowance
         %-  pairs
         :^    [%who %s (scot %ux who.a)]
             [%full-set %b full-set.a]
           [%items (enjs-set-allowance-items items.a)]
         ~
       ::
-      ++  enjs-mint
-        ?>  ?=(%mint -.a)
+          %mint
         %-  pairs
         :+  [%token %s (scot %ux token.a)]
           [%mints (enjs-mints mints.a)]
         ~
       ::
-      ++  enjs-deploy
-        ?>  ?=(%deploy -.a)
+          %deploy
         %-  pairs
         :~  [%distribution (enjs-distribution distribution.a)]
             [%minters (enjs-minters minters.a)]
@@ -436,6 +415,8 @@
             [%cap (numb cap.a)]
             [%mintable %b mintable.a]
         ==
+      ::
+      ==
       ::
       ++  enjs-set-allowance-items
         |=  items=(map @ud ?)

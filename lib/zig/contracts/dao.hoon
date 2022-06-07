@@ -619,54 +619,36 @@
     ++  enjs-arguments
       =,  enjs:format
       |=  a=arguments
-      |^
+      %+  frond  -.a
       ^-  ^json
       ?-    -.a
       ::
           %add-dao
-        (frond %add-dao enjs-add-dao)
-      ::
-          %vote
-        (frond %vote enjs-vote)
-      ::
-          %propose
-        (frond %propose enjs-propose)
-      ::
-          %execute
-        (frond %execute enjs-execute)
-      ::
-      ==
-      ::
-      ++  enjs-add-dao
-        ?>  ?=(%add-dao -.a)  ::  TODO: remove
         ?>  ?=(^ dao.a)
         %-  pairs
         :+  [%salt (numb salt.a)]
           [%dao (enjs-dao u.dao.a)]
         ~
       ::
-      ++  enjs-vote
-        ?>  ?=(%vote -.a)  ::  TODO: remove
+          %vote
         %-  pairs
         :+  [%dao-id %s (scot %ux dao-id.a)]
           [%proposal-id %s (scot %ux proposal-id.a)]
         ~
       ::
-      ++  enjs-propose
-        ?>  ?=(%propose -.a)  ::  TODO: remove
+          %propose
         %-  pairs
         :+  [%dao-id %s (scot %ux dao-id.a)]
           [%on-chain-update (enjs-on-chain-update on-chain-update.a)]
         ~
       ::
-      ++  enjs-execute
-        ?>  ?=(%execute -.a)  ::  TODO: remove
+          %execute
         %-  pairs
         :+  [%dao-id %s (scot %ux dao-id.a)]
           [%on-chain-update (enjs-on-chain-update on-chain-update.a)]
         ~
       ::
-      --
+      ==
     ::
     ++  enjs-on-chain-update
       =,  enjs:format

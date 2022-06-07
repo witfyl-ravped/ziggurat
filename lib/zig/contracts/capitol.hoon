@@ -150,57 +150,35 @@
     ++  enjs-arguments
       =,  enjs:format
       |=  a=arguments
-      |^
       ^-  ^json
+      %+  frond  -.a
       ?-    -.a
       ::
           %init
-        (frond %init init)
+        %-  pairs
+        :+  [%sig (enjs-sig sig.a)]
+          [%town (numb town.a)]
+        ~
       ::
           %join
-        (frond %join join)
+        %-  pairs
+        :+  [%sig (enjs-sig sig.a)]
+          [%town (numb town.a)]
+        ~
       ::
           %exit
-        (frond %exit exit)
+        %-  pairs
+        :+  [%sig (enjs-sig sig.a)]
+          [%town (numb town.a)]
+        ~
       ::
           %become-validator
-        (frond %become-validator become-validator)
+        (frond %sig (enjs-sig +.a))
       ::
           %stop-validating
-        (frond %stop-validating stop-validating)
+        (frond %sig (enjs-sig +.a))
       ::
       ==
-      ::
-      ++  init
-        ?>  ?=(%init -.a)  ::  TODO: remove
-        %-  pairs
-        :+  [%sig (enjs-sig sig.a)]
-          [%town (numb town.a)]
-        ~
-      ::
-      ++  join
-        ?>  ?=(%join -.a)  ::  TODO: remove
-        %-  pairs
-        :+  [%sig (enjs-sig sig.a)]
-          [%town (numb town.a)]
-        ~
-      ::
-      ++  exit
-        ?>  ?=(%exit -.a)  ::  TODO: remove
-        %-  pairs
-        :+  [%sig (enjs-sig sig.a)]
-          [%town (numb town.a)]
-        ~
-      ::
-      ++  become-validator
-        ?>  ?=(%become-validator -.a)  ::  TODO: remove
-        (frond %sig (enjs-sig +.a))
-      ::
-      ++  stop-validating
-        ?>  ?=(%stop-validating -.a)  ::  TODO: remove
-        (frond %sig (enjs-sig +.a))
-      ::
-      --
     ::
     ++  enjs-sig
       =,  enjs:format

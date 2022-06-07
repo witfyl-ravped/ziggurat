@@ -346,31 +346,13 @@
       |=  a=arguments
       |^
       ^-  ^json
+      %+  frond  -.a
       ?-    -.a
       ::
           %give
-        (frond %give give)
-      ::
-          %take
-        (frond %take take)
-      ::
-          %set-allowance
-        (frond %set-allowance set-allowance)
-      ::
-          %mint
-        (frond %mint mint)
-      ::
-          %deploy
-        (frond %deploy deploy)
-      ::
-      ==
-      ::
-      ++  give
-        ?>  ?=(%give -.a)  ::  TODO: remove
         (give-or-mint +.a)
       ::
-      ++  take
-        ?>  ?=(%take -.a)  ::  TODO: remove
+          %take
         %-  pairs
         :~  [%to %s (scot %ux to.a)]
             [%account ?~(account.a ~ [%s (scot %ux u.account.a)])]
@@ -378,22 +360,19 @@
             [%amount (numb amount.a)]
         ==
       ::
-      ++  set-allowance
-        ?>  ?=(%set-allowance -.a)  ::  TODO: remove
+          %set-allowance
         %-  pairs
         :+  [%who %s (scot %ux who.a)]
           [%amount (numb amount.a)]
         ~
       ::
-      ++  mint
-        ?>  ?=(%mint -.a)
+          %mint
         %-  pairs
         :+  [%token %s (scot %ux token.a)]
           [%mints (mints mints.a)]
         ~
       ::
-      ++  deploy
-        ?>  ?=(%deploy -.a)
+          %deploy
         %-  pairs
         :~  [%distribution (distribution distribution.a)]
             [%minters (minters minters.a)]
@@ -404,6 +383,8 @@
             [%mintable %b mintable.a]
         ==
       ::
+      ==
+      ::
       ++  give-or-mint
         |=  [to=id account=(unit id) amount=@ud]
         %-  pairs
@@ -413,11 +394,11 @@
         ~
       ::
       ++  mints
-        |=  set-mint=(set ^mint)
+        |=  set-mint=(set mint)
         ^-  ^json
         :-  %a
         %+  turn  ~(tap in set-mint)
-        |=  m=^mint
+        |=  m=mint
         (give-or-mint m)
       ::
       ++  distribution
