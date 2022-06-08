@@ -1,13 +1,13 @@
 /+  smart=zig-sys-smart
-/*  smart-lib-noun  %noun  /lib/zig/compiled/smart-lib-testing/noun
+/*  smart-lib-noun  %noun  /lib/zig/compiled/smart-lib/noun
 :-  %say
 |=  [[now=@da eny=@uvJ bek=beak] [=wheat:smart ~] ~]
 |^
-=/  smart-lib  (cue q.q.smart-lib-noun)
+=/  smart-lib=vase  ;;(vase (cue q.q.smart-lib-noun))
 ::  goal: to take a bat=* and payload=* and produce runnable nock
 =/  cont  (need cont.wheat)
-=/  payload  .*(smart-lib pay.cont)
-=/  contract  .*([smart-lib payload] bat.cont)
+=/  payload  .*(q.smart-lib pay.cont)
+=/  contract  .*([q.smart-lib payload] bat.cont)
 =/  dor  [-:!>(*contract:smart) contract]
 :-  %noun
 q:(shut dor %write !>(*cart:smart) !>(*embryo:smart))

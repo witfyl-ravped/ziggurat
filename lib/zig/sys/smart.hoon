@@ -24,9 +24,7 @@
 ++  pin
   |=  =caller
   ^-  id
-  ?:  ?=(@ux caller)
-    caller
-  id.caller
+  ?:(?=(@ux caller) caller id.caller)
 ::
 ::  smart contract types
 ::
