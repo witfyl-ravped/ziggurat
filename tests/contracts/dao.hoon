@@ -1104,7 +1104,7 @@
       !>  %.y
       !>  is-success
     %+  expect-eq
-      !>  ~
+      !>  make-read-json-output-json
       !>  jon
   ==
   ::
@@ -1112,6 +1112,193 @@
     ^-  cart:smart
     %-  make-cart
     (make-id-grain-map megacorp-dao-salt megacorp-dao)
+  ::
+  ++  make-read-json-output-json
+    ^-  json
+    (need (de-json:html make-read-json-output-cord))
+  ::
+  ++  make-read-json-output-cord
+    ^-  @t
+    '''
+    {
+      "name": "megacorp",
+      "permissions": {
+        "write": {
+          "/ship/~zod/dao-comms-placeholder": [
+            "pleb"
+          ],
+          "0xf15.6611.7921.7adf.b8c4.cef6.efca.46d0": [
+            "owner"
+          ]
+        },
+        "read": {
+          "/ship/~zod/dao-comms-placeholder": [
+            "pleb",
+            "owner"
+          ]
+        }
+      },
+      "members": {
+        "0xce0": [
+          "owner"
+        ],
+        "0x1.100b": [
+          "pleb"
+        ],
+        "0x5e.11e2": [
+          "owner"
+        ]
+      },
+      "id-to-ship": {
+        "0xce0": "~zod",
+        "0x1.100b": "~bud",
+        "0x5e.11e2": "~nec"
+      },
+      "ship-to-id": {
+        "~zod": "0xce0",
+        "~bud": "0x1.100b",
+        "~nec": "0x5e.11e2"
+      },
+      "subdaos": [
+        "0xfa73.b379.f9ff.5d2f.b8c4.cef6.efca.46d0"
+      ],
+      "threshold": 2,
+      "proposals": {
+        "0xde0": {
+          "update": {
+            "add-member": {
+              "dao-id": "0xf15.6611.7921.7adf.b8c4.cef6.efca.46d0",
+              "roles": [
+                "pleb"
+              ],
+              "id": "0xb055",
+              "him": "~wes"
+            }
+          },
+          "votes": []
+        },
+        "0xde1": {
+          "update": {
+            "add-member": {
+              "dao-id": "0xf15.6611.7921.7adf.b8c4.cef6.efca.46d0",
+              "roles": [
+                "pleb"
+              ],
+              "id": "0xb055",
+              "him": "~wes"
+            }
+          },
+          "votes": [
+            "0x5e.11e2"
+          ]
+        },
+        "0xde2": {
+          "update": {
+            "remove-member": {
+              "dao-id": "0xf15.6611.7921.7adf.b8c4.cef6.efca.46d0",
+              "id": "0x1.100b"
+            }
+          },
+          "votes": [
+            "0x5e.11e2"
+          ]
+        },
+        "0xde3": {
+          "update": {
+            "add-permissions": {
+              "dao-id": "0xf15.6611.7921.7adf.b8c4.cef6.efca.46d0",
+              "name": "host",
+              "address": "/ship/~zod/dao-comms-placeholder",
+              "roles": [
+                "comms-host"
+              ]
+            }
+          },
+          "votes": [
+            "0x5e.11e2"
+          ]
+        },
+        "0xde4": {
+          "update": {
+            "remove-permissions": {
+              "dao-id": "0xf15.6611.7921.7adf.b8c4.cef6.efca.46d0",
+              "name": "write",
+              "address": "/ship/~zod/dao-comms-placeholder",
+              "roles": [
+                "pleb"
+              ]
+            }
+          },
+          "votes": [
+            "0x5e.11e2"
+          ]
+        },
+        "0xde5": {
+          "update": {
+            "add-subdao": {
+              "dao-id": "0xf15.6611.7921.7adf.b8c4.cef6.efca.46d0",
+              "subdao-id": "0xe9f6.1f9c.b762.e7c6.b8c4.cef6.efca.46d0"
+            }
+          },
+          "votes": [
+            "0x5e.11e2"
+          ]
+        },
+        "0xde6": {
+          "update": {
+            "remove-subdao": {
+              "dao-id": "0xf15.6611.7921.7adf.b8c4.cef6.efca.46d0",
+              "subdao-id": "0xfa73.b379.f9ff.5d2f.b8c4.cef6.efca.46d0"
+            }
+          },
+          "votes": [
+            "0x5e.11e2"
+          ]
+        },
+        "0xde7": {
+          "update": {
+            "add-roles": {
+              "dao-id": "0xf15.6611.7921.7adf.b8c4.cef6.efca.46d0",
+              "roles": [
+                "owner"
+              ],
+              "id": "0xf15.6611.7921.7adf.b8c4.cef6.efca.46d0"
+            }
+          },
+          "votes": [
+            "0x5e.11e2"
+          ]
+        },
+        "0xde8": {
+          "update": {
+            "remove-roles": {
+              "dao-id": "0xf15.6611.7921.7adf.b8c4.cef6.efca.46d0",
+              "roles": [
+                "owner"
+              ],
+              "id": "0xf15.6611.7921.7adf.b8c4.cef6.efca.46d0"
+            }
+          },
+          "votes": [
+            "0x5e.11e2"
+          ]
+        },
+        "0x3bbd.5c54": {
+          "update": {
+            "add-permissions": {
+              "dao-id": "0xf15.6611.7921.7adf.b8c4.cef6.efca.46d0",
+              "name": "read",
+              "address": "/ship/~zod/dao-comms-placeholder",
+              "roles": [
+                "jannie"
+              ]
+            }
+          },
+          "votes": []
+        }
+      }
+    }
+    '''
   ::
   --
 ::
