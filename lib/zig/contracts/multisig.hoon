@@ -190,7 +190,7 @@
       =/  new-member-count  (dec member-count)
       =?  threshold.state   (gth new-member-count threshold.state)
         new-member-count
-      =.  members.state         (~(del in members.state) id)
+      =.  members.state         (~(del in members.state) id.args)
       =.  data.p.germ.my-grain  state
       [%& (malt ~[[id.my-grain my-grain]]) ~ ~]
     ::
