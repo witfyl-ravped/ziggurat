@@ -1,14 +1,56 @@
 /-  *zink
 /+  *zink-pedersen, *zink-json
+=>  |%
+    +$  good      (unit *)
+    +$  fail      (list [@ta *])
+    +$  body      (each good fail)
+    +$  cache     (map * phash)
+    +$  appendix  [cax=cache hit=hints bud=@]
+    +$  book      (pair body appendix)
+    --
 |%
+++  zebra                                                 ::  bounded zk +mule
+  |=  [bud=@ud cax=cache tap=*]
+  ^-  book
+  %.  [tap %9 2 %0 1]
+  %*  .  zink
+    app  [cax ~ bud]
+  ==
 ::
-+$  good  (unit *)
-+$  fail  (list [@ta *])
+++  raw-eval
+  |=  [bud=@ud cax=cache n=(pair)]
+  ^-  book
+  %.  n
+  %*  .  zink
+    app  [cax ~ bud]
+  ==
 ::
-+$  body  (each good fail)
-+$  cache  (map * phash)
-+$  appendix  [cax=cache hit=hints bud=@]
-+$  book  (pair body appendix)
+++  hash
+  |=  [n=* cax=(map * phash)]
+  ^-  phash
+  ?@  n
+    ?:  (lte n 12)
+      =/  ch  (~(get by cax) n)
+      ?^  ch  u.ch
+      (hash:pedersen n 0)
+    (hash:pedersen n 0)
+  ?^  ch=(~(get by cax) n)
+    ~&  %cache-hit
+    u.ch
+  =/  hh  $(n -.n)
+  =/  ht  $(n +.n)
+  (hash:pedersen hh ht)
+::
+++  create-hints
+  |=  [n=^ h=hints cax=cache]
+  ^-  json
+  =/  hs  (hash -.n cax)
+  =/  hf  (hash +.n cax)
+  %-  pairs:enjs:format
+  :~  hints+(hints:enjs h)
+      subject+s+(num:enjs hs)
+      formula+s+(num:enjs hf)
+  ==
 ::
 ++  zink
   =|  appendix
@@ -17,15 +59,10 @@
   |=  [s=* f=*]
   ^-  book
   |^
-  ?~  formula-cost=(cost f bud)
-    [%&^~ [cax hit 0]]
-  ?:  (lth bud u.formula-cost)  [%&^~ [cax hit 0]]
-  =.  bud  (sub bud u.formula-cost)
   |-
   ?+    f
     ~&  f
     [%|^trace app]
-  ::  formula is a cell; do distribution
   ::
       [^ *]
     =^  hed=body  app
@@ -311,14 +348,6 @@
       =.  bud  (sub bud 1)
       ?.  ?=([x=@ud y=@ud] sam)  %|^trace
       %&^(some (mul x.sam y.sam))
-    ::
-        %cain
-      ?:  (lth bud 1)  %&^~
-      =.  bud  (sub bud 1)
-      =/  vax=(unit vase)
-        ((soft vase) sam)
-      ?~  vax  %|^trace
-      %&^(some (sell u.vax))
     ==
   ::
   ++  frag
@@ -355,46 +384,27 @@
       %2  [``[u.u.mutant +.target] bud]
       %3  [``[-.target u.u.mutant] bud]
     ==
-  ::  hash:
-  ::  if x is an atom then hash(x)=h(x, 0)
-  ::  else hash([x y])=h(hash(x), hash(y))
-  ::  where h = pedersen hash
+  ::
   ++  hash
     |=  n=*
     ^-  [(unit phash) appendix]
     =/  mh  (~(get by cax) n)
-    ?^  mh  [mh app]
+    ?^  mh
+      ?:  =(bud 0)  [~ app]
+      [mh app(bud (dec bud))]
     ?@  n
       =/  h  (hash:pedersen n 0)
-      ?:  (lth bud 1)  [~ app]
-      =.  bud  (sub bud 1)
-      [`h app(cax (~(put by cax) n h))]
+      ?:  =(bud 0)  [~ app]
+      :-  `h
+      app(cax (~(put by cax) n h), bud (dec bud))
     =^  hh=(unit phash)  app  $(n -.n)
     ?~  hh  [~ app]
     =^  ht=(unit phash)  app  $(n +.n)
     ?~  ht  [~ app]
     =/  h  (hash:pedersen u.hh u.ht)
-    ?:  (lth bud 1)  [~ app]
-    =.  bud  (sub bud 1)
-    [`h app(cax (~(put by cax) n h))]
-  ::
-  ++  cost                                              ::  gas cost of noun
-    |^
-    |=  [a=* bud=@ud]
-    ^-  (unit @ud)
-    ?@(a `(pat a) (ket a bud))
-    ++  pat  |=(a=@ (max 1 (met 5 a)))
-    ++  ket
-      |=  [a=^ bud=@ud]
-      ?:  (lth bud 1)  ~
-      =.  bud  (dec bud)
-      ?~  lef=(^$ -.a bud)  ~
-      ?:  (lth bud u.lef)  ~
-      =.  bud  (sub bud u.lef)
-      ?~  rig=(^$ +.a bud)  ~
-      `+((add u.lef u.rig))
-    --
-  ::  +merk-sibs from bottom to top
+    ?:  =(bud 0)  [~ app]
+    :-  `h
+    app(cax (~(put by cax) n h), bud (dec bud))
   ::
   ++  merk-sibs
     |=  [s=* axis=@]
@@ -415,162 +425,5 @@
       axis  (mas axis)
       path  [u.sibling path]
     ==
-  --
-::
-::  eval-noun: evaluate nock with zink
-::
-++  eval-noun
-  |=  [n=(pair) bud=@]
-  ^-  book
-  %.  n
-  %*  .  zink
-    app  [~ ~ bud]
-  ==
-::
-::  eval-noun: evaluate nock with zink
-::
-++  eval-noun-with-cache
-  |=  [n=(pair) bud=@ cax=cache]
-  ^-  book
-  %.  n
-  %*  .  zink
-    app  [cax ~ bud]
-  ==
-::
-::  eval-hoon-with-hints: eval hoon and return result w/hints as json
-::
-++  eval-hoon-with-hints
-  |=  [file=path gen=hoon bud=@]
-  ^-  [body json]
-  =/  src  .^(@t %cx file)
-  =/  gun  (slap !>(~) (ream src))
-  =/  han  (~(mint ut p.gun) %noun gen)
-  =-  [p (create-hints [q.gun q.han] hit.q)]
-  (eval-noun [q.gun q.han] bud)
-::
-::  eval-hoon: compile a hoon file and evaluate it with zink
-::
-++  eval-hoon
-  |=  [file=path lib=(unit path) gen=hoon bud=@]
-  ^-  book
-  =/  clib
-    ?~  lib  !>(~)
-    =/  libsrc  .^(@t %cx u.lib)
-    (slap !>(~) (ream libsrc))
-  =/  src  .^(@t %cx file)
-  =/  gun  (slap clib (ream src))
-  =/  han  (~(mint ut p.gun) %noun gen)
-  ~&  %compiled
-  (eval-noun [q.gun q.han] bud)
-::
-::  eval-hoon-with-cache: compile a hoon file and evaluate it with zink
-::
-++  eval-hoon-with-cache
-  |=  [file=path lib=(unit path) gen=hoon bud=@ cax=cache]
-  ^-  book
-  =/  clib
-    ?~  lib  !>(~)
-    =/  libsrc  .^(@t %cx u.lib)
-    (slap !>(~) (ream libsrc))
-  =/  src  .^(@t %cx file)
-  =/  gun  (slap clib (ream src))
-  =/  han  (~(mint ut p.gun) %noun gen)
-  (eval-noun-with-cache [q.gun q.han] bud cax)
-::
-::  create-hints: create full hint json
-::
-++  create-hints
-  |=  [n=^ h=hints]
-  ^-  js=json
-  =/  hs  (hash -.n ~)
-  =/  hf  (hash +.n ~)
-  %-  pairs:enjs:format
-  :~  hints+(hints:enjs h)
-      subject+s+(num:enjs hs)
-      formula+s+(num:enjs hf)
-  ==
-::
-++  hash
-  |=  [n=* cax=(map * phash)]
-  ^-  phash
-  ?@  n
-    ?:  (lte n 12)
-      =/  ch  (~(get by cax) n)
-      ?^  ch  u.ch
-      (hash:pedersen n 0)
-    (hash:pedersen n 0)
-  ?^  ch=(~(get by cax) n)
-    ~&  %cache-hit
-    u.ch
-  =/  hh  $(n -.n)
-  =/  ht  $(n +.n)
-  (hash:pedersen hh ht)
-::
-++  conq
-  |%
-  ::
-  ::  To use this, pass in a vase of lib/zig/sys/hoon.hoon generated via:
-  ::  (slap !>(~) (ream text-of-hoon))
-  ::
-  ++  layers
-    ^-  (list @t)
-    :~  '..add'
-        '..biff'
-        '..egcd'
-        '..po'
-    ==
-  ::
-  ++  all-arms-to-axes
-    |=  vax=vase
-    %-  ~(gas by *(map term @))
-    %+  turn  (list-arms vax)
-    |=  t=term
-    [t (arm-axis vax t)]
-  ::
-  ++  list-arms
-    |=  vax=vase
-    ^-  (list term)
-    (sloe p.vax)
-  ::
-  ++  arm-axis
-    |=  [vax=vase arm=term]
-    ^-  @
-    =/  r  (~(find ut p.vax) %read ~[arm])
-    ?>  ?=(%& -.r)
-    ?>  ?=(%| -.q.p.r)
-    p.q.p.r
-  ::
-  ++  hash-all-arms
-    |=  [vax=vase cax=(map * phash)]
-    ^-  (map * phash)
-    =/  lis=(list term)  (list-arms vax)
-    |-
-    ?~  lis  cax
-    =*  t  i.lis
-    =/  a=@  (arm-axis vax t)
-    ~&  [t a]
-    =/  n  q:(slot a vax)
-    $(lis t.lis, cax (~(put by cax) n (hash n cax)))
-  ::
-  ++  hash-arms-per-layer
-    |=  [vax=vase layer=@t cax=(map * phash)]
-    ^-  (map * phash)
-    =/  cor  (slap vax (ream layer))
-    (hash-all-arms cor cax)
-  ::
-  ++  main
-    |=  hoonlib-txt=@t
-    =/  hoonlib  (slap !>(~) (ream hoonlib-txt))
-    =/  cax
-      %-  ~(gas by *(map * phash))
-      %+  turn  (gulf 0 12)
-      |=  n=@
-      ^-  [* phash]
-      [n (hash n ~)]
-    =/  l  layers
-    |-
-    ?~  l
-      cax
-    $(l t.l, cax (hash-arms-per-layer hoonlib i.l cax))
   --
 --
