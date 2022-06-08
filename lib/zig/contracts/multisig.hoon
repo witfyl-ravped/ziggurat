@@ -163,6 +163,10 @@
       ::
       ::  N.B: Due to separation of concerns, we do not automatically record
       ::       a vote on caller-id's part. they must send a vote tx as well.
+      ::
+      ::  TODO we should overwrite [from sig eth-hash]:p.egg and caller-id.q.egg
+      ::  to always be from this contract (using me.cart, signing it ourselves, etc.)
+      =.  from.p.egg.args       me.cart
       =.  pending.state         (~(put by pending.state) (mug egg.args) [egg.args *(set id)])
       =.  data.p.germ.my-grain  state
       [%& (malt ~[[id.my-grain my-grain]]) ~ ~]
