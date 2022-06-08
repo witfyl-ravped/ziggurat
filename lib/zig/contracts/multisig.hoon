@@ -196,7 +196,7 @@
     ::
         %set-threshold
       ?>  (is-me caller-id)
-      ?>  (gth threshold.state ~(wyt in members.state))  :: cannot set threshold higher than member count
+      ?>  !(gth threshold.state ~(wyt in members.state))  :: cannot set threshold higher than member count
       =.  threshold.state       new-thresh.args
       =.  data.p.germ.my-grain  state
       [%& (malt ~[[id.my-grain my-grain]]) ~ ~]
