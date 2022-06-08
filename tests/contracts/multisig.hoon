@@ -143,6 +143,23 @@
           cont-grains  (silt ~[multisig-grain-id])
         ==
       egg
+    ++  egg-remove-member
+      =|  =egg
+      =.  p.egg
+        %=  p.egg
+          from     multisig-wheat-id
+          to       multisig-wheat-id
+          rate     10
+          budget   100.000
+          town-id  town-id
+        ==
+      =.  q.egg
+        %=  q.egg
+          caller     multisig-wheat-id
+          args       `[%remove-member id:owner-1]
+          cont-grains  (silt ~[multisig-grain-id])
+        ==
+      egg
     --
 ::  testing arms
 |%
@@ -235,7 +252,125 @@
   =*  expected-grain  multisig-grain-5
   =/  grain  ?>(?=(%.y -.res) (snag 0 ~(val by changed.p.res)))
   (expect-eq !>(expected-grain) !>(grain))
-++  test-remove-member
+++  test-vote-2-of-2-remove-member
   ^-  tang
-  ~
+  =|  test-output=tang
+  |^
+  ::  TX 1 - %submit-tx to remove owner-1 from multisig
+  ::
+  =/  =embryo
+    :*  caller=id:owner-2
+        args=`[%submit-tx egg-remove-member]
+        grains=~
+    ==
+  =/  =cart      [me=multisig-wheat-id block=0 town-id owns=(malt ~[[id:multisig-grain-5 multisig-grain-5]])]
+  =/  res=chick  (~(write cont cart) embryo)
+  =/  grain-submit-tx  ?>(?=(%.y -.res) (snag 0 ~(val by changed.p.res)))
+  =.  test-output  (weld test-output (expect-eq !>(expected-grain-submit-tx) !>(grain-submit-tx)))
+  ::  TX 2 - %vote by owner-2  
+  ::
+  =.  embryo
+    :*  caller=id:owner-2
+        args=`[%vote (mug egg-remove-member)]
+        grains=~
+    ==
+  =.  cart  [me=multisig-wheat-id block=0 town-id owns=(malt ~[[id:expected-grain-submit-tx expected-grain-submit-tx]])]  
+  =.  res   (~(write cont cart) embryo)
+  =/  grain-vote-tx-1  ?>(?=(%.y -.res) (snag 0 ~(val by changed.p.res)))
+  =.  test-output  (weld test-output (expect-eq !>(expected-grain-vote-tx-1) !>(grain-vote-tx-1)))
+  ::  TX 3 - %vote by owner-1, removes owner-1
+  ::
+  =.  embryo
+    :*  caller=id:owner-1
+        args=`[%vote (mug egg-remove-member)]
+        grains=~
+    ==
+  =.  cart  [me=multisig-wheat-id block=0 town-id owns=(malt ~[[id:expected-grain-vote-tx-1 expected-grain-vote-tx-1]])]  
+  =.  res   (~(write cont cart) embryo)
+  =/  [grain-vote-tx-2=grain next=_next:*hen]
+    ?>  ?=(%.n -.res)
+    [(snag 0 ~(val by changed.roost.p.res)) next.p.res]
+  =.  test-output
+    ;:  weld
+      (expect-eq !>(expected-grain-vote-tx-2) !>(grain-vote-tx-2))
+      ::
+      (expect-eq !>(to.next) !>(to.p:egg-remove-member))
+      (expect-eq !>(town-id.next) !>(town-id.p:egg-remove-member))
+      (expect-eq !>(caller.args.next) !>(caller.q:egg-remove-member))
+      (expect-eq !>(args.args.next) !>(args.q:egg-remove-member))
+      (expect-eq !>(args.args.next) !>(args.q:egg-remove-member))
+      (expect-eq !>(cont-grains.args.next) !>(cont-grains.q:egg-remove-member))
+    ==
+  ::  TX 4 - apply %remove-member
+  ::
+  =.  embryo
+    :*  caller=from.p:egg-remove-member
+        args=args.q:egg-remove-member
+        grains=~
+    ==
+  =.  cart  [me=multisig-wheat-id block=0 town-id owns=(malt ~[[id:expected-grain-vote-tx-2 expected-grain-vote-tx-2]])]  
+  =.  res   (~(write cont cart) embryo)
+  =/  grain-remove-member  ?>(?=(%.y -.res) (snag 0 ~(val by changed.p.res)))
+  =.  test-output  (weld test-output (expect-eq !>(expected-grain-remove-member) !>(grain-remove-member)))
+  test-output
+  ::
+  ++  expected-state-submit-tx
+    ^-  multisig-state
+    :*  members:multisig-state-5
+        threshold:multisig-state-5
+        (~(put by pending:multisig-state-4) (mug egg-remove-member) [egg-remove-member votes=~])
+    ==
+  ++  expected-grain-submit-tx
+    ^-  grain
+    :*  id:multisig-grain-1
+        lord:multisig-grain-1
+        holder:multisig-grain-1
+        town-id:multisig-grain-1
+        germ=[%& salt=multisig-salt data=expected-state-submit-tx]
+    ==
+  ::
+  ++  expected-state-vote-tx-1
+    ^-  multisig-state
+    :*  members:expected-state-submit-tx
+        threshold:expected-state-submit-tx
+        (~(put by pending:expected-state-submit-tx) (mug egg-remove-member) [egg-remove-member votes=(silt ~[id:owner-2])])
+    ==
+  ++  expected-grain-vote-tx-1
+    ^-  grain
+    :*  id:multisig-grain-1
+        lord:multisig-grain-1
+        holder:multisig-grain-1
+        town-id:multisig-grain-1
+        germ=[%& salt=multisig-salt data=expected-state-vote-tx-1]
+    ==
+  ::
+  ++  expected-state-vote-tx-2
+    ^-  multisig-state
+    :*  members:expected-state-vote-tx-1
+        threshold:expected-state-vote-tx-1
+        pending=~  :: vote passed
+    ==
+  ++  expected-grain-vote-tx-2
+    ^-  grain
+    :*  id:multisig-grain-1
+        lord:multisig-grain-1
+        holder:multisig-grain-1
+        town-id:multisig-grain-1
+        germ=[%& salt=multisig-salt data=expected-state-vote-tx-2]
+    ==
+  ++  expected-state-remove-member
+    ^-  multisig-state
+    :*  (~(del in members:expected-state-vote-tx-2) id:owner-1)
+        threshold:expected-state-vote-tx-2
+        pending:expected-state-vote-tx-2
+    ==
+  ++  expected-grain-remove-member
+    ^-  grain
+    :*  id:multisig-grain-1
+        lord:multisig-grain-1
+        holder:multisig-grain-1
+        town-id:multisig-grain-1
+        germ=[%& salt=multisig-salt data=expected-state-remove-member]
+    ==
+  --
 --
