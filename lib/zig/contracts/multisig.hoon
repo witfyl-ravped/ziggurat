@@ -24,7 +24,7 @@
   +$  multisig-state
     $:  members=(set id)
         threshold=@ud
-        pending=(map tx-hash proposal)
+        pending=(map tx-hash proposal)  :: if map already hashes the key type, then this could be (map egg votes)
     ::  submitted=(set tx-hash) could add this if it makes sense. could let off chain index this and save on chain space
     ==
   ::
@@ -141,9 +141,9 @@
       ?>  !(~(has in votes.prop) caller-id)            :: cannot vote for prop you already voted for
       =.  votes.prop     (~(put in votes.prop) caller-id)
       =.  pending.state  (~(put by pending.state) tx-hash prop)
-      ::  if proposal is not at threshold, just update state
+      ::  if votes are not at threshold, just update state
       ::  otherwise update state and issue tx
-      ?:  (lth threshold.state ~(wyt in votes.prop))
+      ?:  (lth ~(wyt in votes.prop) threshold.state)
         =.  data.p.germ.my-grain  state
         [%& (malt ~[[id.my-grain my-grain]]) ~ ~]
       =.  pending.state         (~(del by pending.state) tx-hash)
