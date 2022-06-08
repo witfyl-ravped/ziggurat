@@ -1,4 +1,5 @@
 /+  smart=zig-sys-smart
+/*  smart-lib-noun  %noun  /lib/zig/compiled/smart-lib-testing/noun
 :-  %say
 |=  [[now=@da eny=@uvJ bek=beak] [pax=path ~] ~]
 |^
@@ -13,36 +14,23 @@
 =/  smart-txt    .^(@t %cx smart-path)
 =/  hoon-lib     (slap !>(~) (rain hoon-path hoon-txt))
 =/  smart-lib    (slap hoon-lib (rain smart-path smart-txt))
+::  working with vases
 ::  compose libraries flatly against uHoon subject
 =/  braw=(list hoon)
   %+  turn  raw
   |=  [face=term =path]
   =/  pax  (weld desk path)
   `hoon`[%ktts face (rain pax .^(@t %cx pax))]
-=/  full=hoon  [%clsg braw] ::  [%cltr (weld ~[(rain smart-path smart-txt)] braw)]
+=/  full=hoon  [%clsg braw]
+=/  full-nock=*  q:(~(mint ut p.smart-lib) %noun full)
 =/  payload=vase  (slap smart-lib full)
-::  generate nock for each library
-=/  libs=(list *)
-  %+  turn  braw
-  |=  gen=hoon
-  =/  gun  (~(mint ut p.smart-lib) %noun gen)
-  ~&  p.gun
-  q.gun
-=/  dumb-libs
-  %+  turn  libs
-  |=  lib=*
-  .*(q.smart-lib lib)
-=/  dumb-payload=*
-  [*cart:smart [q.smart-lib dumb-libs]]
-::  return contract with nock battery and payload
 =/  cont  (~(mint ut p:(slop smart-lib payload)) %noun contract-hoon)
-=/  perfect  .*([q.smart-lib dumb-payload] q.cont)
+=/  perfect  .*([q.smart-lib q.payload] q.cont)
 =/  dor  [-:!>(*contract:smart) perfect]
+::
 :-  %noun
-[`[q.cont libs] ~]
-::  =+  (shut dor %write !>(*cart:smart) !>(*embryo:smart))
-::  ~&  p
-::  q
+^-  wheat:smart
+[`[bat=q.cont pay=full-nock] ~]
 ::
 ++  shut                                               ::  slam a door
   |=  [dor=vase arm=@tas dor-sam=vase arm-sam=vase]

@@ -45,7 +45,7 @@
 ::
 +$  rice   [salt=@ data=*]
 ::  contract contains itself and every imported library in pay
-+$  wheat  [cont=(unit [bat=* pay=(list *)]) owns=(set id)]
++$  wheat  [cont=(unit [bat=* pay=*]) owns=(set id)]
 +$  crop   [nok=* owns=(map id grain)]  ::  wheat that's been processed by mill.hoon
 ::
 +$  granary   (map id grain)
