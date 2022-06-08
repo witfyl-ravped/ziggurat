@@ -1,7 +1,7 @@
 /+  *bink, smart=zig-sys-smart, ethereum
-/*  smart-lib  %noun  /lib/zig/compiled/smart-lib/noun
+/*  smart-lib-noun  %noun  /lib/zig/compiled/smart-lib/noun
 =,  smart
-|_  library=*
+|_  library=vase
 ::
 ::  +hole: vase-checks your types for you
 ::
@@ -11,7 +11,7 @@
   !<(typ [-:!>(*typ) val])
 ::
 ++  mill
-  |_  [miller=account town-id=@ud blocknum=@ud now=time]
+  |_  [miller=account town-id=@ud blocknum=@ud]
   ::
   ::  +mill-all: mills all eggs in basket
   ::
@@ -45,21 +45,21 @@
     ::  using ecdsa-raw-sign in wallet, TODO review this
     ::  comment this out if testing mill
     ::  TODO figure out how to guarantee raw-recover non-crashing
-    =?  v.sig.p.egg  (gte v.sig.p.egg 27)  (sub v.sig.p.egg 27)
-    =/  recovered
-      %+  ecdsa-raw-recover:secp256k1:secp:crypto
-        ?~(eth-hash.p.egg (sham (jam q.egg)) u.eth-hash.p.egg)
-      sig.p.egg
-    =/  caller-address
-      ?~  eth-hash.p.egg
-        %-  compress-point:secp256k1:secp:crypto
-        recovered
-      %-  address-from-pub:key:ethereum
-      %-  serialize-point:secp256k1:secp:crypto
-      recovered
-    ?.  =(id.from.p.egg caller-address)
-    ~&  >>>  "mill: signature mismatch: expected {<id.from.p.egg>}, got {<`@ux`caller-address>}"
-      [town 0 %2]  ::  signed tx doesn't match account
+    ::  =?  v.sig.p.egg  (gte v.sig.p.egg 27)  (sub v.sig.p.egg 27)
+    ::  =/  recovered
+    ::    %+  ecdsa-raw-recover:secp256k1:secp:crypto
+    ::      ?~(eth-hash.p.egg (sham (jam q.egg)) u.eth-hash.p.egg)
+    ::    sig.p.egg
+    ::  =/  caller-address
+    ::    ?~  eth-hash.p.egg
+    ::      %-  compress-point:secp256k1:secp:crypto
+    ::      recovered
+    ::    %-  address-from-pub:key:ethereum
+    ::    %-  serialize-point:secp256k1:secp:crypto
+    ::    recovered
+    ::  ?.  =(id.from.p.egg caller-address)
+    ::  ~&  >>>  "mill: signature mismatch: expected {<id.from.p.egg>}, got {<`@ux`caller-address>}"
+    ::    [town 0 %2]  ::  signed tx doesn't match account
     ::
     ?.  =(nonce.from.p.egg +((~(gut by q.town) id.from.p.egg 0)))
       ~&  >>>  "tx rejected; bad nonce"
@@ -203,21 +203,28 @@
         |=  [to=id budget=@ud]
         ^-  [(unit chick) rem=@ud =errorcode]
         =/  =cart  [to blocknum town-id owns.crop]
-        ::  TODO figure out how to pre-cue this and get good results
-        ::
-        =/  =contract  (hole contract [nok.crop +:(cue q.q.smart-lib)])
-        ::  ~&  >  embryo
-        ::  ~&  >>>  cart
+        =/  payload  .*(q.library pay.cont.crop)
+        =/  battery  .*([q.library payload] bat.cont.crop)
+        =/  dor      [-:!>(*contract) battery]
         =/  res
-          ::  need jet dashboard to run bull:
-          ::  (bull |.(;;(chick (~(write contract cart) embryo))) bud)
-          (mule |.(;;(chick (~(write contract cart) embryo))))^(sub budget 7)
-        ::  ~&  >>  "write result: {<res>}"
+          (mule |.(;;(chick q:(shut dor %write !>(cart) !>(embryo)))))^(sub budget 7)
         ?:  ?=(%| -.-.res)
           ::  error in contract execution
           [~ budget %6]
         ::  chick result
         [`p.-.res budget %0]
+      ::
+      ++  shut                                               ::  slam a door
+        |=  [dor=vase arm=@tas dor-sam=vase arm-sam=vase]
+        ^-  vase
+        %+  slap
+          (slop dor (slop dor-sam arm-sam))
+        ^-  hoon
+        :-  %cnsg
+        :^    [%$ ~]
+            [%cnsg [arm ~] [%$ 2] [%$ 6] ~]  ::  replace sample
+          [%$ 7]
+        ~
       --
     ::
     ::  +harvest: take a completed execution and validate all changes and additions to granary state

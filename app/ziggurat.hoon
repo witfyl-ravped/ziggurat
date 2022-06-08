@@ -9,7 +9,7 @@
 ::
 /-  indexer
 /+  *ziggurat, default-agent, dbug, verb
-/*  smart-lib  %noun  /lib/zig/compiled/smart-lib/noun
+/*  smart-lib-noun  %noun  /lib/zig/compiled/smart-lib/noun
 =,  util
 |%
 +$  card  card:agent:gall
@@ -24,7 +24,7 @@
       =height
   ==
 +$  inflated-state-0  [state-0 =mil]
-+$  mil  $_  ~(mill mill 0)
++$  mil  $_  ~(mill mill !>(0))
 --
 ::
 =|  inflated-state-0
@@ -38,13 +38,13 @@
     def   ~(. (default-agent this %|) bowl)
 ::
 ++  on-init
-  `this(state [[%0 %none ~ ~ ~ ~ [~ ~] 0] ~(mill mill +:(cue q.q.smart-lib))])
+  `this(state [[%0 %none ~ ~ ~ ~ [~ ~] 0] ~(mill mill ;;(vase (cue q.q.smart-lib-noun)))])
 ::
 ++  on-save  !>(-.state)
 ++  on-load
   |=  =old=vase
   ^-  (quip card _this)
-  =+  ~(mill mill +:(cue q.q.smart-lib))
+  =+  ~(mill mill ;;(vase (cue q.q.smart-lib-noun)))
   `this(state [!<(state-0 old-vase) -])
 ::
 ++  on-watch
@@ -544,7 +544,7 @@
       =+  /(scot %p our.bowl)/wallet/(scot %da now.bowl)/account/(scot %ux (need address.state))/(scot %ud relay-town-id)/noun
       =+  .^(account:smart %gx -)
       =/  globe-chunk
-        (~(mill-all mil - relay-town-id height.state now.bowl) globe.state ~(tap in basket.state))
+        (~(mill-all mil - relay-town-id height.state) globe.state ~(tap in basket.state))
       =+  :_  height.state
           %+  ~(put by (~(gut by queue.state) slot-num ~))
           relay-town-id  globe-chunk

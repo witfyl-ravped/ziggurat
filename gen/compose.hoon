@@ -9,8 +9,24 @@
 =/  payload  .*(q.smart-lib pay.cont)
 =/  contract  .*([q.smart-lib payload] bat.cont)
 =/  dor  [-:!>(*contract:smart) contract]
+::  for testing
+=/  =cart:smart  [me=0x74.6361.7274.6e6f.632d.7367.697a block=1 town-id=0 owns=~]
+=/  =embryo:smart
+  :*  caller=[id=0xbeef nonce=1 zigs=0x1.beef]
+      args=[~ [1.702.259.047 4.660 0 777 333]]
+      %-  malt
+      :~  :-  0x1.beef
+          :*  id=0x1.beef
+              lord=0x74.6361.7274.6e6f.632d.7367.697a
+              holder=0xbeef
+              town-id=0
+              germ=[%.y p=[salt=1.936.157.050 data=[300.000 0 7.721.149.764.861.789.085.613.156.690.298]]]
+          ==
+  ==  ==
+::
 :-  %noun
-q:(shut dor %write !>(*cart:smart) !>(*embryo:smart))
+^-  chick:smart
+;;(chick:smart q:(shut dor %write !>(cart) !>(embryo)))
 ::
 ++  shut                                               ::  slam a door
   |=  [dor=vase arm=@tas dor-sam=vase arm-sam=vase]
