@@ -270,13 +270,15 @@
       :-  epoch-num.most-recent
       num.block-header.most-recent
     ::
-        [%x %chunk-num @ @ @ ~]
-      =/  epoch-num=@ud  (slav %ud i.t.t.path)
-      =/  block-num=@ud  (slav %ud i.t.t.t.path)
-      =/  town-id=@ud  (slav %ud i.t.t.t.t.path)
+        ?([%x %chunk-num @ @ @ ~] [%x %json %chunk-num @ @ @ ~])
+      =/  args=^path  ?.(=(%json i.t.path) t.t.path t.t.t.path)
+      ?>  ?=([@ @ @ ~] args)
+      =/  epoch-num=@ud  (slav %ud i.args)
+      =/  block-num=@ud  (slav %ud i.t.args)
+      =/  town-id=@ud  (slav %ud i.t.t.args)
       ?~  up=(serve-update %chunk [epoch-num block-num town-id])
         [~ ~]
-      [~ ~ %indexer-update !>(`update:ui`u.up)]
+      (make-peek-update =(%json i.t.path) u.up)
     ::
         $?  [%x %block-hash @ ~]
             :: [%x %chunk-hash @ @ ~]
@@ -286,12 +288,21 @@
             [%x %holder @ ~]
             [%x %lord @ ~]
             [%x %to @ ~]
+            [%x %json %block-hash @ ~]
+            :: [%x %json %chunk-hash @ @ ~]
+            [%x %json %egg @ ~]
+            [%x %json %from @ ~]
+            [%x %json %grain @ ~]
+            [%x %json %holder @ ~]
+            [%x %json %lord @ ~]
+            [%x %json %to @ ~]
         ==
-      =/  =query-type:ui
-        ;;(query-type:ui i.t.path)
-      =/  hash=@ux  (slav %ux i.t.t.path)
+      =/  args=^path  ?.(=(%json i.t.path) t.path t.t.path)
+      ?>  ?=([@ @ ~] args)
+      =/  =query-type:ui  ;;(query-type:ui i.args)
+      =/  hash=@ux  (slav %ux i.t.args)
       ?~  up=(serve-update query-type hash)  [~ ~]
-      [~ ~ %indexer-update !>(`update:ui`u.up)]
+      (make-peek-update =(%json i.t.path) u.up)
     ::
         [%x %headers @ ~]
       ?~  recent-headers  [~ ~]
@@ -303,57 +314,38 @@
       ^-  (list [epoch-num=@ud =block-header:zig])
       recent-headers
     ::
-        [%x %slot ~]
-      ?~  newest-epoch=(pry:poc:zig epochs)  [~ ~]
-      ?~  newest-slot=(pry:sot:zig slots.val.u.newest-epoch)
-        [~ ~]
-      =*  epoch-num  num.val.u.newest-epoch
-      =*  slot  val.u.newest-slot
-      =*  block-header  p.slot
-      :^  ~  ~  %indexer-update
-      !>  ^-  update:ui
-      :-  %slot
-      %+  %~  put  by
-          *(map id:smart [block-location:ui slot:zig])
-        `@ux`data-hash.block-header
-      :-  [epoch-num num.block-header]
-      slot
+        ?([%x %slot ~] [%x %json %slot ~])
+      =/  up=(unit update:ui)  get-newest-slot-update
+      ?~  up  [~ ~]
+      (make-peek-update =(%json i.t.path) u.up)
     ::
-        [%x %slot-num @ @ ~]
-      =/  epoch-num=@ud  (slav %ud i.t.t.path)
-      =/  block-num=@ud  (slav %ud i.t.t.t.path)
+        ?([%x %slot-num @ @ ~] [%x %json %slot-num @ @ ~])
+      =/  args=^path  ?.(=(%json i.t.path) t.t.path t.t.t.path)
+      ?>  ?=([@ @ ~] args)
+      =/  epoch-num=@ud  (slav %ud i.args)
+      =/  block-num=@ud  (slav %ud i.t.args)
       ?~  up=(serve-update %slot epoch-num block-num)  [~ ~]
-      [~ ~ %indexer-update !>(`update:ui`u.up)]
+      (make-peek-update =(%json i.t.path) u.up)
     ::
-        [%x %id @ ~]
-        ::  search over from and to and return all hits
-      =/  hash=@ux  (slav %ux i.t.t.path)
-      =/  egg=(unit update:ui)
-        (serve-update %egg hash)
-      =/  from=(unit update:ui)
-        (serve-update %from hash)
-      =/  to=(unit update:ui)
-        (serve-update %to hash)
-      =/  up=(unit update:ui)
-        (combine-egg-updates ~[from to])
-      ?~  up  [~ ~]
-      [~ ~ %indexer-update !>(`update:ui`u.up)]
+        ?([%x %id @ ~] [%x %json %id @ ~])
+      =/  hash=@ux
+        %+  slav  %ux
+        ?.  =(%json i.t.path)
+          i.t.t.path 
+        ?>  ?=([@ @ @ @ ~] path)
+        i.t.t.t.path
+      ?~  up=(get-ids hash)  [~ ~]
+      (make-peek-update =(%json i.t.path) u.up)
     ::
-        [%x %hash @ ~]
-        ::  search over all hashes and return all hits
-      =/  hash=@ux  (slav %ux i.t.t.path)
-      =/  up=(unit update:ui)  (get-all-hashes hash)
-      ?~  up  [~ ~]
-      [~ ~ %indexer-update !>(`update:ui`u.up)]
-    ::
-        [%x %json %hash @ ~]
-        ::  search over all hashes and return all hits;
-        ::  manually convert to JSON so we can mold rice
-        ::  data (requires scry which requires bowl)
-      =/  hash=@ux  (slav %ux i.t.t.t.path)
-      =/  up=(unit update:ui)  (get-all-hashes hash)
-      ?~  up  [~ ~]
-      [~ ~ %json !>(`json`(update:enjs:ui-lib u.up))]
+        ?([%x %hash @ ~] [%x %json %hash @ ~])
+      =/  hash=@ux
+        %+  slav  %ux
+        ?.  =(%json i.t.path)
+          i.t.t.path 
+        ?>  ?=([@ @ @ @ ~] path)
+        i.t.t.t.path
+      ?~  up=(get-hashes hash)  [~ ~]
+      (make-peek-update =(%json i.t.path) u.up)
     ::
         [%x %has-chunk-num @ @ @ ~]
       =/  epoch-num=@ud  (slav %ud i.t.t.path)
@@ -446,7 +438,13 @@
     ::
     ==
     ::
-    ++  get-all-hashes
+    ++  make-peek-update
+      |=  [is-json=? =update:ui]
+      ?.  is-json
+        [~ ~ %indexer-update !>(`update:ui`update)]
+      [~ ~ %json !>(`json`(update:enjs:ui-lib update))]
+    ::
+    ++  get-hashes
       |=  hash=@ux
       ^-  (unit update:ui)
       =/  egg=(unit update:ui)
@@ -460,6 +458,32 @@
       =/  to=(unit update:ui)
         (serve-update %to hash)
       (combine-updates ~[egg from to] ~[grain] slot)
+    ::
+    ++  get-newest-slot-update
+      ^-  (unit update:ui)
+      ?~  newest-epoch=(pry:poc:zig epochs)  ~
+      ?~  newest-slot=(pry:sot:zig slots.val.u.newest-epoch)
+        ~
+      =*  epoch-num  num.val.u.newest-epoch
+      =*  slot  val.u.newest-slot
+      =*  block-header  p.slot
+      :+  ~  %slot
+      %+  %~  put  by
+          *(map id:smart [block-location:ui slot:zig])
+        `@ux`data-hash.block-header
+      :-  [epoch-num num.block-header]
+      slot
+    ::
+    ++  get-ids
+      |=  hash=@ux
+      ^-  (unit update:ui)
+      =/  egg=(unit update:ui)
+        (serve-update %egg hash)
+      =/  from=(unit update:ui)
+        (serve-update %from hash)
+      =/  to=(unit update:ui)
+        (serve-update %to hash)
+      (combine-egg-updates ~[egg from to])
     ::
     --
   ::
