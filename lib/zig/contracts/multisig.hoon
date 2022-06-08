@@ -175,7 +175,7 @@
       ::
         %add-member
       ?>  (is-me caller-id)
-      ?>  (~(has in members.state) id.args)  :: adding an existing member is disallowed
+      ?>  !(~(has in members.state) id.args)  :: adding an existing member is disallowed
       =.  members.state         (~(put in members.state) id.args)
       =.  data.p.germ.my-grain  state
       [%& (malt ~[[id.my-grain my-grain]]) ~ ~]
