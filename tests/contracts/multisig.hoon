@@ -76,6 +76,12 @@
           threshold:multisig-state-3
           pending:multisig-state-3
       ==
+    ++  multisig-state-5
+      ^-  multisig-state
+      :*  members:multisig-state-4
+          threshold=2
+          pending:multisig-state-4
+      ==
     ::
     :: for our specific case, id and salt were pre-calculated by calling the contract
     ++  multisig-grain-id    0x2cf5.9fbd.b2bd.49c3.7524.50a3.ddbb.2248
@@ -111,6 +117,14 @@
           holder:multisig-grain-1
           town-id:multisig-grain-1
           germ=[%& salt=multisig-salt data=multisig-state-4]
+      ==
+    ++  multisig-grain-5
+      ^-  grain
+      :*  id:multisig-grain-1
+          lord:multisig-grain-1
+          holder:multisig-grain-1
+          town-id:multisig-grain-1
+          germ=[%& salt=multisig-salt data=multisig-state-5]
       ==
     ++  egg-add-member
       =|  =egg
@@ -210,7 +224,17 @@
   (expect-eq !>(expected-grain) !>(grain))
 ++  test-set-threshold
   ^-  tang
-  ~
+  ::  skips the %vote tx for this, assumes it already happened
+  =/  =embryo
+    :*  caller=multisig-wheat-id
+        args=`[%set-threshold 2]
+        grains=~
+    ==
+  =/  =cart  [me=multisig-wheat-id block=0 town-id owns=(malt ~[[id:multisig-grain-4 multisig-grain-4]])]
+  =/  res=chick  (~(write cont cart) embryo)
+  =*  expected-grain  multisig-grain-5
+  =/  grain  ?>(?=(%.y -.res) (snag 0 ~(val by changed.p.res)))
+  (expect-eq !>(expected-grain) !>(grain))
 ++  test-remove-member
   ^-  tang
   ~
