@@ -152,6 +152,7 @@
       ~|  "%ziggurat: error: can't find validators on-chain"
       =/  capitol-search
         .^(update:indexer %gx /(scot %p our.bowl)/indexer/(scot %da now.bowl)/grain/(scot %ux 'ziggurat')/noun)
+      ?>  ?=(^ capitol-search)
       ?>  ?=(%grain -.capitol-search)
       =/  capitol-grain=grain:smart  +.+.-:~(tap by grains.capitol-search)
       ?>  ?=(%& -.germ.capitol-grain)

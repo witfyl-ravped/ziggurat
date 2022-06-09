@@ -14,15 +14,6 @@
       %slot
       %to
       %hash
-      %has-block-hash
-      %has-chunk
-      %has-egg
-      %has-from
-      %has-grain
-      %has-holder
-      %has-lord
-      %has-slot
-      %has-to
   ==
 ::
 +$  query-payload

@@ -124,13 +124,12 @@
   |=  [=token-type =id:smart [our=ship now=time]]
   ^-  (unit asset-metadata)
   ::  manually import metadata for a token
-  =/  has-grain  .^(? %gx /(scot %p our)/indexer/(scot %da now)/has-grain/(scot %ux id)/noun)
-  ?.  has-grain
+  =/  update  .^(update:ui %gx /(scot %p our)/indexer/(scot %da now)/grain/(scot %ux id)/noun)
+  ?~  update
     ~&  >>>  "%wallet: failed to find matching metadata for a grain we hold"
     ~
-  =+  .^(update:ui %gx /(scot %p our)/indexer/(scot %da now)/grain/(scot %ux id)/noun)
-  ?>  ?=(%grain -.-)
-  =/  meta-grain=grain:smart  +.+.-:~(tap by grains.-)
+  ?>  ?=(%grain -.update)
+  =/  meta-grain=grain:smart  +.+.-:~(tap by grains.update)
   ?>  ?=(%& -.germ.meta-grain)
   =/  found=(unit asset-metadata)
     ?+  token-type  ~
