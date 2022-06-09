@@ -214,6 +214,7 @@
       ::  either on-time to start epoch, or solo validator
       ::  set our timers for all the slots in this epoch,
       ::  subscribe to all the other validator ships,
+      ::  forward our egg basket if its not empty,
       ::  and alert subscribing sequencers of the next block producer
       ~&  epoch+num.new-epoch^u.validator-set^`@ux`(end [3 2] (sham epochs))
       =/  [next-producer=ship next-slot=@ud]
@@ -221,6 +222,7 @@
           [-.order.new-epoch 0]
         [-.+.order.new-epoch 1]
       :_  %=  state
+            basket  ~
             epochs  (put:poc epochs num.new-epoch new-epoch)
             queue   (malt ~[[relay-town-id (~(gut by queue) relay-town-id ~)]])
             height  ?~(q.last-slot height height.u.q.last-slot)
@@ -231,6 +233,8 @@
       :~  [(notify-sequencer next-slot next-producer) ?~(- ~ [u.- ~])]
           (watch-updates (silt (murn order.new-epoch filter-by-wex)))
           (new-epoch-timers new-epoch our.bowl)
+          ?~  basket.state  ~
+          ~[(forward-basket (get-second-to-last order.new-epoch) basket.state)]
       ==
     ::
         %receive-chunk
@@ -279,12 +283,7 @@
         `state(basket (~(uni in basket) eggs.act))
       ::  clear our basket and forward to final producer in epoch
       :_  state(basket ~)
-      :_  ~
-      :*  %pass  /basket-gossip
-          %agent  [final-producer %ziggurat]
-          %poke  %zig-weave-poke
-          !>([%receive (~(uni in eggs.act) basket.state)])
-      ==
+      ~[(forward-basket final-producer (~(uni in eggs.act) basket.state))]
     ::
         %receive
       ?~  (find [src.bowl]~ order.cur)
