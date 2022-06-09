@@ -15,11 +15,11 @@
   ^-  chick
   |^
   ?~  args.inp  !!
-  (process ;;(action u.args.inp) (pin caller.inp))
+  (process ;;(action u.args.inp) caller.inp)
   ::
   ::  XX potentially add [%remove-tx tx-hash=@ux] if it makes sense?
   ::  XX potentially add expired txs?
-  +$  tx-hash   @ux
+  +$  tx-hash   @uvH
   +$  proposal  [=egg votes=(set id)]
   +$  multisig-state
     $:  members=(set id)
@@ -71,7 +71,7 @@
       [%member-removed removed=id multisig=id]
     ==
   ::
-  ++  shamspin
+  ++  sham-ids
     |=  ids=(set id)
     ^-  @uvH
     =<  q
@@ -79,6 +79,16 @@
       0v0
     |=  [=id hash=@uvH]
     [~ (sham (cat 3 hash (sham id)))]
+  ++  sham-egg
+    |=  [=egg submitter=caller block=@ud]
+    ^-  @uvH
+    ::  blocknum + town-id + caller-id + nonce (if avail)
+    =/  part-a  (cat 3 (sham block) (sham town-id.p.egg))
+    =/  part-b
+      ?^  submitter
+        (cat 3 (sham id.submitter) (sham nonce.submitter))
+      (sham submitter)
+    (cat 3 part-a part-b)
   ++  event-to-json
     |=  [=event]
     ^-  [@tas json]
@@ -91,8 +101,9 @@
     [tag jon]
   ::
   ++  process
-    |=  [args=action caller-id=id]
+    |=  [args=action =caller]
     ^-  chick
+    =/  caller-id=id  (pin caller.inp)
     ?:  ?=(%create-multisig -.args)
       ::  issue a new multisig rice
       =/  member-count  ~(wyt in members.args)
@@ -100,7 +111,7 @@
       ::  invariant: threshold must be <= member-count
       ?>  (lte init-thresh.args member-count)
       ?>  (gth init-thresh.args 0)  :: threshold of 0 is disallowed
-      ::  XX currently salt of a multisig is caller-id concat w initial members run thru shamspin
+      ::  XX currently salt of a multisig is caller-id concat w initial members run thru sham-ids
       ::     should salt be updated every time a new member is added? can salts even change?
       ::  potential solution: include the current block as well, so that salts are unique even when
       ::  the same caller-id creates a multisig w same initial members
@@ -108,7 +119,7 @@
       ::  the question about how determinisitic does a salt really have to be
       ::  and also, in a non-parallel situation, you could just make the salt always just be the block number right?.
       =/  salt=@
-        (sham (cat 3 block.cart (cat 3 caller-id (shamspin members.args))))
+        (sham (cat 3 block.cart (cat 3 caller-id (sham-ids members.args))))
       =/  lord               me.cart  
       =/  holder             me.cart  ::  TODO should holder be me.cart or caller-id
       =/  new-sig-germ=germ  [%& salt [members.args init-thresh.args ~]]
@@ -148,18 +159,15 @@
 
     ::
         %submit-tx
-      ::  XX mug is non-cryptographic, so if a new tx hashes to the same as an
-      ::  old one, it will be erroneously overwritten and have a vote added
-      ::  but sham etc. calls jam which is expensive. what do?
-      ::
       ?>  (~(has in members.state) caller-id)
       ::  N.B: Due to separation of concerns, we do not automatically record
       ::       a vote on caller-id's part. they must send a vote tx as well.
       ::
-      ::  TODO we should overwrite [from sig eth-hash]:p.egg and caller-id.q.egg
-      ::  to always be from this contract (using me.cart, signing it ourselves, etc.)
+      ::  TODO we should overwrite [sig eth-hash]:p.egg and caller-id.q.egg
+      ::  to always be from this contract (signing it ourselves etc.)
       =.  from.p.egg.args       me.cart
-      =.  pending.state         (~(put by pending.state) (mug egg.args) [egg.args *(set id)])
+      =/  egg-hash              (sham-egg egg.args caller block.cart)
+      =.  pending.state         (~(put by pending.state) egg-hash [egg.args *(set id)])
       =.  data.p.germ.my-grain  state
       [%& (malt ~[[id.my-grain my-grain]]) ~ ~]
     ::
