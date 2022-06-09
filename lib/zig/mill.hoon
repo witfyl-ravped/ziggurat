@@ -232,8 +232,8 @@
         =/  payload  .*(q.library pay.cont.crop)
         =/  battery  .*([q.library payload] bat.cont.crop)
         =/  dor      [-:!>(*contract) battery]
-        ~&  >>>  cart
-        ~&  >>  embryo
+        ::  ~&  >>>  cart
+        ::  ~&  >>  embryo
         ::  this simply SHUTs
         ::
         =/  res
@@ -242,7 +242,7 @@
           ::  error in contract execution
           [~ budget %6]
         ::  chick result
-        ~&  >  p.-.res
+        ::  ~&  >  p.-.res
         [`p.-.res budget %0]
         ::  this uses ZINK
         ::  
