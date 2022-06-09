@@ -5,7 +5,7 @@
 ::  argument, and are stored in account-controlled rice.
 ::
 ::  Uncomment the following line to run tests
-::/+  *zig-sys-smart
+/+  *zig-sys-smart
 !:
 ^-  contract  :: not strictly necessary but works well
 ::
@@ -196,7 +196,7 @@
     ::
         %set-threshold
       ?>  (is-me caller-id)
-      ?>  !(gth threshold.state ~(wyt in members.state))  :: cannot set threshold higher than member count
+      ?>  (lte threshold.state ~(wyt in members.state))  :: cannot set threshold higher than member count
       =.  threshold.state       new-thresh.args
       =.  data.p.germ.my-grain  state
       [%& (malt ~[[id.my-grain my-grain]]) ~ ~]
