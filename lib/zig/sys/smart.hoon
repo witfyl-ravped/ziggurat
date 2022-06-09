@@ -5,9 +5,9 @@
 ::  +fry: hash lord+town+germ to make contract grain pubkey
 ::
 ++  fry-contract
-  |=  [lord=id town=@ud nok=*]
+  |=  [lord=id town=@ud bat=*]
   ^-  id
-  =+  (jam nok)
+  =+  (jam bat)
   `@ux`(sham (cat 3 lord (cat 3 town -))) 
 ::
 ++  fry-rice

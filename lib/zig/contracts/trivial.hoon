@@ -4,8 +4,6 @@
 ++  write
   |=  =embryo
   ^-  chick
-  ::  =/  number  (adding-arm:library-2 (special-arm:library 100))
-  ::  =/  number  (special-arm:library 100)
   =/  number  (dec (adding-arm:library-2 (special-arm:library 100)))
   [%& ~ ~ crow=~[[%test [%s `@t`number]]]]
 ++  read

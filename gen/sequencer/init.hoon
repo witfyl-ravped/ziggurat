@@ -56,18 +56,14 @@
           salt=`@`'zigs'
       == 
   ==
-::  store only contract code, insert into shared subject
-=/  zigs-wheat
-  ^-  wheat:smart
-  :-  `(cue q.q.zigs-contract)
-  (silt ~[zigs-1 zigs-2 zigs-3 `@ux`'zigs-metadata'])
 =/  zigs-wheat-grain
   ^-  grain:smart
+  =/  =wheat:smart  ;;(wheat:smart (cue q.q.zigs-contract))
   :*  zigs-wheat-id:smart  ::  id
       zigs-wheat-id:smart  ::  lord
       zigs-wheat-id:smart  ::  holder
       town-id              ::  town-id
-      [%| zigs-wheat]      ::  germ
+      [%| wheat(owns (silt ~[zigs-1 zigs-2 zigs-3 `@ux`'zigs-metadata']))]      ::  germ
   ==
 ::  publish.hoon contract
 =/  publish-grain
@@ -76,7 +72,7 @@
       0x1111.1111     ::  lord
       0x1111.1111     ::  holder
       town-id         ::  town-id
-      [%| [`(cue q.q.publish-contract) ~]]  ::  germ
+      [%| ;;(wheat:smart (cue q.q.publish-contract))]  ::  germ
   ==
 ::
 ::  NFT stuff
@@ -107,17 +103,14 @@
       town-id
       [%& `@`'nftsalt' [`@ux`'nft-metadata' (malt ~[[1 item-1]]) ~ ~]]
   ==
-=/  nft-wheat
-  ^-  wheat:smart
-  :-  `(cue q.q.nft-contract)
-  (silt ~[`@ux`'nft-metadata' nft-acc-id])
 =/  nft-wheat-grain
   ^-  grain:smart
+  =/  =wheat:smart ;;(wheat:smart (cue q.q.nft-contract))
   :*  0xcafe.babe     ::  id
       0xcafe.babe     ::  lord
       0xcafe.babe     ::  holder
       town-id         ::  town-id
-      [%| nft-wheat]  ::  germ
+      [%| wheat(owns (silt ~[`@ux`'nft-metadata' nft-acc-id]))]  ::  germ
   ==
 ::
 =/  fake-granary

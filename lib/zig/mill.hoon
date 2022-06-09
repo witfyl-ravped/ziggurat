@@ -1,5 +1,4 @@
 /+  *bink, smart=zig-sys-smart, ethereum
-/*  smart-lib-noun  %noun  /lib/zig/compiled/smart-lib/noun
 =,  smart
 |_  library=vase
 ::
@@ -206,12 +205,15 @@
         =/  payload  .*(q.library pay.cont.crop)
         =/  battery  .*([q.library payload] bat.cont.crop)
         =/  dor      [-:!>(*contract) battery]
+        ~&  >>>  cart
+        ~&  >>  embryo
         =/  res
           (mule |.(;;(chick q:(shut dor %write !>(cart) !>(embryo)))))^(sub budget 7)
         ?:  ?=(%| -.-.res)
           ::  error in contract execution
           [~ budget %6]
         ::  chick result
+        ~&  >  p.-.res
         [`p.-.res budget %0]
       ::
       ++  shut                                               ::  slam a door
