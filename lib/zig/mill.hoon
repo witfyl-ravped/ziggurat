@@ -1,6 +1,33 @@
-/+  *bink, smart=zig-sys-smart, ethereum
+/+  *zink-zink, smart=zig-sys-smart, ethereum
+/*  zink-cax   %noun  /lib/zig/compiled/hash-cache/noun
 =,  smart
 |_  library=vase
+::
+++  shut                                               ::  slam a door
+  |=  [dor=vase arm=@tas dor-sam=vase arm-sam=vase]
+  ^-  vase
+  %+  slap
+    (slop dor (slop dor-sam arm-sam))
+  ^-  hoon
+  :-  %cnsg
+  :^    [%$ ~]
+      [%cnsg [arm ~] [%$ 2] [%$ 6] ~]  ::  replace sample
+    [%$ 7]
+  ~
+::
+++  ajar                                               ::  partial shut
+  |=  [dor=vase arm=@tas dor-sam=vase arm-sam=vase]
+  ^-  (pair)
+  =/  typ=type
+    [%cell p.dor [%cell p.dor-sam p.arm-sam]]
+  =/  gen=hoon
+    :-  %cnsg
+    :^    [%$ ~]
+        [%cnsg [arm ~] [%$ 2] [%$ 6] ~]  ::  replace sample
+      [%$ 7]
+    ~
+  =/  gun  (~(mint ut typ) %noun gen)
+  [q.dor q.gun]
 ::
 ::  +hole: vase-checks your types for you
 ::
@@ -207,6 +234,8 @@
         =/  dor      [-:!>(*contract) battery]
         ~&  >>>  cart
         ~&  >>  embryo
+        ::  this simply SHUTs
+        ::
         =/  res
           (mule |.(;;(chick q:(shut dor %write !>(cart) !>(embryo)))))^(sub budget 7)
         ?:  ?=(%| -.-.res)
@@ -215,18 +244,27 @@
         ::  chick result
         ~&  >  p.-.res
         [`p.-.res budget %0]
-      ::
-      ++  shut                                               ::  slam a door
-        |=  [dor=vase arm=@tas dor-sam=vase arm-sam=vase]
-        ^-  vase
-        %+  slap
-          (slop dor (slop dor-sam arm-sam))
-        ^-  hoon
-        :-  %cnsg
-        :^    [%$ ~]
-            [%cnsg [arm ~] [%$ 2] [%$ 6] ~]  ::  replace sample
-          [%$ 7]
-        ~
+        ::  this uses ZINK
+        ::
+        ::  ~&  >  %contract-compiled
+        ::  =/  cax=(map * phash)  ;;(cache (cue q.q.zink-cax))
+        ::  ~&  >  %cax-compiled
+        ::  =/  gun
+        ::    %-  ajar
+        ::    :^    [p:!>(*contract) [nok.crop +:(cue q.q.smart-lib)]]
+        ::        %write
+        ::      !>(cart)
+        ::    !>(embryo)
+        ::  =/  =book
+        ::    (zebra budget cax gun)
+        ::  ~&  >>  chick+(hole (unit chick) p.p.book)
+        ::  ?:  ?=(%| -.p.book)
+        ::    ::  error in contract execution
+        ::    [~ budget %6]
+        ::  ::  chick result
+        ::  ?~  p.p.book
+        ::    [~ 0 %0]
+        ::  [`(hole chick u.p.p.book) bud.q.book %0]
       --
     ::
     ::  +harvest: take a completed execution and validate all changes and additions to granary state
@@ -234,7 +272,7 @@
     ++  harvest
       |=  [res=rooster lord=id from=caller]
       ^-  (unit ^granary)
-      =-  ?.  -  
+      =-  ?.  -
             ~&  >>>  "harvest checks failed"
             ~
           `(~(uni by granary) (~(uni by changed.res) issued.res))
@@ -255,9 +293,11 @@
           ::  id in issued map must be equal to id in grain AND
           ::  all newly issued grains must have properly-hashed id AND
           ::  lord of grain must be contract issuing it AND
+          ::  grain must not yet exist at that id AND
           ::  grain IDs must match defined hashing functions
           ?&  =(id id.grain)
               =(lord lord.grain)
+              !(~(has by granary) id.grain)
               ?:  ?=(%& -.germ.grain)
                 =(id (fry-rice holder.grain lord.grain town-id.grain salt.p.germ.grain))
               =(id (fry-contract lord.grain town-id.grain cont.p.germ.grain))

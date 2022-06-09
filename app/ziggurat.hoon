@@ -271,6 +271,9 @@
         %forward
       ::  only accepts transactions from possible validators/sequencers
       =.  eggs.act  (filter eggs.act |=(=egg:smart =(relay-town-id town-id.p.egg)))
+      ::  TODO FIX: if transaction is submitted after this ship has made their block,
+      ::  the transaction gets stuck in limbo. Can fix by having ziggurats forward their basket
+      ::  at beginning of epoch if it isn't empty.
       =+  final-producer=(get-second-to-last order.cur)
       ?:  =(our.bowl final-producer)
         `state(basket (~(uni in basket) eggs.act))
