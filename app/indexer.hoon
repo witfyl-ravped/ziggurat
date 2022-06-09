@@ -499,27 +499,29 @@
         |-
         ?~  epochs  [cards state]
         =/  epoch  (pop:poc:zig epochs)
-        =*  epoch-num   num.val.head.epoch
+        =*  epoch-num         num.val.head.epoch
+        =*  epoch-start-time  start-time.val.head.epoch
         =/  =slots:zig  slots.val.head.epoch
         =+  ^=  [new-cards new-state]
             |-
             ?~  slots  [cards state]
             =/  slot  (pop:sot:zig slots)
             =+  ^=  [new-cards new-state]
-                (consume-slot epoch-num val.head.slot)
+                %^  consume-slot  epoch-num  epoch-start-time
+                val.head.slot
             $(slots rest.slot, cards new-cards, state new-state)
         $(epochs rest.epoch, cards new-cards, state new-state)
       ::
           %indexer-block
-        %+  consume-slot  epoch-num.update
-        [header.update blk.update]
+        %^  consume-slot  epoch-num.update
+        epoch-start-time.update  [header.update blk.update]
       ::
       ::  add %chunk handling? see e.g.
       ::  https://github.com/uqbar-dao/ziggurat/blob/da1d37adf538ee908945557a68387d3c87e1c32e/app/uqbar-indexer.hoon#L923
       ==
       ::
       ++  consume-slot
-        |=  [epoch-num=@ud =slot:zig]
+        |=  [epoch-num=@ud epoch-start-time=time =slot:zig]
         ^-  (quip card _state)
         =*  header  p.slot
         =*  block   q.slot
@@ -528,7 +530,7 @@
         =/  working-epoch=epoch:zig
           ?~  existing-epoch=(get:poc:zig epochs epoch-num)
             :^    num=epoch-num
-                start-time=*time  ::  TODO: get this info from sequencer
+                start-time=epoch-start-time
               order=~
             slots=(put:sot:zig *slots:zig block-num slot)
           %=  u.existing-epoch  ::  TODO: do more checks to avoid overwriting (unnecessary work)
