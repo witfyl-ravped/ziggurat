@@ -105,7 +105,7 @@
   ==
 =/  nft-wheat-grain
   ^-  grain:smart
-  =/  =wheat:smart ;;(wheat:smart (cue q.q.nft-contract))
+  =/  =wheat:smart  ;;(wheat:smart (cue q.q.nft-contract))
   :*  0xcafe.babe     ::  id
       0xcafe.babe     ::  lord
       0xcafe.babe     ::  holder
