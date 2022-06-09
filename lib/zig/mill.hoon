@@ -245,16 +245,12 @@
         ~&  >  p.-.res
         [`p.-.res budget %0]
         ::  this uses ZINK
-        ::
+        ::  
         ::  ~&  >  %contract-compiled
         ::  =/  cax=(map * phash)  ;;(cache (cue q.q.zink-cax))
         ::  ~&  >  %cax-compiled
         ::  =/  gun
-        ::    %-  ajar
-        ::    :^    [p:!>(*contract) [nok.crop +:(cue q.q.smart-lib)]]
-        ::        %write
-        ::      !>(cart)
-        ::    !>(embryo)
+        ::    (ajar dor %write !>(cart) !>(embryo))
         ::  =/  =book
         ::    (zebra budget cax gun)
         ::  ~&  >>  chick+(hole (unit chick) p.p.book)
