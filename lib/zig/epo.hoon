@@ -49,7 +49,7 @@
     ::
     :_  cur(slots (put:sot slots.cur next-num slot))
     %+  weld
-      (give-on-updates [%new-block num.cur p.slot (need q.slot)] q.slot)
+      (give-on-updates [%new-block num.cur p.slot (need q.slot)] start-time.cur q.slot)
     ::  if we're the final slot in epoch, trigger new one
     ?:  =((lent order.cur) +(next-num))
       (poke-new-epoch our +(num.cur))^~
@@ -127,7 +127,7 @@
     :_  cur(slots (put:sot slots.cur next-num [hed blk]))
     %+  weld
       ::  notify others we saw this block
-      (give-on-updates [%saw-block num.cur hed] blk)
+      (give-on-updates [%saw-block num.cur hed] start-time.cur blk)
     ::  if that was the final slot in epoch, trigger new one
     ?.  =((lent order.cur) +(next-num))
       (notify-sequencer (next-block-producer next-num next-order hed))^~
