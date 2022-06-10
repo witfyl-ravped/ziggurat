@@ -77,12 +77,13 @@
   ==
 ::  multisig.hoon contract
 =/  multisig-grain
+  =/  =wheat:smart  ;;(wheat:smart (cue q.q.zigs-contract))
   ^-  grain:smart
   :*  0x2222.2222     ::  id
       0x2222.2222     ::  lord
       0x2222.2222     ::  holder
       town-id         ::  town-id
-      [%| [`(cue q.q.multisig-contract) ~]]  ::  germ
+      [%| wheat]  ::  germ
   ==
 ::
 ::  NFT stuff
