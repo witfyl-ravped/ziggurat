@@ -263,14 +263,20 @@
           `(~(uni by granary) (~(uni by changed.res) issued.res))
       ?&  %-  ~(all in changed.res)
           |=  [=id =grain]
-          ::  id in changed map must be equal to id in grain AND
           ::  all changed grains must already exist AND
+          ::  new grain must be same type as old grain AND
+          ::  id in changed map must be equal to id in grain AND
+          ::  if rice, salt must not change AND
           ::  no changed grains may also have been issued at same time AND
           ::  only grains that proclaim us lord may be changed
-          ?&  =(id id.grain)
-              (~(has by granary) id.grain)
-              !(~(has by issued.res) id.grain)
-              =(lord lord:(~(got by granary) id))
+          =/  old  (~(get by granary) id)
+          ?&  ?=(^ old)
+              ?.  ?=(%& -.germ.u.old)
+                =(%| -.germ.grain)
+              &(?=(%& -.germ.grain) =(salt.p.germ.u.old salt.p.germ.grain))
+              =(id id.grain)
+              !(~(has by issued.res) id)
+              =(lord lord.u.old)
           ==
         ::
           %-  ~(all in issued.res)
