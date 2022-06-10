@@ -5,9 +5,9 @@
 ::  +fry: hash lord+town+germ to make contract grain pubkey
 ::
 ++  fry-contract
-  |=  [lord=id town=@ud nok=*]
+  |=  [lord=id town=@ud bat=*]
   ^-  id
-  =+  (jam nok)
+  =+  (jam bat)
   `@ux`(sham (cat 3 lord (cat 3 town -))) 
 ::
 ++  fry-rice
@@ -24,9 +24,7 @@
 ++  pin
   |=  =caller
   ^-  id
-  ?:  ?=(@ux caller)
-    caller
-  id.caller
+  ?:(?=(@ux caller) caller id.caller)
 ::
 ::  smart contract types
 ::
@@ -44,8 +42,9 @@
 +$  germ   (each rice wheat)
 ::
 +$  rice   [salt=@ data=*]
-+$  wheat  [cont=(unit *) owns=(set id)]
-+$  crop   [nok=* owns=(map id grain)]  ::  wheat that's been processed by mill.hoon
+::  contract contains itself and every imported library in pay
++$  wheat  [cont=(unit [bat=* pay=*]) owns=(set id)]
++$  crop   [cont=[bat=* pay=*] owns=(map id grain)]  ::  wheat that's been processed by mill.hoon
 ::
 +$  granary   (map id grain)
 +$  populace  (map id @ud)

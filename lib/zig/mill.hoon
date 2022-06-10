@@ -1,8 +1,7 @@
 /+  *zink-zink, smart=zig-sys-smart, ethereum
-/*  smart-lib  %noun  /lib/zig/compiled/smart-lib/noun
 /*  zink-cax   %noun  /lib/zig/compiled/hash-cache/noun
 =,  smart
-|_  library=*
+|_  library=vase
 ::
 ++  shut                                               ::  slam a door
   |=  [dor=vase arm=@tas dor-sam=vase arm-sam=vase]
@@ -38,7 +37,7 @@
   !<(typ [-:!>(*typ) val])
 ::
 ++  mill
-  |_  [miller=account town-id=@ud blocknum=@ud now=time]
+  |_  [miller=account town-id=@ud blocknum=@ud]
   ::
   ::  +mill-all: mills all eggs in basket
   ::
@@ -199,6 +198,9 @@
         ?.  =(lord.u.res find)          ~
         ?.  =(town-id.u.res town-id)    ~
         `[id u.res]
+      ::  ++  telescope
+      ::    |=  =wheat
+      ::    cons together the library nocks against q.q.smart-lib
       --
     ::  +grow: recursively apply any calls stemming from egg, return on rooster or failure
     ++  grow
@@ -227,31 +229,38 @@
         |=  [to=id budget=@ud]
         ^-  [(unit chick) rem=@ud =errorcode]
         =/  =cart  [to blocknum town-id owns.crop]
-        ::  TODO figure out how to pre-cue this and get good results
+        =/  payload  .*(q.library pay.cont.crop)
+        =/  battery  .*([q.library payload] bat.cont.crop)
+        =/  dor      [-:!>(*contract) battery]
+        ::  ~&  >>>  cart
+        ::  ~&  >>  embryo
+        ::  this simply SHUTs
         ::
-        ~&  >  %contract-compiled
-        =/  cax=(map * phash)  ;;(cache (cue q.q.zink-cax))
-        ~&  >  %cax-compiled
-        =/  gun
-          %-  ajar
-          :^    [p:!>(*contract) [nok.crop +:(cue q.q.smart-lib)]]
-              %write
-            !>(cart)
-          !>(embryo)
-        =/  =book
-          ::  need jet dashboard to run bull:
-          ::  (bull |.(;;(chick (~(write contract cart) zygote))) bud)
-          ::(mule |.(;;(chick (~(write contract cart) zygote))))^(sub budget 7)
-          (zebra budget cax gun)
-          ::|.(;;(chick (~(write contract cart) zygote)))
-        ~&  >>  chick+(hole (unit chick) p.p.book)
-        ?:  ?=(%| -.p.book)
+        =/  res
+          (mule |.(;;(chick q:(shut dor %write !>(cart) !>(embryo)))))^(sub budget 7)
+        ?:  ?=(%| -.-.res)
           ::  error in contract execution
           [~ budget %6]
         ::  chick result
-        ?~  p.p.book
-          [~ 0 %0]
-        [`(hole chick u.p.p.book) bud.q.book %0]
+        ::  ~&  >  p.-.res
+        [`p.-.res budget %0]
+        ::  this uses ZINK
+        ::  
+        ::  ~&  >  %contract-compiled
+        ::  =/  cax=(map * phash)  ;;(cache (cue q.q.zink-cax))
+        ::  ~&  >  %cax-compiled
+        ::  =/  gun
+        ::    (ajar dor %write !>(cart) !>(embryo))
+        ::  =/  =book
+        ::    (zebra budget cax gun)
+        ::  ~&  >>  chick+(hole (unit chick) p.p.book)
+        ::  ?:  ?=(%| -.p.book)
+        ::    ::  error in contract execution
+        ::    [~ budget %6]
+        ::  ::  chick result
+        ::  ?~  p.p.book
+        ::    [~ 0 %0]
+        ::  [`(hole chick u.p.p.book) bud.q.book %0]
       --
     ::
     ::  +harvest: take a completed execution and validate all changes and additions to granary state
