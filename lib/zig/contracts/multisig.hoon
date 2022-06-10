@@ -6,9 +6,8 @@
 ::
 ::  Uncomment the following line to run tests
 ::/+  *zig-sys-smart
-/=  sur  /lib/zig/contracts/sur/multisig
 /=  lib  /lib/zig/contracts/lib/multisig
-=,  sur
+=,  lib
 |_  =cart
 ++  write
   |=  inp=embryo
@@ -36,7 +35,7 @@
       ::  the question about how determinisitic does a salt really have to be
       ::  and also, in a non-parallel situation, you could just make the salt always just be the block number right?.
       =/  salt=@
-        (sham (cat 3 block.cart (cat 3 caller-id (sham-ids:lib members.args))))
+        (sham (cat 3 block.cart (cat 3 caller-id (sham-ids members.args))))
       =/  lord               me.cart  
       =/  holder             me.cart  ::  TODO should holder be me.cart or caller-id
       =/  new-sig-germ=germ  [%& salt [members.args init-thresh.args ~]]
@@ -69,7 +68,7 @@
       =.  pending.state         (~(del by pending.state) tx-hash)
       =.  data.p.germ.my-grain  state
       =/  crow=(list [@tas json])
-        :~  (event-to-json:lib [%vote-passed tx-hash votes.prop id.my-grain])
+        :~  (event-to-json [%vote-passed tx-hash votes.prop id.my-grain])
         ==
       =/  roost=rooster  [changed=(malt ~[[id.my-grain my-grain]]) issued=~ crow]
       [%| [next=[to.p.egg town-id.p.egg q.egg]:prop roost]]
@@ -83,7 +82,7 @@
       ::  TODO we should overwrite [sig eth-hash]:p.egg and caller-id.q.egg
       ::  to always be from this contract (signing it ourselves etc.)
       =.  from.p.egg.args       me.cart
-      =/  egg-hash              (sham-egg:lib egg.args caller block.cart)
+      =/  egg-hash              (sham-egg egg.args caller block.cart)
       =.  pending.state         (~(put by pending.state) egg-hash [egg.args *(set id)])
       =.  data.p.germ.my-grain  state
       [%& (malt ~[[id.my-grain my-grain]]) ~ ~]

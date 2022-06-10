@@ -1,9 +1,8 @@
 ::  Test suite for multisig.hoon
 ::
 /+  *test, cont=zig-contracts-multisig, *zig-sys-smart
-/=  sur  /lib/zig/contracts/sur/multisig
 /=  lib  /lib/zig/contracts/lib/multisig
-=,  sur
+=,  lib
 =>  ::  test data
     |%
     ++  town-id  1
@@ -63,7 +62,7 @@
         ==
       egg
     ++  egg-add-member-hash
-      (sham-egg:lib [egg-add-member owner-1 block=1])
+      (sham-egg [egg-add-member owner-1 block=1])
     ++  egg-remove-member
       =|  =egg
       =.  p.egg
@@ -82,7 +81,7 @@
         ==
       egg
     ++  egg-remove-member-hash
-      (sham-egg:lib [egg-add-member owner-2 block=5])
+      (sham-egg [egg-add-member owner-2 block=5])
     ::
     ++  multisig-state-1
       ::  base state
