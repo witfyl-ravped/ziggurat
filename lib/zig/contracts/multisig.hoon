@@ -27,13 +27,6 @@
       ::  invariant: threshold must be <= member-count
       ?>  (lte init-thresh.args member-count)
       ?>  (gth init-thresh.args 0)  :: threshold of 0 is disallowed
-      ::  XX currently salt of a multisig is caller-id concat w initial members run thru sham-ids
-      ::     should salt be updated every time a new member is added? can salts even change?
-      ::  potential solution: include the current block as well, so that salts are unique even when
-      ::  the same caller-id creates a multisig w same initial members
-      ::  this makes it harder to calculate later potentially? and also brings up
-      ::  the question about how determinisitic does a salt really have to be
-      ::  and also, in a non-parallel situation, you could just make the salt always just be the block number right?.
       =/  salt=@
         (sham (cat 3 block.cart (cat 3 caller-id (sham-ids members.args))))
       =/  lord               me.cart  
