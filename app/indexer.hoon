@@ -342,16 +342,21 @@
       =/  hash=@ux  (slav %ux i.t.t.path)
       =/  egg=(unit update:ui)
         (serve-update %egg hash)
-      =/  grain=(unit update:ui)
-        (serve-update %grain hash)
       =/  from=(unit update:ui)
         (serve-update %from hash)
+      =/  grain=(unit update:ui)
+        (serve-update %grain hash)
+      =/  holder=(unit update:ui)
+        (serve-update %holder hash)
+      =/  lord=(unit update:ui)
+        (serve-update %lord hash)
       =/  slot=(unit update:ui)
         (serve-update %block-hash hash)
       =/  to=(unit update:ui)
         (serve-update %to hash)
       =/  up=(unit update:ui)
-        (combine-updates ~[egg from to] ~[grain] slot)
+        %^  combine-updates  ~[egg from to]
+        ~[grain holder lord]  slot
       ?~  up  [~ ~]
       [~ ~ %indexer-update !>(`update:ui`u.up)]
     ::
@@ -1113,7 +1118,7 @@
     ?>  =(1 (lent locations))
     =/  =location:ui  (snag 0 locations)
     ?.  ?=(town-location:ui location)  ~
-    ?~  chunk=(get-chunk location)                ~
+    ?~  chunk=(get-chunk location)     ~
     `[%chunk location u.chunk]
   ::
   ++  get-from-index
@@ -1149,6 +1154,15 @@
     ::
     ++  get-grain
       =|  grains=(map grain-id=id:smart [town-location:ui grain:smart])
+      =.  locations
+        %+  sort  ;;((list town-location:ui) locations)
+        |=  [p=town-location:ui q=town-location:ui]
+        ^-  ?
+        ?:  (lth epoch-num.p epoch-num.q)  %.y
+        ?.  =(epoch-num.p epoch-num.q)     %.n
+        ?:  (lth block-num.p block-num.q)  %.y
+        ?.  =(block-num.p block-num.q)     %.n
+        (gte town-id.p town-id.q)
       |-
       ?~  locations
         ?~  grains  ~
