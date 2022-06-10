@@ -6,7 +6,7 @@
 /+  *ziggurat, default-agent, dbug, verb
 ::  Choose which library smart contracts are executed against here
 ::
-/*  smart-lib  %noun  /lib/zig/compiled/smart-lib/noun
+/*  smart-lib-noun  %noun  /lib/zig/compiled/smart-lib/noun
 =,  util
 |%
 +$  card  card:agent:gall
@@ -18,7 +18,7 @@
       =basket
   ==
 +$  inflated-state-0  [state-0 =mil]
-+$  mil  $_  ~(mill mill 0)
++$  mil  $_  ~(mill mill !>(0))
 --
 ::
 =|  inflated-state-0
@@ -33,7 +33,7 @@
 ::
 ++  on-init
   :-  ~[(sequencer-sub-card our.bowl)]
-  this(state [[%0 ~ [~ ~] ~ ~] ~(mill mill +:(cue q.q.smart-lib))])
+  this(state [[%0 ~ [~ ~] ~ ~] ~(mill mill ;;(vase (cue q.q.smart-lib-noun)))])
 ::
 ++  on-save  !>(-.state)
 ++  on-load
@@ -41,7 +41,7 @@
   ^-  (quip card _this)
   ::  on-load: pre-cue our compiled smart contract library
   ::  (not yet able to use, but will switch to this)
-  =+  ~(mill mill +:(cue q.q.smart-lib))
+  =+  ~(mill mill ;;(vase (cue q.q.smart-lib-noun)))
   :_  this(state [!<(state-0 old-vase) -])
   ::  connect to our %ziggurat agent
   ?:  (~(has by wex.bowl) [/sequencer/updates our.bowl %ziggurat])  ~
@@ -219,7 +219,7 @@
       =/  =height
         .^(height %gx /(scot %p our.bowl)/ziggurat/(scot %da now.bowl)/block-height/noun)
       =/  our-chunk=chunk
-        %+  ~(mill-all mil me (need town-id.state) height now.bowl)
+        %+  ~(mill-all mil me (need town-id.state) height)
           town.state
         ~(tap in basket.state)
       ::  currently clearing mempool with every chunk, but

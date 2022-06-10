@@ -15,8 +15,8 @@
   ::
   +$  arguments
     $%  ::  add kelvin versioning to contracts?
-        [%deploy mutable=? nok=* owns=(list rice)]
-        [%upgrade to-upgrade=id new-nok=*]  ::  not yet real
+        [%deploy mutable=? cont=[bat=* pay=*] owns=(list rice)]
+        [%upgrade to-upgrade=id new-nok=[bat=* pay=*]]  ::  not yet real
     ==
   ::
   ++  process
@@ -25,7 +25,7 @@
         %deploy
       ::  0x0 denotes immutable contract
       =/  lord=id  ?.(mutable.args 0x0 caller-id)
-      =+  our-id=(fry-contract lord town-id.cart nok.args)
+      =+  our-id=(fry-contract lord town-id.cart bat.cont.args)
       ::  generate grains out of new rice we spawn
       =/  produced=(map id grain)
         %-  ~(gas by *(map id grain))
@@ -35,8 +35,8 @@
         =+  (fry-rice our-id our-id town-id.cart salt.rice)
         [- [- our-id our-id town-id.cart [%& rice]]]
       ::
-      =/  our-grain
-        [our-id lord lord town-id.cart [%| `nok.args ~(key by produced)]]
+      =/  our-grain=grain
+        [our-id lord lord town-id.cart [%| `cont.args ~(key by produced)]]
       [%& ~ (~(put by produced) our-id our-grain) ~]
     ::
         %upgrade
