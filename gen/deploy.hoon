@@ -14,7 +14,7 @@
   %+  turn  raw
   |=  [face=term =path]
   =/  pax  (weld desk path)
-  `hoon`[%ktts face (rain pax .^(@t %cx pax))]
+  `hoon`[%ktts face (rain pax .^(@t %cx (welp pax /hoon)))]
 =/  full=hoon  [%clsg braw]
 =/  full-nock=*  q:(~(mint ut p.smart-lib) %noun full)
 =/  payload=vase  (slap smart-lib full)
