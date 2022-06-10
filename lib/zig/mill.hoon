@@ -24,11 +24,11 @@
   =/  gen=hoon
     :-  %cnsg
     :^    [%$ ~]
-        [%cnsg [arm ~] [%$ 2] [%$ 6] ~]  ::  replace sample
+        [%cnsg [arm ~] [%$ 2] [%$ 6] ~]
       [%$ 7]
     ~
   =/  gun  (~(mint ut typ) %noun gen)
-  [q.dor q.gun]
+  [[q.dor [q.dor-sam q.arm-sam]] q.gun]
 ::
 ::  +hole: vase-checks your types for you
 ::
@@ -203,7 +203,6 @@
     ::  +grow: recursively apply any calls stemming from egg, return on rooster or failure
     ++  grow
       |=  [=crop =embryo =egg]
-      ~>  %bout
       ^-  [(unit rooster) final=(unit ^granary) rem=@ud =errorcode]
       |^
       =+  [chick rem err]=(weed to.p.egg budget.p.egg)
@@ -226,29 +225,27 @@
       ++  weed
         |=  [to=id budget=@ud]
         ^-  [(unit chick) rem=@ud =errorcode]
+        ~>  %bout
         =/  =cart  [to blocknum town-id owns.crop]
         ::  TODO figure out how to pre-cue this and get good results
         ::
-        ~&  >  %contract-compiled
-        =/  cax=(map * phash)  ;;(cache (cue q.q.zink-cax))
-        ~&  >  %cax-compiled
-        =/  gun
+        =/  cax=(map * phash)  (hole cache (cue q.q.zink-cax))
+        =/  gun=^
           %-  ajar
           :^    [p:!>(*contract) [nok.crop +:(cue q.q.smart-lib)]]
               %write
             !>(cart)
           !>(embryo)
         =/  =book
-          ::  need jet dashboard to run bull:
-          ::  (bull |.(;;(chick (~(write contract cart) zygote))) bud)
-          ::(mule |.(;;(chick (~(write contract cart) zygote))))^(sub budget 7)
           (zebra budget cax gun)
-          ::|.(;;(chick (~(write contract cart) zygote)))
-        ~&  >>  chick+(hole (unit chick) p.p.book)
-        ::~&  >>  "write result: {<res>}"
         ?:  ?=(%| -.p.book)
+          ~&  >>  %crashed
+          =/  res=(unit *)
+            (mack gun)
+          ~&  ?~(res %also-crashed ;;(chick u.res))
           ::  error in contract execution
           [~ budget %6]
+        ~&  >>  [chick+(hole (unit chick) p.p.book) budget+bud.q.book]
         ::  chick result
         ?~  p.p.book
           [~ 0 %0]
