@@ -409,7 +409,7 @@
     =+  our-txs=(~(gut by transaction-store.state) our-id [sent=~ received=~])
     =/  eggs=(list [@ux =egg:smart])
       %+  turn  ~(val by eggs.update)
-      |=  [=egg-location:ui =egg:smart]
+      |=  [@da =egg-location:ui =egg:smart]
       [(hash-egg egg) egg]
     =^  tx-status-cards=(list card)  our-txs
       %^  spin  eggs  our-txs

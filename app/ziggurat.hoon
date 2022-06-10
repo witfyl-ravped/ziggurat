@@ -153,7 +153,7 @@
       =/  capitol-search
         .^(update:indexer %gx /(scot %p our.bowl)/indexer/(scot %da now.bowl)/grain/(scot %ux 'ziggurat')/noun)
       ?>  ?=(%grain -.capitol-search)
-      =/  capitol-grain=grain:smart  +.+.-:~(tap by grains.capitol-search)
+      =/  capitol-grain=grain:smart  +.+.+.-:~(tap by grains.capitol-search)
       ?>  ?=(%& -.germ.capitol-grain)
       =/  validators  ~(key by (hole:mill (map ship *) data.p.germ.capitol-grain))
       ::

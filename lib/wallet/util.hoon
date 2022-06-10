@@ -76,7 +76,7 @@
   ^-  book
   =/  =book  *book
   ?.  ?=(%grain -.update)  book
-  =/  grains-list  `(list [=town-location:ui =grain:smart])`~(val by grains.update)
+  =/  grains-list  `(list [@da =town-location:ui =grain:smart])`~(val by grains.update)
   |-  ^-  ^book
   ?~  grains-list  book
   =/  =grain:smart  grain.i.grains-list
@@ -130,7 +130,7 @@
     ~
   =+  .^(update:ui %gx /(scot %p our)/indexer/(scot %da now)/grain/(scot %ux id)/noun)
   ?>  ?=(%grain -.-)
-  =/  meta-grain=grain:smart  +.+.-:~(tap by grains.-)
+  =/  meta-grain=grain:smart  +.+.+.-:~(tap by grains.-)
   ?>  ?=(%& -.germ.meta-grain)
   =/  found=(unit asset-metadata)
     ?+  token-type  ~
