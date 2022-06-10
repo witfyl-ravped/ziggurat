@@ -1,4 +1,4 @@
-/+  *zink-zink
+/+  *zink-zink, smart=zig-sys-smart
 |%
 ::
 ++  hash
@@ -45,8 +45,10 @@
       cax
     'fry-contract'^~
   ~&  >>  %core-hashing
-  =/  gun  (~(mint ut p.smartlib) %noun (ream '~'))
-  =/  =book  (zebra bud cax [q.smartlib q.gun])
+  =/  con  (slop (slot 2 !>(*contract:smart)) (slop !>(*cart:smart) smartlib))
+  ~&  (arm-axis con %dec)
+  =/  gun  (~(mint ut p.con) %noun (ream '~'))
+  =/  =book  (zebra bud cax [q.con q.gun])
   cax.q.book
   ::
   ++  cache-file
@@ -56,6 +58,7 @@
     ?~  layers
       cax
     =/  cor  (slap vax (ream (cat 3 '..' i.layers)))
+    ~&  >>  i.layers
     $(layers t.layers, cax (hash-arms cor cax))
   ::
   ++  hash-arms
