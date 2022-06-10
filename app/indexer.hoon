@@ -176,12 +176,13 @@
       =*  newest-chunks  chunks.u.newest-block
       =/  newest-chunk  (~(get by newest-chunks) town-id)
       ?~  newest-chunk  ~
+      =*  epoch-start-time  start-time.val.u.newest-epoch
       :_  ~
       %-  fact:io
       :_  ~
       :-  %indexer-update
       !>  ^-  update:ui
-      :+  %chunk
+      :^  %chunk  epoch-start-time
         :+  epoch-num=num.val.u.newest-epoch
           block-num=num.p.val.u.newest-slot
         town-id=town-id
@@ -224,6 +225,7 @@
       =*  epoch-num  num.val.u.newest-epoch
       =*  slot  val.u.newest-slot
       =*  block-header  p.slot
+      =*  epoch-start-time  start-time.val.u.newest-epoch
       :_  ~
       %-  fact:io
       :_  ~
@@ -231,9 +233,9 @@
       !>  ^-  update:ui
       :-  %slot
       %+  %~  put  by
-          *(map id:smart [block-location:ui slot:zig])
+          *(map id:smart [@da block-location:ui slot:zig])
         `@ux`data-hash.block-header
-      :-  [epoch-num num.block-header]
+      :+  epoch-start-time  [epoch-num num.block-header]
       slot
     ::
     ==
@@ -304,6 +306,7 @@
       ?~  newest-epoch=(pry:poc:zig epochs)  [~ ~]
       ?~  newest-slot=(pry:sot:zig slots.val.u.newest-epoch)
         [~ ~]
+      =*  epoch-start-time  start-time.val.u.newest-epoch
       =*  epoch-num  num.val.u.newest-epoch
       =*  slot  val.u.newest-slot
       =*  block-header  p.slot
@@ -311,9 +314,9 @@
       !>  ^-  update:ui
       :-  %slot
       %+  %~  put  by
-          *(map id:smart [block-location:ui slot:zig])
+          *(map id:smart [@da block-location:ui slot:zig])
         `@ux`data-hash.block-header
-      :-  [epoch-num num.block-header]
+      :+  epoch-start-time  [epoch-num num.block-header]
       slot
     ::
         [%x %slot-num @ @ ~]
@@ -401,27 +404,29 @@
         |-
         ?~  epochs  [cards state]
         =/  epoch  (pop:poc:zig epochs)
-        =*  epoch-num   num.val.head.epoch
+        =*  epoch-num         num.val.head.epoch
+        =*  epoch-start-time  start-time.val.head.epoch
         =/  =slots:zig  slots.val.head.epoch
         =+  ^=  [new-cards new-state]
             |-
             ?~  slots  [cards state]
             =/  slot  (pop:sot:zig slots)
             =+  ^=  [new-cards new-state]
-                (consume-slot epoch-num val.head.slot)
+                %^  consume-slot  epoch-num  epoch-start-time
+                val.head.slot
             $(slots rest.slot, cards new-cards, state new-state)
         $(epochs rest.epoch, cards new-cards, state new-state)
       ::
           %indexer-block
-        %+  consume-slot  epoch-num.update
-        [header.update blk.update]
+        %^  consume-slot  epoch-num.update
+        epoch-start-time.update  [header.update blk.update]
       ::
       ::  add %chunk handling? see e.g.
       ::  https://github.com/uqbar-dao/ziggurat/blob/da1d37adf538ee908945557a68387d3c87e1c32e/app/uqbar-indexer.hoon#L923
       ==
       ::
       ++  consume-slot
-        |=  [epoch-num=@ud =slot:zig]
+        |=  [epoch-num=@ud epoch-start-time=@da =slot:zig]
         ^-  (quip card _state)
         =*  header  p.slot
         =*  block   q.slot
@@ -430,7 +435,7 @@
         =/  working-epoch=epoch:zig
           ?~  existing-epoch=(get:poc:zig epochs epoch-num)
             :^    num=epoch-num
-                start-time=*time  ::  TODO: get this info from sequencer
+                start-time=epoch-start-time
               order=~
             slots=(put:sot:zig *slots:zig block-num slot)
           %=  u.existing-epoch  ::  TODO: do more checks to avoid overwriting (unnecessary work)
@@ -502,10 +507,10 @@
                 !>  ^-  update:ui
                 :-  %slot
                 %+  %~  put  by
-                    *(map id:smart [block-location:ui slot:zig])
+                    *(map id:smart [@da block-location:ui slot:zig])
                   `@ux`data-hash.p.slot
-                :-  [epoch-num block-num]
-                slot
+                :+  start-time.working-epoch
+                [epoch-num block-num]  slot
               ~[/slot]
           ==
           ::
@@ -570,27 +575,27 @@
             ==
             ::
             ++  make-id-egg-set
-              |=  eggs=(map id:smart [egg-location:ui egg:smart])
+              |=  eggs=(map id:smart [@da egg-location:ui egg:smart])
               ^-  (set [id:smart egg:smart])
               %-  silt
               %+  turn  ~(tap by eggs)
-              |=  [=id:smart egg-location:ui =egg:smart]
+              |=  [=id:smart @da egg-location:ui =egg:smart]
               [id egg]
             ::
             ++  make-id-grain-set
-              |=  grains=(map id:smart [town-location:ui grain:smart])
+              |=  grains=(map id:smart [@da town-location:ui grain:smart])
               ^-  (set [id:smart grain:smart])
               %-  silt
               %+  turn  ~(tap by grains)
-              |=  [=id:smart town-location:ui =grain:smart]
+              |=  [=id:smart @da town-location:ui =grain:smart]
               [id grain]
             ::
             ++  make-id-slot-set
-              |=  slots=(map id:smart [block-location:ui slot:zig])
+              |=  slots=(map id:smart [@da block-location:ui slot:zig])
               ^-  (set [id:smart slot:zig])
               %-  silt
               %+  turn  ~(tap by slots)
-              |=  [=id:smart block-location:ui =slot:zig]
+              |=  [=id:smart @da block-location:ui =slot:zig]
               [id slot]
             ::
             --
@@ -796,10 +801,12 @@
   ?~  slot=(get-slot epoch-num block-num)  ~
   ?~  block=q.u.slot                       ~
   (~(get by chunks.u.block) town-id)
-::  TODO: make blocks and grains play nice with eggs
-::        so we can return all hits together
 ::
-:: https://github.com/uqbar-dao/ziggurat/blob/da1d37adf538ee908945557a68387d3c87e1c32e/app/uqbar-indexer.hoon#L361:
+++  get-epoch-start-time
+  |=  epoch-num=@ud
+  ^-  (unit @da)
+  ?~  epoch=(get:poc:zig epochs epoch-num)  ~
+  `start-time.u.epoch
 ::
 ++  combine-egg-updates
   |=  updates=(list update:ui)
@@ -809,11 +816,11 @@
 ::
 ++  combine-egg-updates-to-map
   |=  updates=(list update:ui)
-  ^-  (map id:smart [egg-location:ui egg:smart])
+  ^-  (map id:smart [@da egg-location:ui egg:smart])
   ?~  updates  ~
-  =/  combined=(map id:smart [egg-location:ui egg:smart])
+  =/  combined=(map id:smart [@da egg-location:ui egg:smart])
     %-  %~  gas  by
-        *(map id:smart [egg-location:ui egg:smart])
+        *(map id:smart [@da egg-location:ui egg:smart])
     %-  zing
     %+  turn  updates
     |=  =update:ui
@@ -824,11 +831,11 @@
 ::
 ++  combine-grain-updates-to-map
   |=  updates=(list update:ui)
-  ^-  (map id:smart [town-location:ui grain:smart])
+  ^-  (map id:smart [@da town-location:ui grain:smart])
   ?~  updates  ~
-  =/  combined=(map id:smart [town-location:ui grain:smart])
+  =/  combined=(map id:smart [@da town-location:ui grain:smart])
     %-  %~  gas  by
-        *(map id:smart [town-location:ui grain:smart])
+        *(map id:smart [@da town-location:ui grain:smart])
     %-  zing
     %+  turn  updates
     |=  =update:ui
@@ -848,13 +855,13 @@
           ?=(~ slot-update)
       ==
     ~
-  =/  combined-egg=(map id:smart [egg-location:ui egg:smart])
+  =/  combined-egg=(map id:smart [@da egg-location:ui egg:smart])
     (combine-egg-updates-to-map egg-updates)
-  =/  combined-grain=(map id:smart [town-location:ui grain:smart])
+  =/  combined-grain=(map id:smart [@da town-location:ui grain:smart])
     (combine-grain-updates-to-map grain-updates)
-  =/  slot=(map id:smart [block-location:ui slot:zig])
+  =/  slot=(map id:smart [@da block-location:ui slot:zig])
     ?~  slot-update
-      *(map id:smart [block-location:ui slot:zig])
+      *(map id:smart [@da block-location:ui slot:zig])
     ?>  ?=(%slot -.slot-update)
     slots.slot-update
   ?:  ?&  ?=(~ combined-egg)
@@ -910,11 +917,14 @@
       (get-slot epoch-num.query-payload block-num.query-payload)
     ?~  slot  ~
     ?~  q.u.slot  ~
+    =/  epoch-start-time=(unit @da)
+      (get-epoch-start-time epoch-num.query-payload)
+    ?~  epoch-start-time  ~
     =*  chunks  chunks.u.q.u.slot
     =/  chunk=(unit chunk:zig)
       (~(get by chunks) town-id.query-payload)
     ?~  chunk  ~
-    [%chunk query-payload u.chunk]
+    [%chunk u.epoch-start-time query-payload u.chunk]
   ::
   ::     %chunk-hash
   ::   get-chunk-update
@@ -932,13 +942,15 @@
     |=  [epoch-num=@ud block-num=@ud]
     ^-  update:ui
     ?~  slot=(get-slot epoch-num block-num)  ~
+    =/  epoch-start-time=(unit @da)
+      (get-epoch-start-time epoch-num)
+    ?~  epoch-start-time  ~
     =*  block-header  p.u.slot
     :-  %slot
     %+  %~  put  by
-        *(map id:smart [block-location:ui slot:zig])
+        *(map id:smart [@da block-location:ui slot:zig])
       `@ux`data-hash.block-header
-    :-  [epoch-num block-num]
-    u.slot
+    [u.epoch-start-time [epoch-num block-num] u.slot]
   ::
   ++  get-chunk-update
     ^-  update:ui
@@ -949,7 +961,10 @@
     =/  =location:ui  (snag 0 locations)
     ?.  ?=(town-location:ui location)  ~
     ?~  chunk=(get-chunk location)     ~
-    [%chunk location u.chunk]
+    =/  epoch-start-time=(unit @da)
+      (get-epoch-start-time epoch-num.location)
+    ?~  epoch-start-time  ~
+    [%chunk u.epoch-start-time location u.chunk]
   ::
   ++  get-from-index
     ^-  update:ui
@@ -983,7 +998,7 @@
       (get-slot-update location)
     ::
     ++  get-grain
-      =|  grains=(map grain-id=id:smart [town-location:ui grain:smart])
+      =|  grains=(map grain-id=id:smart [@da town-location:ui grain:smart])
       =.  locations
         %+  sort  ;;((list town-location:ui) locations)
         |=  [p=town-location:ui q=town-location:ui]
@@ -1005,14 +1020,18 @@
       =*  granary  p.+.u.chunk
       ?~  grain=(~(get by granary) query-payload)
         $(locations t.locations)
+      =/  epoch-start-time=(unit @da)
+        (get-epoch-start-time epoch-num.location)
+      ?~  epoch-start-time  $(locations t.locations)
       %=  $
           locations  t.locations
           grains
-        (~(put by grains) id.u.grain [location u.grain])
+        %+  ~(put by grains)  id.u.grain
+        [u.epoch-start-time location u.grain]
       ==
     ::
     ++  get-egg
-      =|  eggs=(map id:smart [egg-location:ui egg:smart])
+      =|  eggs=(map id:smart [@da egg-location:ui egg:smart])
       |-
       ?~  locations
         ?~  eggs  ~
@@ -1020,11 +1039,16 @@
       =*  location  i.locations
       ?.  ?=(egg-location:ui location)
         $(locations t.locations)
-      ?~  chunk=(get-chunk epoch-num.location block-num.location town-id.location)
-        $(locations t.locations)  :: TODO: can we do better here?
+      =/  chunk=(unit chunk:zig)
+        %^  get-chunk  epoch-num.location
+        block-num.location  town-id.location
+      ?~  chunk  $(locations t.locations)  :: TODO: can we do better here?
       =*  egg-num  egg-num.location
       =*  txs  -.u.chunk
       ?.  (lth egg-num (lent txs))  $(locations t.locations)
+      =/  epoch-start-time=(unit @da)
+        (get-epoch-start-time epoch-num.location)
+      ?~  epoch-start-time  $(locations t.locations)
       =+  [hash=@ux =egg:smart]=(snag egg-num txs)
       ~|  "uqbar-indexer: location points to incorrect egg. query type, payload, hash, location, egg: {<query-type>}, {<query-payload>}, {<hash>}, {<location>}, {<egg>}"
       ?>  ?|  =(query-payload hash)
@@ -1035,7 +1059,8 @@
           ==
       %=  $
           locations  t.locations
-          eggs       (~(put by eggs) hash [location egg])
+          eggs
+        (~(put by eggs) hash [u.epoch-start-time location egg])
       ==
     ::
     ++  get-second-order

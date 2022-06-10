@@ -35,14 +35,14 @@
 ::
 +$  update
   $@  ~
-  $%  [%chunk location=town-location =chunk:zig]
-      [%egg eggs=(map egg-id=id:smart [location=egg-location =egg:smart])]
-      [%grain grains=(map grain-id=id:smart [location=town-location =grain:smart])]
+  $%  [%chunk timestamp=@da location=town-location =chunk:zig]
+      [%egg eggs=(map egg-id=id:smart [timestamp=@da location=egg-location =egg:smart])]
+      [%grain grains=(map grain-id=id:smart [timestamp=@da location=town-location =grain:smart])]
       $:  %hash
-          eggs=(map egg-id=id:smart [location=egg-location =egg:smart])
-          grains=(map grain-id=id:smart [location=town-location =grain:smart])
-          slots=(map slot-id=id:smart [location=block-location =slot:zig])
+          eggs=(map egg-id=id:smart [timestamp=@da location=egg-location =egg:smart])
+          grains=(map grain-id=id:smart [timestamp=@da location=town-location =grain:smart])
+          slots=(map slot-id=id:smart [timestamp=@da location=block-location =slot:zig])
       ==
-      [%slot slots=(map slot-id=id:smart [location=block-location =slot:zig])]
+      [%slot slots=(map slot-id=id:smart [timestamp=@da location=block-location =slot:zig])]
   ==
 --

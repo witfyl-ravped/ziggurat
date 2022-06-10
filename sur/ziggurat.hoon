@@ -33,7 +33,7 @@
       [%blocks-catchup epoch-num=@ud =slots]
       [%new-block epoch-num=@ud header=block-header =block]
       [%saw-block epoch-num=@ud header=block-header]
-      [%indexer-block epoch-num=@ud header=block-header blk=(unit block)]
+      [%indexer-block epoch-num=@ud epoch-start-time=time header=block-header blk=(unit block)]
   ==
 +$  sequencer-update
   $%  [%next-producer slot-num=@ud =ship]
