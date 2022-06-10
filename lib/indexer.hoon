@@ -9,6 +9,7 @@
   ++  update
     |=  =update:ui
     ^-  json
+    ?~  update  ~
     ?-    -.update
     ::
         %chunk
@@ -295,7 +296,10 @@
   =,  dejs:format
   |%
   ++  update
-    ^-  $-(json update:ui)
+    |=  jon=json
+    ^-  update:ui
+    ?~  jon  ~
+    %.  jon
     %-  of
     :~  [%chunk (ot ~[[%timestamp di] [%location town-location] [%chunk chunk]])]
         [%egg eggs]

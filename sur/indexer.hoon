@@ -14,15 +14,6 @@
       %slot
       %to
       %hash
-      %has-block-hash
-      %has-chunk
-      %has-egg
-      %has-from
-      %has-grain
-      %has-holder
-      %has-lord
-      %has-slot
-      %has-to
   ==
 ::
 +$  query-payload
@@ -43,6 +34,7 @@
   [epoch-num=@ud block-num=@ud town-id=@ud egg-num=@ud]
 ::
 +$  update
+  $@  ~
   $%  [%chunk timestamp=@da location=town-location =chunk:zig]
       [%egg eggs=(map egg-id=id:smart [timestamp=@da location=egg-location =egg:smart])]
       [%grain grains=(map grain-id=id:smart [timestamp=@da location=town-location =grain:smart])]
