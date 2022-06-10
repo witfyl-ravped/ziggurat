@@ -335,11 +335,13 @@
         [%x %hash @ ~]
         ::  search over all hashes and return all hits
       =/  hash=@ux  (slav %ux i.t.t.path)
-      =/  egg=update:ui    (serve-update %egg hash)
-      =/  grain=update:ui  (serve-update %grain hash)
-      =/  from=update:ui   (serve-update %from hash)
-      =/  slot=update:ui   (serve-update %block-hash hash)
-      =/  to=update:ui     (serve-update %to hash)
+      =/  egg=update:ui     (serve-update %egg hash)
+      =/  from=update:ui    (serve-update %from hash)
+      =/  grain=update:ui   (serve-update %grain hash)
+      =/  holder=update:ui  (serve-update %holder hash)
+      =/  lord=update:ui    (serve-update %lord hash)
+      =/  slot=update:ui    (serve-update %block-hash hash)
+      =/  to=update:ui      (serve-update %to hash)
       =/  =update:ui
         (combine-updates ~[egg from to] ~[grain] slot)
       [~ ~ %indexer-update !>(`update:ui`update)]
@@ -982,6 +984,15 @@
     ::
     ++  get-grain
       =|  grains=(map grain-id=id:smart [town-location:ui grain:smart])
+      =.  locations
+        %+  sort  ;;((list town-location:ui) locations)
+        |=  [p=town-location:ui q=town-location:ui]
+        ^-  ?
+        ?:  (lth epoch-num.p epoch-num.q)  %.y
+        ?.  =(epoch-num.p epoch-num.q)     %.n
+        ?:  (lth block-num.p block-num.q)  %.y
+        ?.  =(block-num.p block-num.q)     %.n
+        (gte town-id.p town-id.q)
       |-
       ?~  locations
         ?~  grains  ~
