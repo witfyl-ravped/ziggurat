@@ -271,9 +271,9 @@
           ::  only grains that proclaim us lord may be changed
           =/  old  (~(get by granary) id)
           ?&  ?=(^ old)
-              ?.  ?=(%& -.germ.u.old)
-                =(%| -.germ.grain)
-              &(?=(%& -.germ.grain) =(salt.p.germ.u.old salt.p.germ.grain))
+              ?:  ?=(%& -.germ.u.old)
+                &(?=(%& -.germ.grain) =(salt.p.germ.u.old salt.p.germ.grain))
+              =(%| -.germ.grain)
               =(id id.grain)
               !(~(has by issued.res) id)
               =(lord lord.u.old)
