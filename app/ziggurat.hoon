@@ -9,7 +9,7 @@
 ::
 /-  indexer
 /+  *ziggurat, default-agent, dbug, verb
-/*  smart-lib  %noun  /lib/zig/compiled/smart-lib/noun
+/*  smart-lib-noun  %noun  /lib/zig/compiled/smart-lib/noun
 =,  util
 |%
 +$  card  card:agent:gall
@@ -24,7 +24,7 @@
       =height
   ==
 +$  inflated-state-0  [state-0 =mil]
-+$  mil  $_  ~(mill mill 0)
++$  mil  $_  ~(mill mill !>(0))
 --
 ::
 =|  inflated-state-0
@@ -38,13 +38,13 @@
     def   ~(. (default-agent this %|) bowl)
 ::
 ++  on-init
-  `this(state [[%0 %none ~ ~ ~ ~ [~ ~] 0] ~(mill mill +:(cue q.q.smart-lib))])
+  `this(state [[%0 %none ~ ~ ~ ~ [~ ~] 0] ~(mill mill ;;(vase (cue q.q.smart-lib-noun)))])
 ::
 ++  on-save  !>(-.state)
 ++  on-load
   |=  =old=vase
   ^-  (quip card _this)
-  =+  ~(mill mill +:(cue q.q.smart-lib))
+  =+  ~(mill mill ;;(vase (cue q.q.smart-lib-noun)))
   `this(state [!<(state-0 old-vase) -])
 ::
 ++  on-watch
@@ -215,6 +215,7 @@
       ::  either on-time to start epoch, or solo validator
       ::  set our timers for all the slots in this epoch,
       ::  subscribe to all the other validator ships,
+      ::  forward our egg basket if its not empty,
       ::  and alert subscribing sequencers of the next block producer
       ~&  epoch+num.new-epoch^u.validator-set^`@ux`(end [3 2] (sham epochs))
       =/  [next-producer=ship next-slot=@ud]
@@ -222,6 +223,7 @@
           [-.order.new-epoch 0]
         [-.+.order.new-epoch 1]
       :_  %=  state
+            basket  ~
             epochs  (put:poc epochs num.new-epoch new-epoch)
             queue   (malt ~[[relay-town-id (~(gut by queue) relay-town-id ~)]])
             height  ?~(q.last-slot height height.u.q.last-slot)
@@ -232,6 +234,8 @@
       :~  [(notify-sequencer next-slot next-producer) ?~(- ~ [u.- ~])]
           (watch-updates (silt (murn order.new-epoch filter-by-wex)))
           (new-epoch-timers new-epoch our.bowl)
+          ?~  basket.state  ~
+          ~[(forward-basket (get-second-to-last order.new-epoch) basket.state)]
       ==
     ::
         %receive-chunk
@@ -280,12 +284,7 @@
         `state(basket (~(uni in basket) eggs.act))
       ::  clear our basket and forward to final producer in epoch
       :_  state(basket ~)
-      :_  ~
-      :*  %pass  /basket-gossip
-          %agent  [final-producer %ziggurat]
-          %poke  %zig-weave-poke
-          !>([%receive (~(uni in eggs.act) basket.state)])
-      ==
+      ~[(forward-basket final-producer (~(uni in eggs.act) basket.state))]
     ::
         %receive
       ?~  (find [src.bowl]~ order.cur)
@@ -548,7 +547,7 @@
       =+  /(scot %p our.bowl)/wallet/(scot %da now.bowl)/account/(scot %ux (need address.state))/(scot %ud relay-town-id)/noun
       =+  .^(account:smart %gx -)
       =/  globe-chunk
-        (~(mill-all mil - relay-town-id height.state now.bowl) globe.state ~(tap in basket.state))
+        (~(mill-all mil - relay-town-id height.state) globe.state ~(tap in basket.state))
       =+  :_  height.state
           %+  ~(put by (~(gut by queue.state) slot-num ~))
           relay-town-id  globe-chunk
