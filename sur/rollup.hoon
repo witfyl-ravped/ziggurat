@@ -14,21 +14,22 @@
 ::
 ::  TODO: granary MUST be map-type with deterministic sorting
 ::
++$  state  (pair granary:smart =populace:smart)
 +$  town
   $:  sequencer=address
-      =granary:smart    ::  current state map
-      =populace:smart   ::  map of address to user
+      =state  ::  current state map, map of address to user
       mode=availability-method
       latest-diff-hash=@ux
       roots=(list root)
   ==
 ::
-+$  diff   granary:smart     ::  state transitions for one batch
-+$  batch  (list egg:smart)  ::  txns processed in one state transiton
++$  diff   granary:smart                 ::  state transitions for one batch
++$  batch  (pair (list egg:smart) diff)  ::  txns processed in one state transiton
 ::
 +$  move ::  state transition
-  $:  mode=availability-method
-      next-root=root
+  $:  mode=availability-method  ::  diffs included here
+      new-root=root
+      new-state=state
       peer-roots=(map id root)  ::  roots for other towns we interact with
       =sig  ::  sequencer signs hash of next-root/diff data
   ==
