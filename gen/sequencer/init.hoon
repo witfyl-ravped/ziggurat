@@ -1,6 +1,7 @@
 /-  *ziggurat
 /+  smart=zig-sys-smart, deploy=zig-deploy
 /*  zigs-contract  %noun  /lib/zig/compiled/zigs/noun
+/*  multisig-contract  %noun  /lib/zig/compiled/multisig/noun
 /*  nft-contract  %noun  /lib/zig/compiled/nft/noun
 /*  publish-contract  %noun  /lib/zig/compiled/publish/noun
 /*  trivial-contract  %noun  /lib/zig/compiled/trivial/noun
@@ -75,6 +76,16 @@
       town-id         ::  town-id
       [%| ;;(wheat:smart (cue q.q.publish-contract))]  ::  germ
   ==
+::  multisig.hoon contract
+=/  multisig-grain
+  =/  =wheat:smart  ;;(wheat:smart (cue q.q.zigs-contract))
+  ^-  grain:smart
+  :*  0x2222.2222     ::  id
+      0x2222.2222     ::  lord
+      0x2222.2222     ::  holder
+      town-id         ::  town-id
+      [%| wheat]  ::  germ
+  ==
 ::  trivial.hoon contract
 =/  trivial-grain
   ^-  grain:smart
@@ -131,6 +142,7 @@
         [id.nft-wheat-grain nft-wheat-grain]
         [id.nft-metadata-grain nft-metadata-grain]
         [id.publish-grain publish-grain]
+        [id.multisig-grain multisig-grain]
         [id.trivial-grain trivial-grain]
         [zigs-1 beef-zigs-grain]
         [zigs-2 dead-zigs-grain]
