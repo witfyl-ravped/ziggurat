@@ -33,6 +33,11 @@ links to other desks, such as base-dev and garden-dev.
 10. Now, install the desk in your Urbit, which will run the agents.
 `|install our %zig`
 
+
+To run all tests, enter `-test ~[/=zig=/tests]`, or `-test ~[/=zig=/tests/contracts]` for just the contracts.
+
+
+
 ---
 ## Running a Blockchain
 
