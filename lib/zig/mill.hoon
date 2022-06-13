@@ -241,12 +241,12 @@
         ?:  ?=(%| -.-.res)
           ::  error in contract execution
           [~ budget %6]
-        ~&  >>  [chick+(hole (unit chick) p.p.book) budget+bud.q.book]
+        ~&  >>  chick+[`p.-.res +.res]
         ::  chick result
         ::  ~&  >  p.-.res
-        [`p.-.res budget %0]
+        [`p.-.res +.res %0]
         ::  this uses ZINK
-        ::  
+        ::
         ::  ~&  >  %contract-compiled
         ::  =/  cax=(map * phash)  ;;(cache (cue q.q.zink-cax))
         ::  ~&  >  %cax-compiled

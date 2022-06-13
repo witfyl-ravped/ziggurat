@@ -1,4 +1,5 @@
-/-  *sequencer, *rollup
+/-  *sequencer
+/+  mill=zig-mill
 |%
 ::
 ::  +allowed-participant: grades whether a ship is permitted to participate
@@ -23,16 +24,16 @@
   ==
 ::
 ++  read-grain
-  |=  [=path =granary:smart]
+  |=  [=path =granary]
   ^-  (unit (unit cage))
-  ?>  ?=([%rice @ux ~] path)
+  ?>  ?=([%grain @ ~] path)
   =/  id  (slav %ux i.t.path)
   ``noun+!>((~(get by granary) id))
 ::
 ++  read-wheat
-  |=  [=path now=time town-id=id =granary:smart]
+  |=  [=path now=time town-id=id =granary library=vase]
   ^-  (unit (unit cage))
-  ?>  ?=([%read @ux @tas @ta ^] path)
+  ?>  ?=([%read @ @tas @ta ^] path)
   =/  id  (slav %ux i.t.path)
   =/  read-type  (slav %tas i.t.t.path)  ::  %json or %noun
   =/  arg=^path  [i.t.t.t.path ~]
@@ -42,10 +43,11 @@
   ?~  res=(~(get by granary) id)  ``noun+!>(~)
   ?.  ?=(%| -.germ.u.res)         ``noun+!>(~)
   ?~  cont.p.germ.u.res           ``noun+!>(~)
+  =*  cont  u.cont.p.germ.u.res
   =/  owns
-    %-  ~(gas by *(map id:smart grain:smart))
+    %-  ~(gas by *(map ^id grain))
     %+  murn  contract-rice
-    |=  find=id:smart
+    |=  find=^id
     ?~  found=(~(get by granary) find)  ~
     ?.  ?=(%& -.germ.u.found)           ~
     ?.  =(lord.u.found id)              ~
@@ -55,10 +57,12 @@
   ?.  =(~(wyt by owns) (lent contract-rice))
     ``noun+!>(~)
   ::  TODO swap this with +zebra when able?
-  =/  cont  !<(contract:smart [-:!>(*contract:smart) u.cont.p.germ.u.res])
   =/  cart  [id now town-id owns]
-  ?+  read-type  ``noun+!>(~)
-    %noun  ``noun+!>(`~(noun ~(read cont cart) arg))
-    %json  ``json+!>(`~(json ~(read cont cart) arg))
+  =/  payload  .*(q.library pay.cont)
+  =/  battery  .*([q.library payload] bat.cont)
+  =/  dor      [-:!>(*contract) battery]
+  ?+  read-type  [~ ~]
+    %noun  ``noun+!>(`q:(shut:mill dor %read !>(cart) !>(embryo)))
+    %json  ``json+!>(`;;(json q:(shut:mill dor %read !>(cart) !>(embryo))))
   ==
 --

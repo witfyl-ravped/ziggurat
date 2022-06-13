@@ -8,7 +8,7 @@
   |=  [lord=id town=@ud bat=*]
   ^-  id
   =+  (jam bat)
-  `@ux`(sham (cat 3 lord (cat 3 town -))) 
+  `@ux`(sham (cat 3 lord (cat 3 town -)))
 ::
 ++  fry-rice
   |=  [holder=id lord=id town=@ud salt=@]
@@ -28,7 +28,9 @@
 ::
 ::  smart contract types
 ::
-+$  id             @ux  ::  pubkey
++$  id       @ux            ::  pubkey
++$  address  @ux            ::  42-char hex address, ETH compatible
++$  sig      [v=@ r=@ s=@]  ::  ETH compatible ECDSA signature
 ++  zigs-wheat-id  `@ux`'zigs-contract'  ::  hardcoded "native" token contract
 ::
 +$  account    [=id nonce=@ud zigs=id]
@@ -101,7 +103,7 @@
 +$  egg  (pair shell yolk)
 +$  shell
   $:  from=caller
-      sig=[v=@ r=@ s=@]  ::  sig on either hash of yolk or eth-hash
+      =sig               ::  sig on either hash of yolk or eth-hash
       eth-hash=(unit @)  ::  if transaction signed with eth wallet, use this to verify signature
       to=id
       rate=@ud
@@ -138,7 +140,7 @@
       [%o p=(map @t json)]                              ::  object
       [%n p=@ta]                                        ::  number
       [%s p=@t]                                         ::  string
-  == 
+  ==
 ++  format  ^?
   |%
   ++  enjs  ^?                                          ::  json encoders
