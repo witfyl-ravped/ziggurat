@@ -6,7 +6,7 @@
 /+  *sequencer, mill=zig-sys-mill, default-agent, dbug, verb
 ::  Choose which library smart contracts are executed against here
 ::
-/*  smart-lib  %noun  /lib/zig/compiled/smart-lib/noun
+/*  smart-lib-noun  %noun  /lib/zig/compiled/smart-lib/noun
 =,  util
 |%
 +$  card  card:agent:gall
@@ -17,7 +17,7 @@
       status=?(%available %off)
   ==
 +$  inflated-state-0  [state-0 =mil]
-+$  mil  $_  ~(mill mill 0)
++$  mil  $_  ~(mill mill !>(0))
 --
 ::
 =|  inflated-state-0
@@ -31,7 +31,7 @@
     def   ~(. (default-agent this %|) bowl)
 ::
 ++  on-init
-  `this(state [[%0 ~ %off] ~(mill mill +:(cue q.q.smart-lib))])
+  `this(state [[%0 ~ %off] ~(mill mill ;;(vase (cue q.q.smart-lib-noun)))])
 ::
 ++  on-save  !>(-.state)
 ++  on-load
@@ -39,8 +39,7 @@
   ^-  (quip card _this)
   ::  on-load: pre-cue our compiled smart contract library
   ::
-  `this(state [!<(state-0 old-vase) ~(mill mill +:(cue q.q.smart-lib))])
-::
+  `this(state [!<(state-0 old-vase) ~(mill mill ;;(vase (cue q.q.smart-lib-noun)))])
 ++  on-watch
   |=  =path
   ^-  (quip card _this)

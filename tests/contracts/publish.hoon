@@ -22,7 +22,7 @@
 ::
 ++  test-trivial-deploy  ^-  tang
   =/  =embryo
-    [owner-1 `[%deploy %.y trivial-nok ~] ~]
+    [owner-1 `[%deploy %.y [trivial-nok ~] ~] ~]
   =/  =cart
     [`@ux`'publish' 0 1 ~]
   =/  new-id  (fry-contract 0xbeef 1 trivial-nok)
@@ -31,7 +31,7 @@
         0xbeef
         0xbeef
         1
-        [%| `trivial-nok ~]
+        [%| `[trivial-nok ~] ~]
     ==
   =/  res=chick
     (~(write cont cart) embryo)

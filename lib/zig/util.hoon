@@ -64,10 +64,18 @@
       [%give %fact ~[/indexer/updates] %zig-update -]
   ==
 ::
+++  forward-basket
+  |=  [=ship =basket]
+  ^-  card
+  :*  %pass  /basket-gossip
+      %agent  [ship %ziggurat]
+      %poke  %zig-weave-poke
+      !>([%receive basket])
+  ==
+::
 ++  notify-sequencer
   |=  [slot-num=@ud =ship]
   ^-  card
-  ~&  >  "%ziggurat: slot {<slot-num>} producer is {<ship>}"
   :-  %give
   :^  %fact  ~[/sequencer/updates]
       %sequencer-update  !>([%next-producer slot-num ship])

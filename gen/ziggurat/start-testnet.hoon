@@ -59,11 +59,12 @@
   ==
 =/  zigs-wheat-grain
   ^-  grain:smart
+  =/  =wheat:smart  ;;(wheat:smart (cue q.q.zigs-contract))
   :*  zigs-wheat-id:smart  ::  id
       zigs-wheat-id:smart  ::  lord
       zigs-wheat-id:smart  ::  holder
       0                    ::  town-id
-      [%| [`(cue q.q.zigs-contract) (silt ~[zigs-1 zigs-2 zigs-3 `@ux`'zigs-metadata'])]]
+      [%| wheat(owns (silt ~[zigs-1 zigs-2 zigs-3 `@ux`'zigs-metadata']))]
   ==
 =/  world-map
   ^-  grain:smart
@@ -84,11 +85,12 @@
   ==
 =/  capitol-grain
   ^-  grain:smart
+  =/  =wheat:smart  ;;(wheat:smart (cue q.q.capitol-contract))
   :*  `@ux`'capitol'  ::  id
       `@ux`'capitol'  ::  lord
       `@ux`'capitol'  ::  holder
       0               ::  town-id
-      [%| `(cue q.q.capitol-contract) ~]
+      [%| wheat(owns (silt ~[id.world-map id.ziggurat-map]))]
   ==
 =/  fake-granary
   ^-  granary:smart
