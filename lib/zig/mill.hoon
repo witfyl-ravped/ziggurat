@@ -241,7 +241,8 @@
         ?:  ?=(%| -.-.res)
           ::  error in contract execution
           [~ budget %6]
-        ~&  >>  [chick+(hole (unit chick) p.p.book) budget+bud.q.book]
+        ::
+        ::~&  >>  [chick+(hole (unit chick) p.p.book) budget+bud.q.book]
         ::  chick result
         ::  ~&  >  p.-.res
         [`p.-.res budget %0]
