@@ -26,18 +26,6 @@
 ^-  wheat:smart
 [`[bat=q.cont pay=full-nock] ~]
 ::
-++  shut                                               ::  slam a door
-  |=  [dor=vase arm=@tas dor-sam=vase arm-sam=vase]
-  ^-  vase
-  %+  slap
-    (slop dor (slop dor-sam arm-sam))
-  ^-  hoon
-  :-  %cnsg
-  :^    [%$ ~]
-      [%cnsg [arm ~] [%$ 2] [%$ 6] ~]  ::  replace sample
-    [%$ 7]
-  ~
-::
 ::  parser helpers
 ::
 +$  small-pile
