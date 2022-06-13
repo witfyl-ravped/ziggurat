@@ -229,7 +229,7 @@
 ::
 ++  read-wheat
   |=  [=path blocknum=@ud town-id=@ud =granary:smart]
-  ^-  (unit (unit cage))
+  |^  ^-  (unit (unit cage))
   ?>  ?=([%wheat @ @tas @ta ^] path)
   =/  id  (slav %ux i.t.path)
   =/  read-type  (slav %tas i.t.t.path)
@@ -257,11 +257,27 @@
   ::  goal is to return ~ if some rice weren't found
   ?.  =(~(wyt by owns) (lent contract-rice))
     ``noun+!>(~)
-  =/  cont
-    !<(contract:smart [-:!>(*contract:smart) [u.cont.p.germ.u.res +:(cue q.q.smart-lib)]])
+  =/  library  ;;(vase (cue q.q.smart-lib))
+  =/  payload  .*(q.library pay.u.cont.p.germ.u.res)
+  =/  battery  .*([q.library payload] bat.u.cont.p.germ.u.res)
+  =/  dor      [-:!>(*contract:smart) battery]
   =/  cart  [id blocknum town-id owns]
   ?+  read-type  ``noun+!>(~)
-    %noun  ``noun+!>(`~(noun ~(read cont cart) arg))
-    %json  ``json+!>(~(json ~(read cont cart) arg))
+    :: %noun  ``noun+!>(~(noun ~(read cont cart) arg))
+    %json  ``json+!>(;;(json q:(json-read-shut dor %read !>(cart) !>(arg))))
   ==
+  ::
+  ++  json-read-shut                                               ::  slam a door
+    |=  [dor=vase arm=@tas dor-sam=vase arm-sam=vase]
+    ^-  vase
+    %+  slap
+      (slop dor (slop dor-sam arm-sam))
+    ^-  hoon
+    :-  %cnsg
+    :^    [%json ~]
+        [%cnsg [arm ~] [%$ 2] [%$ 6] ~]  ::  replace sample
+      [%$ 7]
+    ~
+  ::
+  --
 --

@@ -360,42 +360,38 @@
     ++  get-hashes
       |=  hash=@ux
       ^-  update:ui
-      =/  egg=(unit update:ui)
-        (serve-update %egg hash)
-      =/  grain=(unit update:ui)
-        (serve-update %grain hash)
-      =/  from=(unit update:ui)
-        (serve-update %from hash)
-      =/  slot=(unit update:ui)
-        (serve-update %block-hash hash)
-      =/  to=(unit update:ui)
-        (serve-update %to hash)
-      (combine-updates ~[egg from to] ~[grain] slot)
+      =/  egg=update:ui     (serve-update %egg hash)
+      =/  from=update:ui    (serve-update %from hash)
+      =/  grain=update:ui   (serve-update %grain hash)
+      =/  holder=update:ui  (serve-update %holder hash)
+      =/  lord=update:ui    (serve-update %lord hash)
+      =/  slot=update:ui    (serve-update %block-hash hash)
+      =/  to=update:ui      (serve-update %to hash)
+      %^  combine-updates  ~[egg from to]
+      ~[grain holder lord]  slot
     ::
     ++  get-newest-slot-update
       ^-  (unit update:ui)
       ?~  newest-epoch=(pry:poc:zig epochs)  ~
       ?~  newest-slot=(pry:sot:zig slots.val.u.newest-epoch)
         ~
+      =*  epoch-start-time  start-time.val.u.newest-epoch
       =*  epoch-num  num.val.u.newest-epoch
       =*  slot  val.u.newest-slot
       =*  block-header  p.slot
       :+  ~  %slot
       %+  %~  put  by
-          *(map id:smart [block-location:ui slot:zig])
+          *(map id:smart [@da block-location:ui slot:zig])
         `@ux`data-hash.block-header
-      :-  [epoch-num num.block-header]
+      :+  epoch-start-time  [epoch-num num.block-header]
       slot
     ::
     ++  get-ids
       |=  hash=@ux
       ^-  update:ui
-      =/  egg=(unit update:ui)
-        (serve-update %egg hash)
-      =/  from=(unit update:ui)
-        (serve-update %from hash)
-      =/  to=(unit update:ui)
-        (serve-update %to hash)
+      =/  egg=update:ui   (serve-update %egg hash)
+      =/  from=update:ui  (serve-update %from hash)
+      =/  to=update:ui    (serve-update %to hash)
       (combine-egg-updates ~[egg from to])
     ::
     --

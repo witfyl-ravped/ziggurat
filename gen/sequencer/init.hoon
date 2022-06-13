@@ -75,15 +75,15 @@
       town-id         ::  town-id
       [%| ;;(wheat:smart (cue q.q.publish-contract))]  ::  germ
   ==
-::  trivial.hoon contract
-=/  trivial-grain
-  ^-  grain:smart
-  :*  0xdada.dada     ::  id
-      0xdada.dada     ::  lord
-      0xdada.dada     ::  holder
-      town-id         ::  town-id
-      [%| [`(cue q.q.trivial-contract) ~]]  ::  germ
-  ==
+:: ::  trivial.hoon contract
+:: =/  trivial-grain
+::   ^-  grain:smart
+::   :*  0xdada.dada     ::  id
+::       0xdada.dada     ::  lord
+::       0xdada.dada     ::  holder
+::       town-id         ::  town-id
+::       [%| [`(cue q.q.trivial-contract) ~]]  ::  germ
+::   ==
 ::
 ::  NFT stuff
 =/  nft-metadata-grain
@@ -131,7 +131,7 @@
         [id.nft-wheat-grain nft-wheat-grain]
         [id.nft-metadata-grain nft-metadata-grain]
         [id.publish-grain publish-grain]
-        [id.trivial-grain trivial-grain]
+        :: [id.trivial-grain trivial-grain]
         [zigs-1 beef-zigs-grain]
         [zigs-2 dead-zigs-grain]
         [zigs-3 cafe-zigs-grain]

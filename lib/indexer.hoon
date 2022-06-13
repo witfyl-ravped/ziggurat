@@ -220,7 +220,7 @@
     |=  [=id:smart timestamp=@da location=block-location:ui s=slot:zig]
     :-  (scot %ux id)
     %-  pairs
-    :^    [%timestampe (time timestamp)]
+    :^    [%timestamp (time timestamp)]
         [%location (block-location location)]
       [%slot (slot s)]
     ~
