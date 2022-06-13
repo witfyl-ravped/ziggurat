@@ -23,11 +23,11 @@
   =/  gen=hoon
     :-  %cnsg
     :^    [%$ ~]
-        [%cnsg [arm ~] [%$ 2] [%$ 6] ~]  ::  replace sample
+        [%cnsg [arm ~] [%$ 2] [%$ 6] ~]
       [%$ 7]
     ~
   =/  gun  (~(mint ut typ) %noun gen)
-  [q.dor q.gun]
+  [[q.dor [q.dor-sam q.arm-sam]] q.gun]
 ::
 ::  +hole: vase-checks your types for you
 ::
@@ -205,7 +205,6 @@
     ::  +grow: recursively apply any calls stemming from egg, return on rooster or failure
     ++  grow
       |=  [=crop =embryo =egg]
-      ~>  %bout
       ^-  [(unit rooster) final=(unit ^granary) rem=@ud =errorcode]
       |^
       =+  [chick rem err]=(weed to.p.egg budget.p.egg)
@@ -228,6 +227,7 @@
       ++  weed
         |=  [to=id budget=@ud]
         ^-  [(unit chick) rem=@ud =errorcode]
+        ~>  %bout
         =/  =cart  [to blocknum town-id owns.crop]
         =/  payload  .*(q.library pay.cont.crop)
         =/  battery  .*([q.library payload] bat.cont.crop)
@@ -241,6 +241,7 @@
         ?:  ?=(%| -.-.res)
           ::  error in contract execution
           [~ budget %6]
+        ~&  >>  [chick+(hole (unit chick) p.p.book) budget+bud.q.book]
         ::  chick result
         ::  ~&  >  p.-.res
         [`p.-.res budget %0]

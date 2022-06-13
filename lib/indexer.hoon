@@ -9,12 +9,14 @@
   ++  update
     |=  =update:ui
     ^-  json
+    ?~  update  ~
     ?-    -.update
     ::
         %chunk
       %+  frond  %chunk
       %-  pairs
-      :+  [%location (town-location location.update)]
+      :^    [%timestamp (time timestamp.update)]
+          [%location (town-location location.update)]
         [%chunk (chunk chunk.update)]
       ~
     ::
@@ -92,14 +94,15 @@
     ~
   ::
   ++  eggs
-    |=  eggs=(map egg-id=id:smart [location=egg-location:ui =egg:smart])
+    |=  eggs=(map egg-id=id:smart [@da location=egg-location:ui =egg:smart])
     ^-  json
     %-  pairs
     %+  turn  ~(tap by eggs)
-    |=  [=id:smart location=egg-location:ui e=egg:smart]
+    |=  [=id:smart timestamp=@da location=egg-location:ui e=egg:smart]
     :-  (scot %ux id)
     %-  pairs
-    :+  [%location (egg-location location)]
+    :^    [%timestamp (time timestamp)]
+        [%location (egg-location location)]
       [%egg (egg e)]
     ~
   ::
@@ -170,14 +173,15 @@
     [%s (scot %ux id)]
   ::
   ++  grains
-    |=  grains=(map grain-id=id:smart [location=town-location:ui =grain:smart])
+    |=  grains=(map grain-id=id:smart [@da location=town-location:ui =grain:smart])
     ^-  json
     %-  pairs
     %+  turn  ~(tap by grains)
-    |=  [=id:smart location=town-location:ui g=grain:smart]
+    |=  [=id:smart timestamp=@da location=town-location:ui g=grain:smart]
     :-  (scot %ux id)
     %-  pairs
-    :+  [%location (town-location location)]
+    :^    [%timestamp (time timestamp)]
+        [%location (town-location location)]
       [%grain (grain g)]
     ~
   ::
@@ -209,14 +213,15 @@
     ~
   ::
   ++  slots
-    |=  slots=(map slot-id=id:smart [location=block-location:ui =slot:zig])
+    |=  slots=(map slot-id=id:smart [@da location=block-location:ui =slot:zig])
     ^-  json
     %-  pairs
     %+  turn  ~(tap by slots)
-    |=  [=id:smart location=block-location:ui s=slot:zig]
+    |=  [=id:smart timestamp=@da location=block-location:ui s=slot:zig]
     :-  (scot %ux id)
     %-  pairs
-    :+  [%location (block-location location)]
+    :^    [%timestampe (time timestamp)]
+        [%location (block-location location)]
       [%slot (slot s)]
     ~
   ::
@@ -291,9 +296,12 @@
   =,  dejs:format
   |%
   ++  update
-    ^-  $-(json update:ui)
+    |=  jon=json
+    ^-  update:ui
+    ?~  jon  ~
+    %.  jon
     %-  of
-    :~  [%chunk (ot ~[[%location town-location] [%chunk chunk]])]
+    :~  [%chunk (ot ~[[%timestamp di] [%location town-location] [%chunk chunk]])]
         [%egg eggs]
         [%grain grains]
         [%hash (ot ~[[%eggs eggs] [%grains grains] [%slots slots]])]
@@ -341,10 +349,11 @@
     (at ~[nu egg])
   ::
   ++  eggs
-    ^-  $-(json (map egg-id=id:smart [location=egg-location:ui =egg:smart]))
+    ^-  $-(json (map egg-id=id:smart [@da location=egg-location:ui =egg:smart]))
     %+  op  hex
     %-  ot
-    :+  [%location egg-location]
+    :^    [%timestamp di]
+        [%location egg-location]
       [%egg egg]
     ~
   ::
@@ -411,10 +420,11 @@
     (as nu)
   ::
   ++  grains
-    ^-  $-(json (map grain-id=id:smart [location=town-location:ui =grain:smart]))
+    ^-  $-(json (map grain-id=id:smart [@da location=town-location:ui =grain:smart]))
     %+  op  hex
     %-  ot
-    :+  [%location town-location]
+    :^    [%timestamp di]
+        [%location town-location]
       [%grain grain]
     ~
   ::
@@ -452,10 +462,11 @@
     ~
   ::
   ++  slots
-    ^-  $-(json (map slot-id=id:smart [location=block-location:ui =slot:zig]))
+    ^-  $-(json (map slot-id=id:smart [@da location=block-location:ui =slot:zig]))
     %+  op  hex
     %-  ot
-    :+  [%location block-location]
+    :^    [%timestamp di]
+        [%location block-location]
       [%slot slot]
     ~
   ::

@@ -342,10 +342,10 @@
       |=  =update:ui
       ^-  [id:smart dao:d]
       ?>  ?=(%grain -.update)
-      =/  grains=(list [town-location:ui grain:smart])
+      =/  grains=(list [@da town-location:ui grain:smart])
         ~(val by grains.update)
       ?>  =(1 (lent grains))
-      =/  [* dao-grain=grain:smart]  (snag 0 grains)
+      =/  [@ * dao-grain=grain:smart]  (snag 0 grains)
       ?>  ?=(%& -.germ.dao-grain)
       [id.dao-grain ;;(dao:d data.p.germ.dao-grain)]
     ::

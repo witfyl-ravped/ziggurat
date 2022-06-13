@@ -289,3 +289,15 @@ For the HTTP API, the app to subscribe to is `"indexer"`, and the path is `"/slo
 # hash-noun will give you just a hash
 > =r (~(hash-noun zink:z +>.r) [1 2 3])
 ```
+
+### Precomputing Hashes for Zink
+
+```
+=hash-cache-file .^(* %cx /=zig=/lib/zig/compiled/hash-cache/noun)
+=hash-cache-file ?>(?=((pair * (pair * @)) hash-cache-file) hash-cache-file)
+=c -build-file /=zig=/lib/zink/conq/hoon
+=cax ;;(cache:c (cue q.q.hash-cache-file))
+=hoonlib-txt .^(@t %cx /=zig=/lib/zig/sys/hoon/hoon)
+=smartlib-txt .^(@t %cx /=zig=/lib/zig/sys/smart/hoon)
+=cax (conq:c hoonlib-txt smartlib-txt cax 100)
+```
