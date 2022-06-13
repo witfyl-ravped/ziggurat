@@ -52,14 +52,14 @@
   ==
 ::
 ++  give-on-updates
-  |=  [=update blk=(unit block)]
+  |=  [=update epoch-start-time=time blk=(unit block)]
   ^-  (list card)
   ::  sends either a 'new-block' or 'saw-block' to fellow validators,
   ::  and sends an 'indexer-block' to indexers.
   =+  ?:  ?=(%new-block -.update)
-        !>(`^update`[%indexer-block epoch-num.update header.update blk])
+        !>(`^update`[%indexer-block epoch-num.update epoch-start-time header.update blk])
       ?:  ?=(%saw-block -.update)
-        !>(`^update`[%indexer-block epoch-num.update header.update blk])
+        !>(`^update`[%indexer-block epoch-num.update epoch-start-time header.update blk])
       !!
   :~  [%give %fact ~[/validator/updates] %zig-update !>(update)]
       [%give %fact ~[/indexer/updates] %zig-update -]
