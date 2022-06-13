@@ -3,6 +3,18 @@
 =,  smart
 |_  library=vase
 ::
+++  verify-sig
+  |=  [=address hash=@ =sig eth=?]
+  ^-  ?
+  =?  v.sig  (gte v.sig 27)  (sub v.sig 27)
+  =+  %+  ecdsa-raw-recover:secp256k1:secp:crypto
+      hash  sig
+  .=  address
+  ?.  eth
+    (compress-point:secp256k1:secp:crypto -)
+  %-  address-from-pub:key:ethereum
+  (serialize-point:secp256k1:secp:crypto -)
+::
 ++  shut                                               ::  slam a door
   |=  [dor=vase arm=@tas dor-sam=vase arm-sam=vase]
   ^-  vase
@@ -83,7 +95,8 @@
       %-  address-from-pub:key:ethereum
       %-  serialize-point:secp256k1:secp:crypto
       recovered
-    ?.  =(id.from.p.egg caller-address)
+    =+  ?~(eth-hash.p.egg (sham (jam q.egg)) u.eth-hash.p.egg)
+    ?.  (verify-sig id.from.p.egg - sig.p.egg ?=(^ eth-hash.p.egg))
     ~&  >>>  "mill: signature mismatch: expected {<id.from.p.egg>}, got {<`@ux`caller-address>}"
       [town 0 %2]  ::  signed tx doesn't match account
     ::

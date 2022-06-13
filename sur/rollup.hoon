@@ -2,7 +2,13 @@
 ::
 ::  rollup app: run on ONE ship, receive moves from sequencer apps.
 ::
+/-  sequencer
 /+  smart=zig-sys-smart
 |%
-+$  land  (map id town)
+::  capitol: tracks sequencer and state roots / diffs for all towns
++$  capitol  (map id:smart hall:sequencer)
+::
++$  action
+  $%  [%receive-move from=address:smart move:sequencer]
+  ==
 --
