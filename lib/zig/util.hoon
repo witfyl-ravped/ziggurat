@@ -207,16 +207,12 @@
       !>([%submit address `@ux`'capitol' relay-town-id [rate bud] args])
   ==
 ::
-++  read-rice
-  |=  [=path blocknum=@ud town-id=@ud =granary:smart]
+++  read-grain
+  |=  [=path =granary:smart]
   ^-  (unit (unit cage))
   ?>  ?=([%rice @ ~] path)
   =/  id  (slav %ux i.t.path)
-  ?~  res=(~(get by granary) id)
-    ``noun+!>(~)
-  ?.  ?=(%& -.germ.u.res)
-    ``noun+!>(~)
-  ``noun+!>(``rice:smart`p.germ.u.res)
+  ``noun+!>((~(get by granary) id))
 ::
 ++  read-wheat
   |=  [=path blocknum=@ud town-id=@ud =granary:smart]
@@ -243,7 +239,7 @@
   ::  goal is to return ~ if some rice weren't found
   ?.  =(~(wyt by owns) (lent contract-rice))
     ``noun+!>(~)
-  =/  cont  !<(contract:smart [-:!>(*contract:smart) u.cont.p.germ.u.res])  
+  =/  cont  !<(contract:smart [-:!>(*contract:smart) u.cont.p.germ.u.res])
   =/  cart  [id blocknum town-id owns]
   ?+  read-type  ``noun+!>(~)
     %noun  ``noun+!>(`~(noun ~(read cont cart) arg))
