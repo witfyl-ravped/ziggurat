@@ -112,8 +112,8 @@
   ^-  wheat:smart
   :: =/  cont  (of-wain:format dao-contract)
   :: :-  `(~(text-deploy deploy p.bek now) cont)
-  :-  `(cue q.q.dao-contract)
-  (silt ~[uqbar-dao-id])
+  =/  =wheat:smart  ;;(wheat:smart (cue q.q.dao-contract))
+  wheat(owns (silt ~[uqbar-dao-id]))
 =/  dao-contract-grain
   ^-  grain:smart
   :*  dao-contract-id          ::  id
@@ -174,8 +174,8 @@
 ::  store only contract code, insert into shared subject
 =/  zigs-wheat
   ^-  wheat:smart
-  :-  `(cue q.q.zigs-contract)
-  (silt ~[zigs-1 zigs-2 zigs-3 `@ux`'zigs-metadata'])
+  =/  =wheat:smart  ;;(wheat:smart (cue q.q.zigs-contract))
+  wheat(owns (silt ~[zigs-1 zigs-2 zigs-3 `@ux`'zigs-metadata']))
 =/  zigs-wheat-grain
   ^-  grain:smart
   :*  zigs-wheat-id:smart  ::  id
