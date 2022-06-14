@@ -11,7 +11,7 @@
 ::  TODO: granary MUST be map-type with deterministic sorting
 ::
 ::  need new name for this:
-::  +$  root   @ux  ::  hash of granary state map
+::  +$  root   @ux  ::  hash of land
 
 +$  town   [=land =hall]
 +$  land   (pair granary:smart populace:smart)

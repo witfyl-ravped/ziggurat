@@ -1,6 +1,18 @@
 /-  *sequencer
 /+  mill=zig-mill
 |%
+++  transition-state
+  |=  [old=(unit town) proposed=(unit [=land diff-hash=@ux root=@ux])]
+  ^-  (unit town)
+  ?~  proposed  old
+  ?~  old       old
+  :-  ~
+  %=  u.old
+    land  land.u.proposed
+    latest-diff-hash.hall  diff-hash.u.proposed
+    roots.hall  (snoc roots.hall.u.old root.u.proposed)
+  ==
+::
 ++  read-grain
   |=  [=path =granary:smart]
   ^-  (unit (unit cage))

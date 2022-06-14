@@ -25,8 +25,11 @@
     def   ~(. (default-agent this %|) bowl)
 ::
 ++  on-init  `this(state [%0 ~ %off])
-++  on-save  !>(-.state)
-++  on-load  on-load:def
+++  on-save  !>(state)
+++  on-load
+  |=  =old=vase
+  ^-  (quip card _this)
+  `this(state !<(state-0 old-vase))
 ::
 ++  on-watch
   |=  =path
@@ -60,6 +63,13 @@
     ?-    -.act
         %activate
       `state(status %available)
+    ::
+        %launch-town
+      ::  create new hall
+      ::  TODO verify state is comprised of assets bridged from
+      ::  other towns...
+      :_  state(capitol (~(put by capitol) id.hall.act hall.act))
+      [%give %fact ~[/peer-root-update] %rollup-update !>([%new-peer-root id.hall.act (rear roots.hall.act)])]~
     ::
         %receive-move
       ::  validate move from sequencer and return a %batch-approve

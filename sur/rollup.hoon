@@ -10,6 +10,7 @@
 ::
 +$  action
   $%  [%activate ~]
+      [%launch-town town:sequencer]
       [%receive-move from=address:smart move:sequencer]
   ==
 --

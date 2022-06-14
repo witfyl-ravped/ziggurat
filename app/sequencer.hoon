@@ -16,6 +16,7 @@
       town=(unit town)                ::  state
       =basket                         ::  mempool
       peer-roots=(map id:smart root=@ux)  ::  track updates from rollup
+      proposed-batch=(unit [=land diff-hash=@ux root=@ux])
       status=?(%available %off)
   ==
 +$  inflated-state-0  [state-0 =mil]
@@ -32,7 +33,7 @@
     def   ~(. (default-agent this %|) bowl)
 ::
 ++  on-init
-  `this(state [[%0 ~ ~ ~ ~ ~ %off] ~(mill mill ;;(vase (cue q.q.smart-lib-noun)))])
+  `this(state [[%0 ~ ~ ~ ~ ~ ~ %off] ~(mill mill ;;(vase (cue q.q.smart-lib-noun)))])
 ++  on-save  !>(-.state)
 ++  on-load
   |=  =old=vase
@@ -72,7 +73,27 @@
       ?>  =(src.bowl our.bowl)
       ::  poke rollup ship with params of new town
       ::  (will be rejected if id is taken)
-      !!
+      =/  =land  ?~(starting-state.act [~ ~] u.starting-state.act)
+      =/  new-root  (shax (jam land))
+      =/  =^town
+        :-  land
+        :*  town-id.act
+            [address.act our.bowl]
+            mode.act
+            0x0
+            [new-root]~
+        ==
+      =/  sig
+        (ecdsa-raw-sign:secp256k1:secp:crypto new-root private-key.act)
+      :_  %=  state
+            rollup       `rollup-host.act
+            private-key  `private-key.act
+            town         `town
+            status        %available
+          ==
+      :~  [%pass /sub-rollup %agent [rollup-host.act %rollup] %watch /rollup-updates]
+          [%pass /move-submit/(scot %ux new-root) %agent [rollup-host.act %rollup] %poke %rollup-action !>([%launch-town town])]
+      ==
     ::
         %clear-state
       ?>  =(src.bowl our.bowl)
@@ -83,7 +104,7 @@
     ::
         %receive
       ?.  =(%available status.state)
-        ~|("%sequencer: error: got poke while not active" !!)
+        ~|("%sequencer: error: got egg while not active" !!)
       ~&  >>  "%sequencer: received eggs from {<src.bowl>}: {<eggs.act>}"
       `state(basket (~(uni in basket) eggs.act))
     ::
@@ -106,8 +127,14 @@
       ::
       ::  1. produce diff and new state with mill
       ::  TODO: make mill parallel, return diff
-      =/  new-root  (shax 123.456)
+      =/  addr  p.sequencer.hall.town
+      =+  /(scot %p our.bowl)/wallet/(scot %da now.bowl)/account/(scot %ux addr)/(scot %ud id.hall.town)/noun
+      =+  .^(account:smart %gx -)
+      =/  new-state=[(list [@ux egg:smart]) land]
+        (~(mill-all mil - `@ud`id.hall.town 0) land.town ~(tap in basket.state))
+      =/  new-root      (shax 123.456)
       =/  state-diffs  *(list diff)
+      =/  diff-hash     (shax (jam state-diffs))
       ::  2. generate our signature
       ::  (address sig, that is)
       ?~  private-key.state
@@ -115,14 +142,16 @@
       =/  sig
         (ecdsa-raw-sign:secp256k1:secp:crypto new-root u.private-key.state)
       ::  3. poke rollup
-      :_  state
+      :_  state(proposed-batch `[+.new-state diff-hash new-root])
       =+  :-  %rollup-action
           !>  :-  %receive-move
-              :*  mode.hall.town
+              :*  addr
+                  id.hall.town
+                  mode.hall.town
                   state-diffs
-                  diff-hash=(shax (jam state-diffs))
+                  diff-hash
                   new-root
-                  new-state=*land
+                  +.new-state
                   peer-roots.state
                   sig
               ==
@@ -138,14 +167,14 @@
       [%move-submit @ ~]
     ?:  ?=(%poke-ack -.sign)
       ?~  p.sign
-        ::  TODO transition state here, move was approved
-        `this
+        ~&  >>  "%sequencer: batch approved by rollup"
+        `this(town (transition-state town proposed-batch), proposed-batch ~)
       ::  TODO manage rejected moves here
       ~&  >>>  "%sequencer: our move was rejected by rollup!"
       `this
     `this
   ::
-      [%peer-root-update ~]
+      [%rollup-updates ~]
     ?:  ?=(%kick -.sign)
       :_  this  ::  attempt to re-sub
       [%pass wire %agent [src.bowl %rollup] %watch (snip `path`wire)]~
