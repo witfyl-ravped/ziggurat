@@ -66,27 +66,20 @@
     ::
         %launch-town
       ::  create new hall
-      ::  TODO verify state is comprised of assets bridged from
-      ::  other towns...
+      ::  TODO remove starting-state from init and populate new towns via
+      ::  assets from other towns
       :_  state(capitol (~(put by capitol) id.hall.act hall.act))
       [%give %fact ~[/peer-root-update] %rollup-update !>([%new-peer-root id.hall.act (rear roots.hall.act)])]~
     ::
         %receive-move
-      ::  validate move from sequencer and return a %batch-approve
       ?~  hall=(~(get by capitol.state) town-id.act)
         ~|("%rollup: error: town not found" !!)
       ?.  =([from.act src.bowl] sequencer.u.hall)
         ~|("%rollup: error: sequencer doesn't match town" !!)
-      ?:  ?=(%committee -.mode.act)
-        ::  handle DAC, TODO
-        ::
-        ?.  =(diff-hash.act (shax (jam state-diffs.act)))
-          ~|("%rollup: error: diff hash not valid" !!)
-        !!
-      ::  handle full-publish mode
-      ::
       ?.  (verify-sig:mill from.act new-root.act sig.act %.y)
         ~|("%rollup: error: sequencer signature not valid" !!)
+      ?.  =(diff-hash.act (shax (jam state-diffs.act)))
+        ~|("%rollup: error: diff hash not valid" !!)
       ::  check that other town state roots are up-to-date
       ::  recent-enough is a variable here that can be adjusted
       =/  recent-enough  2
@@ -98,7 +91,12 @@
             %.y
           |=(a=? a)
         ~|("%rollup: error: peer roots not recent enough" !!)
-      ::  batch is approved
+      ?:  ?=(%committee -.mode.act)
+        ::  handle DAC, TODO
+        ::
+        !!
+      ::  handle full-publish mode
+      ::
       =+  %=  u.hall
             latest-diff-hash  diff-hash.act
             roots  (snoc roots.u.hall new-root.act)

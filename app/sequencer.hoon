@@ -126,7 +126,7 @@
       ::  publish full diff data
       ::
       ::  1. produce diff and new state with mill
-      ::  TODO: make mill parallel, return diff
+      ::  TODO: adjust what mill returns to get diff for submission
       =/  addr  p.sequencer.hall.town
       =+  /(scot %p our.bowl)/wallet/(scot %da now.bowl)/account/(scot %ux addr)/(scot %ud id.hall.town)/noun
       =+  .^(account:smart %gx -)
@@ -171,7 +171,7 @@
         `this(town (transition-state town proposed-batch), proposed-batch ~)
       ::  TODO manage rejected moves here
       ~&  >>>  "%sequencer: our move was rejected by rollup!"
-      `this
+      `this(proposed-batch ~)
     `this
   ::
       [%rollup-updates ~]
