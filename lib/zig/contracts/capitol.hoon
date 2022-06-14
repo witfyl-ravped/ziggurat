@@ -98,7 +98,6 @@
   ++  json
     |^  ^-  ^json
     ?+    args  !!
-    ::
         [%rice-data ~]
       ?>  =(1 ~(wyt by owns.cart))
       =/  g=grain  -:~(val by owns.cart)
@@ -111,7 +110,6 @@
         [%egg-args @ ~]
       %-  enjs-arguments
       ;;(arguments (cue (slav %ud i.t.args)))
-    ::
     ==
     ::
     ++  enjs-ziggurat
@@ -144,7 +142,6 @@
         :+  [%id %s (scot %ux signer-id)]
           [%sig (enjs-sig signature)]
         ~
-      ::
       --
     ::
     ++  enjs-arguments
@@ -153,7 +150,6 @@
       ^-  ^json
       %+  frond  -.a
       ?-    -.a
-      ::
           %init
         %-  pairs
         :+  [%sig (enjs-sig sig.a)]
@@ -177,7 +173,6 @@
       ::
           %stop-validating
         (frond %sig (enjs-sig +.a))
-      ::
       ==
     ::
     ++  enjs-sig

@@ -283,7 +283,6 @@
   ++  json
     |^  ^-  ^json
     ?+    args  !!
-    ::
         [%rice-data ~]
       ?>  =(1 ~(wyt by owns.cart))
       =/  g=grain  -:~(val by owns.cart)
@@ -294,7 +293,6 @@
     ::
         [%egg-args ~]
       ~
-    ::
     ==
     ::
     ++  enjs-account
@@ -319,12 +317,10 @@
       ++  metadata  ::  TODO: grab token-metadata?
         |=  md-id=id
         [%s (scot %ux md-id)]
-      ::
       --
     ::
     ++  enjs-token-metadata
       =,  enjs:format
-      |^
       |=  md=token-metadata
       ^-  ^json
       %-  pairs
@@ -338,8 +334,6 @@
           [%deployer %s (scot %ux deployer.md)]
           [%salt (numb salt.md)]
       ==
-      ::
-      --
     ::
     ++  enjs-arguments
       =,  enjs:format
@@ -348,7 +342,6 @@
       ^-  ^json
       %+  frond  -.a
       ?-    -.a
-      ::
           %give
         (give-or-mint +.a)
       ::
@@ -382,7 +375,6 @@
             [%cap (numb cap.a)]
             [%mintable %b mintable.a]
         ==
-      ::
       ==
       ::
       ++  give-or-mint
@@ -411,7 +403,6 @@
         :+  [%id %s (scot %ux i)]
           [%bal (numb bal)]
         ~
-      ::
       --
     ::
     ++  minters
@@ -468,7 +459,6 @@
               mintable=?
           ==
       ==
-    ::
     --
   ++  noun
     ~

@@ -76,7 +76,6 @@
           owns.cart
         (~(put by owns.cart) dao-id dao-grain)
       ==
-      :: $(args [me.cart `update.prop grains.inp])
     ::
         %propose
       =*  dao-id  dao-id.args
@@ -129,7 +128,6 @@
         ::
             %remove-roles
           (~(remove-roles update:dao-lib dao) +.+.update)
-        ::
         ==
       [%& (malt ~[[id.dao-grain dao-grain(data.p.germ dao)]]) ~ ~]
     ::
@@ -207,7 +205,6 @@
       ?~  ship
         ~
       `[u.ship i.t.t.path]
-    ::
     --
   ::
   ++  d  ::  ziggurat/sur/dao/hoon
@@ -507,11 +504,8 @@
         %+  turn  ~(tap in `(set role:d)`roles)
         |=  =role:d
         [p=noun q=role]
-      ::
       --
-    ::
     --
-  ::
   --
 ::
 ++  read
@@ -519,7 +513,6 @@
   ++  json
     |^  ^-  ^json
     ?+    args  !!
-    ::
         [%rice-data ~]
       ?>  =(1 ~(wyt by owns.cart))
       =/  g=grain  -:~(val by owns.cart)
@@ -529,7 +522,6 @@
         [%egg-args @ ~]
       %-  enjs-arguments
       ;;(arguments (cue (slav %ud i.t.args)))
-    ::
     ==
     ::
     ++  enjs-dao
@@ -613,7 +605,6 @@
         %+  turn  ~(tap in set-id)
         |=  i=id
         [%s (scot %ux i)]
-      ::
       --
     ::
     ++  enjs-arguments
@@ -647,7 +638,6 @@
         :+  [%dao-id %s (scot %ux dao-id.a)]
           [%on-chain-update (enjs-on-chain-update on-chain-update.a)]
         ~
-      ::
       ==
     ::
     ++  enjs-on-chain-update
@@ -655,7 +645,6 @@
       |=  update=on-chain-update:d
       ^-  ^json
       ?-    -.update
-      ::
           %add-dao
         ?>  ?=(^ dao.update)
         %+  frond  %add-dao
@@ -708,7 +697,6 @@
             [%roles (enjs-roles roles.update)]
           [%id %s (scot %ux dao-id.update)]
         ~
-      ::
       ==
     ::
     ++  enjs-address-key
@@ -782,7 +770,6 @@
         |=  =resource
         %-  spat
         (en-path resource)
-      ::
       --
     ::
     ++  d  ::  ziggurat/sur/dao/hoon
@@ -833,8 +820,6 @@
       +$  dao-id-to-rid   (map id resource:r)
       +$  dao-rid-to-id   (map resource:r id)
       --
-    ::
-    ::
     --
   ::
   ++  noun

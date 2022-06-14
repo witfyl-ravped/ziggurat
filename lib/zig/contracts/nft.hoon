@@ -276,7 +276,6 @@
   ++  json
     |^  ^-  ^json
     ?+    args  !!
-    ::
         [%rice-data ~]
       ?>  =(1 ~(wyt by owns.cart))
       =/  g=grain  -:~(val by owns.cart)
@@ -288,7 +287,6 @@
         [%egg-args @ ~]
       %-  enjs-arguments
       ;;(arguments (cue (slav %ud i.t.args)))
-    ::
     ==
     ::
     ++  enjs-account
@@ -339,7 +337,6 @@
         :+  [%id (numb id.i)]
           [%item-contents (enjs-item-contents +.i)]
         ~
-      ::
       --
     ::
     ++  enjs-collection-metadata
@@ -366,7 +363,6 @@
         %+  turn  ~(tap in a)
         |=  attribute=@t
         [%s attribute]
-      ::
       --
     ::
     ++  enjs-arguments
@@ -376,7 +372,6 @@
       ^-  ^json
       %+  frond  -.a
       ?-    -.a
-      ::
           %give
         %-  pairs
         :^    [%to %s (scot %ux to.a)]
@@ -415,7 +410,6 @@
             [%cap (numb cap.a)]
             [%mintable %b mintable.a]
         ==
-      ::
       ==
       ::
       ++  enjs-set-allowance-items
@@ -461,7 +455,6 @@
         %+  turn  ~(tap in attributes)
         |=  attribute=@t
         [%s attribute]
-      ::
       --
     ::
     ++  enjs-minters

@@ -112,7 +112,6 @@
   ++  json
     |^  ^-  ^json
     ?+    args  !!
-    ::
         [%rice-data ~]
       ?>  =(1 ~(wyt by owns.cart))
       =/  g=grain  -:~(val by owns.cart)
@@ -124,7 +123,6 @@
         [%egg-args @ ~]
       %-  enjs-arguments
       ;;(arguments (cue (slav %ud i.t.args)))
-    ::
     ==
     ::
     ++  enjs-account
@@ -149,7 +147,6 @@
       ++  metadata  ::  TODO: grab token-metadata?
         |=  md-id=id
         [%s (scot %ux md-id)]
-      ::
       --
     ::
     ++  enjs-token-metadata
@@ -179,7 +176,6 @@
         %+  turn  ~(tap in set-id)
         |=  i=id
         [%s (scot %ux i)]
-      ::
       --
     ::
     ++  enjs-arguments
@@ -210,7 +206,6 @@
         :+  [%who %s (scot %ux who.a)]
           [%amount (numb amount.a)]
         ~
-      ::
       ==
     ::
     +$  token-metadata
@@ -238,7 +233,6 @@
           [%take to=id account=(unit id) from-account=id amount=@ud]
           [%set-allowance who=id amount=@ud]  ::  (to revoke, call with amount=0)
       ==
-    ::
     --
   ++  noun
     ~
