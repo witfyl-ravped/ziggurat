@@ -12,9 +12,10 @@
 +$  state-0
   $:  %0
       rollup=(unit ship)  ::  replace in future with ETH/starknet contract address
+      private-key=(unit @ux)
       town=(unit town)                ::  state
       =basket                         ::  mempool
-      peer-roots=(map id:smart root)  ::  track updates from rollup
+      peer-roots=(map id:smart root=@ux)  ::  track updates from rollup
       status=?(%available %off)
   ==
 +$  inflated-state-0  [state-0 =mil]
@@ -31,7 +32,7 @@
     def   ~(. (default-agent this %|) bowl)
 ::
 ++  on-init
-  `this(state [[%0 ~ ~ ~ ~ %off] ~(mill mill ;;(vase (cue q.q.smart-lib-noun)))])
+  `this(state [[%0 ~ ~ ~ ~ ~ %off] ~(mill mill ;;(vase (cue q.q.smart-lib-noun)))])
 ++  on-save  !>(-.state)
 ++  on-load
   |=  =old=vase
@@ -46,6 +47,7 @@
   ?.  =(%available status.state)
     ~|("%sequencer: error: got watch while not active" !!)
   ?>  (allowed-participant [src our now]:bowl)
+  ::  handle indexer watches here
   `this
 ::
 ++  on-poke
@@ -54,8 +56,6 @@
   |^
   ?.  ?=(%sequencer-town-action mark)
     ~|("%sequencer: error: got erroneous %poke" !!)
-  ::  remove this to disable whitelist
-  ::
   ?>  (allowed-participant [src our now]:bowl)
   =^  cards  state
     (handle-poke !<(town-action vase))
@@ -77,7 +77,7 @@
         %clear-state
       ?>  =(src.bowl our.bowl)
       ~&  >>  "sequencer: wiping state"
-      `state(rollup ~, town ~, basket ~, peer-roots ~, status %off)
+      `state(rollup ~, private-key ~, town ~, basket ~, peer-roots ~, status %off)
     ::
     ::  handle transactions
     ::
@@ -107,26 +107,33 @@
       ::  1. produce diff and new state with mill
       ::  TODO: make mill parallel, return diff
       =/  new-root  (shax 123.456)
+      =/  state-diffs  *(list diff)
       ::  2. generate our signature
       ::  (address sig, that is)
-      =/  sig  [0 0 0]
+      ?~  private-key.state
+        ~|("%sequencer: error: no signing key found" !!)
+      =/  sig
+        (ecdsa-raw-sign:secp256k1:secp:crypto new-root u.private-key.state)
       ::  3. poke rollup
       :_  state
       =+  :-  %rollup-action
           !>  :-  %receive-move
               :*  mode.hall.town
+                  state-diffs
+                  diff-hash=(shax (jam state-diffs))
                   new-root
                   new-state=*land
                   peer-roots.state
                   sig
               ==
-      ~[[%pass /move-submit/(scot %ux new-root) %agent [u.rollup.state %rollup] %poke -]]
+      [%pass /move-submit/(scot %ux new-root) %agent [u.rollup.state %rollup] %poke -]~
     ==
   --
 ::
 ++  on-agent
   |=  [=wire =sign:agent:gall]
   ^-  (quip card _this)
+  |^
   ?+    wire  (on-agent:def wire sign)
       [%move-submit @ ~]
     ?:  ?=(%poke-ack -.sign)
@@ -137,7 +144,35 @@
       ~&  >>>  "%sequencer: our move was rejected by rollup!"
       `this
     `this
+  ::
+      [%peer-root-update ~]
+    ?:  ?=(%kick -.sign)
+      :_  this  ::  attempt to re-sub
+      [%pass wire %agent [src.bowl %rollup] %watch (snip `path`wire)]~
+    ?.  ?=(%fact -.sign)  `this
+    =^  cards  state
+      (update-fact !<(rollup-update q.cage.sign))
+    [cards this]
   ==
+  ::
+  ++  update-fact
+    |=  upd=rollup-update
+    ^-  (quip card _state)
+    ?-    -.upd
+        %new-peer-root
+      ::  update our local map
+      `state(peer-roots (~(put by peer-roots.state) town.upd root.upd))
+    ::
+        %new-sequencer
+      ::  check if we have been kicked off our town
+      ::  this is in place for later..  TODO expand this functionality
+      ?~  town.state                  `state
+      ?.  =(town.upd id.hall.u.town)  `state
+      ?:  =(who.upd our.bowl)         `state
+      ~&  >>>  "%sequencer: we've been kicked out of town!"
+      `state
+    ==
+  --
 ::
 ++  on-arvo
   |=  [=wire =sign-arvo:agent:gall]

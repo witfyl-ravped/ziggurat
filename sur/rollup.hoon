@@ -9,6 +9,7 @@
 +$  capitol  (map id:smart hall:sequencer)
 ::
 +$  action
-  $%  [%receive-move from=address:smart move:sequencer]
+  $%  [%activate ~]
+      [%receive-move from=address:smart move:sequencer]
   ==
 --

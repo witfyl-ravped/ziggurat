@@ -26,7 +26,7 @@
 ::
 ++  on-init  `this(state [%0 ~ %off])
 ++  on-save  !>(-.state)
-++  on-load  `this
+++  on-load  on-load:def
 ::
 ++  on-watch
   |=  =path
@@ -34,7 +34,14 @@
   ?.  =(%available status.state)
     ~|("%rollup: error: got watch while not active" !!)
   ?>  (allowed-participant [src our now]:bowl)
-  `this
+  ::  give new subscibing sequencer recent root from every town
+  ::
+  :_  this
+  %+  turn  ~(tap by capitol)
+  |=  [=id:smart =hall:sequencer]
+  ^-  card
+  =-  [%give %fact ~[/peer-root-update] -]
+  [%rollup-update !>([%new-peer-root id (rear roots.hall)])]
 ::
 ++  on-poke
   |=  [=mark =vase]
@@ -42,8 +49,6 @@
   |^
   ?.  ?=(%rollup-action mark)
     ~|("%rollup: error: got erroneous %poke" !!)
-  ::  remove this to disable whitelist
-  ::
   ?>  (allowed-participant [src our now]:bowl)
   =^  cards  state
     (handle-poke !<(action vase))
@@ -53,29 +58,43 @@
     |=  act=action
     ^-  (quip card _state)
     ?-    -.act
+        %activate
+      `state(status %available)
+    ::
         %receive-move
       ::  validate move from sequencer and return a %batch-approve
       ?~  hall=(~(get by capitol.state) town-id.act)
         ~|("%rollup: error: town not found" !!)
       ?.  =([from.act src.bowl] sequencer.u.hall)
         ~|("%rollup: error: sequencer doesn't match town" !!)
-      ::  TODO validate signature here
       ?:  ?=(%committee -.mode.act)
-        ::  TODO implement DAC
+        ::  handle DAC, TODO
+        ::
+        ?.  =(diff-hash.act (shax (jam state-diffs.act)))
+          ~|("%rollup: error: diff hash not valid" !!)
         !!
       ::  handle full-publish mode
       ::
-      ::  TODO check that other town state roots are valid/recent
-      ::
-      ?.  =(hash.mode.act (shax diffs.mode.act))
-        ~|("%rollup: error: diff hash not valid" !!)
-      ?.  (verify-sig from.act new-root.act sig.act %.y)
+      ?.  (verify-sig:mill from.act new-root.act sig.act %.y)
         ~|("%rollup: error: sequencer signature not valid" !!)
-      =-  `state(capitol (~(put by capitol) town-id.act -))
-      %=  hall
-        latest-diff-hash  hash.mode.act
-        roots  (snoc roots new-root.act)
-      ==
+      ::  check that other town state roots are up-to-date
+      ::  recent-enough is a variable here that can be adjusted
+      =/  recent-enough  2
+      ?.  %+  levy
+            %+  turn  ~(tap by peer-roots.act)
+            |=  [=id:smart root=@ux]
+            ?~  hall=(~(get by capitol.state) id)  %.n
+            ?~  (find [root]~ (slag recent-enough roots.u.hall))  %.n
+            %.y
+          |=(a=? a)
+        ~|("%rollup: error: peer roots not recent enough" !!)
+      ::  batch is approved
+      =+  %=  u.hall
+            latest-diff-hash  diff-hash.act
+            roots  (snoc roots.u.hall new-root.act)
+          ==
+      :_  state(capitol (~(put by capitol) town-id.act -))
+      [%give %fact ~[/peer-root-update] %rollup-update !>([%new-peer-root town-id.act new-root.act])]~
     ==
   --
 ::

@@ -4,13 +4,14 @@
 +$  sequencer  (pair address:smart ship)
 ::
 +$  availability-method
-  $%  [%full-publish diffs=(list diff) hash=@ux]
+  $%  [%full-publish ~]
       [%committee members=(map address:smart [ship (unit sig:smart)])]
   ==
 ::
 ::  TODO: granary MUST be map-type with deterministic sorting
 ::
-+$  root   @ux  ::  hash of granary state map
+::  need new name for this:
+::  +$  root   @ux  ::  hash of granary state map
 
 +$  town   [=land =hall]
 +$  land   (pair granary:smart populace:smart)
@@ -19,7 +20,7 @@
       =sequencer
       mode=availability-method
       latest-diff-hash=@ux
-      roots=(list root)
+      roots=(list @ux)
   ==
 ::
 +$  diff   granary:smart                 ::  state transitions for one batch
@@ -27,10 +28,12 @@
 ::
 +$  move  ::  state transition
   $:  town-id=id:smart
-      mode=availability-method  ::  diffs included here
-      new-root=root
+      mode=availability-method
+      state-diffs=(list diff)
+      diff-hash=@ux
+      new-root=@ux
       new-state=land
-      peer-roots=(map id:smart root)  ::  roots for all other towns (must be up-to-date)
+      peer-roots=(map id:smart @ux)  ::  roots for all other towns (must be up-to-date)
       =sig:smart                      ::  sequencer signs new state root
   ==
 ::
@@ -38,6 +41,7 @@
   $%  ::  administration
       $:  %init
           rollup-host=ship
+          private-key=@ux
           town-id=id:smart
           =address:smart
           starting-state=(unit land)
@@ -48,5 +52,10 @@
       [%receive eggs=(set egg:smart)]
       ::  batching
       [%trigger-batch ~]
+  ==
+::
++$  rollup-update
+  $%  [%new-peer-root town=id:smart root=@ux]
+      [%new-sequencer town=id:smart who=ship]
   ==
 --
