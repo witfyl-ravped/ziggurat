@@ -4,7 +4,7 @@
 ::  transactions, holding nonce values, and keeping track of owned data.
 ::
 /-  ui=indexer
-/+  *ziggurat, *wallet-util, wallet-parsing, default-agent, dbug, verb, bip32, bip39
+/+  *wallet-util, wallet-parsing, default-agent, dbug, verb, bip32, bip39
 /*  smart-lib  %noun  /lib/zig/compiled/smart-lib/noun
 |%
 +$  card  card:agent:gall
@@ -416,7 +416,7 @@
       |=  [[hash=@ux =egg:smart] _our-txs]
       ::  update status code and send to frontend
       ::  following error code spec in smart.hoon
-      ^-  [card _our-txs] 
+      ^-  [card _our-txs]
       :-  ?~  this-tx=(~(get by sent.our-txs) hash)
             (tx-update-card egg ~)
           (tx-update-card egg `args.u.this-tx)
