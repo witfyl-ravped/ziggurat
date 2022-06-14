@@ -102,6 +102,16 @@
     ::
     ::  handle transactions
     ::
+        %receive-assets
+      ::  uncritically absorb assets bridged from rollup
+      ?>  =(src.bowl (need rollup.state))
+      ?.  =(%available status.state)
+        ~|("%sequencer: error: got asset while not active" !!)
+      ?~  town.state  !!
+      ~&  >>  "%sequencer: received assets from rollup: {<assets.act>}"
+      `state(town `u.town(p.land (~(uni by p.land.u.town.state) assets.act)))
+
+    ::
         %receive
       ?.  =(%available status.state)
         ~|("%sequencer: error: got egg while not active" !!)

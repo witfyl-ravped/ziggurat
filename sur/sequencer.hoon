@@ -49,6 +49,7 @@
       ==
       [%clear-state ~]
       ::  transactions
+      [%receive-assets assets=(map id:smart grain:smart)]
       [%receive eggs=(set egg:smart)]
       ::  batching
       [%trigger-batch ~]

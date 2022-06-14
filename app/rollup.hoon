@@ -71,15 +71,22 @@
       :_  state(capitol (~(put by capitol) id.hall.act hall.act))
       [%give %fact ~[/peer-root-update] %rollup-update !>([%new-peer-root id.hall.act (rear roots.hall.act)])]~
     ::
+        %bridge-assets
+      ::  for simulation purposes
+      ?~  hall=(~(get by capitol.state) town.act)  !!
+      :_  state
+      =+  [%town-action !>([%receive-assets assets.act])]
+      [%pass /bridge %agent [q.sequencer.u.hall %sequencer] %poke -]~
+    ::
         %receive-move
       ?~  hall=(~(get by capitol.state) town-id.act)
-        ~|("%rollup: error: town not found" !!)
+        ~|("%rollup: rejecting batch; town not found" !!)
       ?.  =([from.act src.bowl] sequencer.u.hall)
-        ~|("%rollup: error: sequencer doesn't match town" !!)
+        ~|("%rollup: rejecting batch; sequencer doesn't match town" !!)
       ?.  (verify-sig:mill from.act new-root.act sig.act %.y)
-        ~|("%rollup: error: sequencer signature not valid" !!)
+        ~|("%rollup: rejecting batch; sequencer signature not valid" !!)
       ?.  =(diff-hash.act (shax (jam state-diffs.act)))
-        ~|("%rollup: error: diff hash not valid" !!)
+        ~|("%rollup: rejecting batch; diff hash not valid" !!)
       ::  check that other town state roots are up-to-date
       ::  recent-enough is a variable here that can be adjusted
       =/  recent-enough  2
@@ -90,7 +97,7 @@
             ?~  (find [root]~ (slag recent-enough roots.u.hall))  %.n
             %.y
           |=(a=? a)
-        ~|("%rollup: error: peer roots not recent enough" !!)
+        ~|("%rollup: rejecting batch; peer roots not recent enough" !!)
       ?:  ?=(%committee -.mode.act)
         ::  handle DAC, TODO
         ::
