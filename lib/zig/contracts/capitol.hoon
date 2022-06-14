@@ -102,10 +102,10 @@
       ?>  =(1 ~(wyt by owns.cart))
       =/  g=grain  -:~(val by owns.cart)
       ?>  ?=(%& -.germ.g)
-      =+  [is-ziggurat *]=(mule |.(;;(ziggurat data.p.germ.g)))
-      ?:  is-ziggurat
-        (enjs-ziggurat ;;(ziggurat data.p.germ.g))
-      (enjs-world ;;(world data.p.germ.g))
+      ?>  ?=(^ data.p.germ.g)
+      ?.  ?=([@ @ @] +.-.data.p.germ.g)
+        (enjs-world ;;(world data.p.germ.g))
+      (enjs-ziggurat ;;(ziggurat data.p.germ.g))
     ::
         [%egg-args @ ~]
       %-  enjs-arguments
