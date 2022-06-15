@@ -48,7 +48,9 @@
   ?.  =(%available status.state)
     ~|("%sequencer: error: got watch while not active" !!)
   ?>  (allowed-participant [src our now]:bowl)
-  ::  handle indexer watches here
+  ?.  ?=([%indexer %updates ~] path)
+    ~|("%sequencer: rejecting %watch on bad path" !!)
+  ::  handle indexer watches here -- send latest state?
   `this
 ::
 ++  on-poke
@@ -143,9 +145,9 @@
       =/  addr  p.sequencer.hall.town
       =+  /(scot %p our.bowl)/wallet/(scot %da now.bowl)/account/(scot %ux addr)/(scot %ud id.hall.town)/noun
       =+  .^(account:smart %gx -)
-      =/  new-state=[(list [@ux egg:smart]) land]
+      =/  new-state=[(list [@ux egg:smart]) =land]
         (~(mill-all mil - `@ud`id.hall.town 0) land.town ~(tap in `^basket`basket.state))
-      =/  new-root      (shax 123.456)
+      =/  new-root      (shax (jam land.new-state))
       =/  state-diffs  *(list diff)
       =/  diff-hash     (shax (jam state-diffs))
       ::  2. generate our signature
@@ -181,7 +183,10 @@
     ?:  ?=(%poke-ack -.sign)
       ?~  p.sign
         ~&  >>  "%sequencer: batch approved by rollup"
-        `this(town (transition-state town proposed-batch), proposed-batch ~)
+        ?~  proposed-batch
+          ~|("%sequencer: error: received batch approval without proposed batch" !!)
+        :_  this(town (transition-state town u.proposed-batch), proposed-batch ~)
+        [%give %fact ~[/indexer/updates] %indexer-update !>([%new-state land.u.proposed-batch])]~
       ::  TODO manage rejected moves here
       ~&  >>>  "%sequencer: our move was rejected by rollup!"
       `this(proposed-batch ~)

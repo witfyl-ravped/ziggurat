@@ -57,4 +57,8 @@
   $%  [%new-peer-root town=id:smart root=@ux]
       [%new-sequencer town=id:smart who=ship]
   ==
+::
++$  indexer-update
+  $%  [%new-state =town]
+  ==
 --
