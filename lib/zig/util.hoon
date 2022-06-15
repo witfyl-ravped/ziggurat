@@ -1,9 +1,8 @@
 /-  *ziggurat, wallet
-/*  smart-lib  %noun  /lib/zig/compiled/smart-lib/noun
 =>  |%
     +$  card  card:agent:gall
     --
-|%
+|_  library=vase
 ::
 ::  +allowed-participant: grades whether a ship is permitted to participate
 ::  in Uqbar validation. currently using hardcoded whitelist
@@ -257,7 +256,6 @@
   ::  goal is to return ~ if some rice weren't found
   ?.  =(~(wyt by owns) (lent contract-rice))
     ``noun+!>(~)
-  =/  library  ;;(vase (cue q.q.smart-lib))
   =/  payload  .*(q.library pay.u.cont.p.germ.u.res)
   =/  battery  .*([q.library payload] bat.u.cont.p.germ.u.res)
   =/  dor      [-:!>(*contract:smart) battery]
