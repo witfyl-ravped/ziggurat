@@ -10,11 +10,11 @@
 ::
 ::  TODO: granary MUST be map-type with deterministic sorting
 ::
-::  need new name for this:
-::  +$  root   @ux  ::  hash of land
-
-+$  town   [=land =hall]
-+$  land   (pair granary:smart populace:smart)
++$  granary   (map id:smart grain:smart)
++$  populace  (map id:smart @ud)
++$  land      (pair granary populace)
++$  town      [=land =hall]
+::
 +$  hall
   $:  =id:smart
       =sequencer
@@ -23,10 +23,8 @@
       roots=(list @ux)
   ==
 ::
-+$  diff   granary:smart                 ::  state transitions for one batch
-+$  batch  (pair (list egg:smart) diff)  ::  txns processed in one state transiton
-::
-+$  move  ::  state transition
++$  diff   granary  ::  state transitions for one batch
++$  batch  ::  state transition
   $:  town-id=id:smart
       mode=availability-method
       state-diffs=(list diff)
@@ -34,7 +32,7 @@
       new-root=@ux
       new-state=land
       peer-roots=(map id:smart @ux)  ::  roots for all other towns (must be up-to-date)
-      =sig:smart                      ::  sequencer signs new state root
+      =sig:smart                     ::  sequencer signs new state root
   ==
 ::
 +$  town-action

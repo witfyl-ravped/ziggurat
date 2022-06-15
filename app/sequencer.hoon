@@ -129,6 +129,8 @@
         ~|("%sequencer: error: no state" !!)
       ?~  rollup.state
         ~|("%sequencer: error: no known rollup host" !!)
+      ?~  basket.state
+        ~|("%sequencer: error: no transactions to include in batch" !!)
       =*  town  u.town.state
       ?:  ?=(%committee -.mode.hall.town)
         ::  TODO data-availability committee
@@ -142,7 +144,7 @@
       =+  /(scot %p our.bowl)/wallet/(scot %da now.bowl)/account/(scot %ux addr)/(scot %ud id.hall.town)/noun
       =+  .^(account:smart %gx -)
       =/  new-state=[(list [@ux egg:smart]) land]
-        (~(mill-all mil - `@ud`id.hall.town 0) land.town ~(tap in basket.state))
+        (~(mill-all mil - `@ud`id.hall.town 0) land.town ~(tap in `^basket`basket.state))
       =/  new-root      (shax 123.456)
       =/  state-diffs  *(list diff)
       =/  diff-hash     (shax (jam state-diffs))
@@ -155,7 +157,7 @@
       ::  3. poke rollup
       :_  state(proposed-batch `[+.new-state diff-hash new-root])
       =+  :-  %rollup-action
-          !>  :-  %receive-move
+          !>  :-  %receive-batch
               :*  addr
                   id.hall.town
                   mode.hall.town
@@ -166,7 +168,7 @@
                   peer-roots.state
                   sig
               ==
-      [%pass /move-submit/(scot %ux new-root) %agent [u.rollup.state %rollup] %poke -]~
+      [%pass /batch-submit/(scot %ux new-root) %agent [u.rollup.state %rollup] %poke -]~
     ==
   --
 ::
@@ -175,7 +177,7 @@
   ^-  (quip card _this)
   |^
   ?+    wire  (on-agent:def wire sign)
-      [%move-submit @ ~]
+      [%batch-submit @ ~]
     ?:  ?=(%poke-ack -.sign)
       ?~  p.sign
         ~&  >>  "%sequencer: batch approved by rollup"

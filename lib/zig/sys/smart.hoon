@@ -48,11 +48,6 @@
 +$  wheat  [cont=(unit [bat=* pay=*]) owns=(set id)]
 +$  crop   [cont=[bat=* pay=*] owns=(map id grain)]  ::  wheat that's been processed by mill.hoon
 ::
-+$  granary   (map id grain)
-+$  populace  (map id @ud)
-+$  town      (pair granary populace)
-+$  land      (map @ud town)
-::
 ::  cart: state accessible by contract
 ::
 +$  cart

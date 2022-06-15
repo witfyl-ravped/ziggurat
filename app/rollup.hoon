@@ -78,7 +78,7 @@
       =+  [%town-action !>([%receive-assets assets.act])]
       [%pass /bridge %agent [q.sequencer.u.hall %sequencer] %poke -]~
     ::
-        %receive-move
+        %receive-batch
       ?~  hall=(~(get by capitol.state) town-id.act)
         ~|("%rollup: rejecting batch; town not found" !!)
       ?.  =([from.act src.bowl] sequencer.u.hall)

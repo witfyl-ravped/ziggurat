@@ -74,7 +74,8 @@
 ::
 ::
 /-  ui=indexer,
-    zig=ziggurat
+    zig=ziggurat,
+    seq=sequencer
 /+  agentio,
     dbug,
     default-agent,
@@ -660,7 +661,7 @@
           [new-egg new-from new-grain new-holder new-lord new-to]
         ::
         ++  parse-granary
-          |=  [town-id=@ud =granary:smart]
+          |=  [town-id=@ud =granary:seq]
           ^-  $:  (list [@ux town-location:ui])
                   (list [@ux second-order-location:ui])
                   (list [@ux second-order-location:ui])

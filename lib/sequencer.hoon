@@ -14,14 +14,14 @@
   ==
 ::
 ++  read-grain
-  |=  [=path =granary:smart]
+  |=  [=path =granary]
   ^-  (unit (unit cage))
   ?>  ?=([%grain @ ~] path)
   =/  id  (slav %ux i.t.path)
   ``noun+!>((~(get by granary) id))
 ::
 ++  read-wheat
-  |=  [=path now=time town-id=id:smart =granary:smart library=vase]
+  |=  [=path now=time town-id=id:smart =granary library=vase]
   ^-  (unit (unit cage))
   ?>  ?=([%read @ @tas @ta ^] path)
   =/  id  (slav %ux i.t.path)

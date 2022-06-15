@@ -1,6 +1,6 @@
-/+  *zink-zink, smart=zig-sys-smart, ethereum
+/-  *sequencer
+/+  *zink-zink, *zig-sys-smart, ethereum
 /*  zink-cax   %noun  /lib/zig/compiled/hash-cache/noun
-=,  smart
 |_  library=vase
 ::
 ++  verify-sig
@@ -54,31 +54,31 @@
   ::  +mill-all: mills all eggs in basket
   ::
   ++  mill-all
-    |=  [=town basket=(list egg)]
+    |=  [=land basket=(list egg)]
     =/  pending
       %+  sort  basket
       |=  [a=egg b=egg]
       (gth rate.p.a rate.p.b)
     =|  [processed=(list [@ux egg]) reward=@ud]
     |-
-    ^-  [(list [@ux egg]) ^town]  ::  TODO add 'crow's to chunk -- list of announcements
+    ^-  [(list [@ux egg]) ^land]  ::  TODO add 'crow's to chunk -- list of announcements
     ?~  pending
-      [processed town(p (~(pay tax p.town) reward))]
-    =+  [res fee err]=(mill town i.pending)
+      [processed land(p (~(pay tax p.land) reward))]
+    =+  [res fee err]=(mill land i.pending)
     =+  i.pending(status.p err)
     %_  $
       pending    t.pending
       processed  [[`@ux`(shax (jam -)) -] processed]
-      town       res
+      land       res
       reward     (add reward fee)
     ==
   ::
-  ::  +mill: processes a single egg and returns updated town
+  ::  +mill: processes a single egg and returns updated land
   ::
   ++  mill
-    |=  [=town =egg]
-    ^-  [^town fee=@ud =errorcode]
-    ?.  ?=(account from.p.egg)  [town 0 %1]
+    |=  [=land =egg]
+    ^-  [^land fee=@ud =errorcode]
+    ?.  ?=(account from.p.egg)  [land 0 %1]
     ::  validate transaction signature
     ::  using ecdsa-raw-sign in wallet, TODO review this
     ::  comment this out if testing mill
@@ -98,21 +98,21 @@
     =+  ?~(eth-hash.p.egg (sham (jam q.egg)) u.eth-hash.p.egg)
     ?.  (verify-sig id.from.p.egg - sig.p.egg ?=(^ eth-hash.p.egg))
     ~&  >>>  "mill: signature mismatch: expected {<id.from.p.egg>}, got {<`@ux`caller-address>}"
-      [town 0 %2]  ::  signed tx doesn't match account
+      [land 0 %2]  ::  signed tx doesn't match account
     ::
-    ?.  =(nonce.from.p.egg +((~(gut by q.town) id.from.p.egg 0)))
+    ?.  =(nonce.from.p.egg +((~(gut by q.land) id.from.p.egg 0)))
       ~&  >>>  "tx rejected; bad nonce"
-      [town 0 %3]  ::  bad nonce
+      [land 0 %3]  ::  bad nonce
     ::
-    ?.  (~(audit tax p.town) egg)
+    ?.  (~(audit tax p.land) egg)
       ~&  >>>  "tx rejected; not enough budget"
-      [town 0 %4]  ::  can't afford gas
+      [land 0 %4]  ::  can't afford gas
     ::
-    =+  [gan rem err]=(~(work farm p.town) egg)
+    =+  [gan rem err]=(~(work farm p.land) egg)
     =/  fee=@ud   (sub budget.p.egg rem)
     :_  [fee err]
-    :-  (~(charge tax ?~(gan p.town u.gan)) from.p.egg fee)
-    (~(put by q.town) id.from.p.egg nonce.from.p.egg)
+    :-  (~(charge tax ?~(gan p.land u.gan)) from.p.egg fee)
+    (~(put by q.land) id.from.p.egg nonce.from.p.egg)
   ::
   ::  +tax: manage payment for egg in zigs
   ::
