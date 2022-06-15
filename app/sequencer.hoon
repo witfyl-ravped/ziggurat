@@ -92,7 +92,8 @@
             status        %available
           ==
       :~  [%pass /sub-rollup %agent [rollup-host.act %rollup] %watch /rollup-updates]
-          [%pass /move-submit/(scot %ux new-root) %agent [rollup-host.act %rollup] %poke %rollup-action !>([%launch-town town])]
+          =+  [%rollup-action !>([%launch-town address.act sig town])]
+          [%pass /move-submit/(scot %ux new-root) %agent [rollup-host.act %rollup] %poke -]
       ==
     ::
         %clear-state

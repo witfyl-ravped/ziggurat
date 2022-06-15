@@ -10,7 +10,7 @@
 ::
 +$  action
   $%  [%activate ~]
-      [%launch-town town:sequencer]
+      [%launch-town from=address:smart =sig:smart town:sequencer]
       [%bridge-assets town=id:smart assets=(map id:smart grain:smart)]
       [%receive-move from=address:smart move:sequencer]
   ==

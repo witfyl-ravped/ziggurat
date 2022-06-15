@@ -41,9 +41,9 @@
   $%  ::  administration
       $:  %init
           rollup-host=ship
+          =address:smart
           private-key=@ux
           town-id=id:smart
-          =address:smart
           starting-state=(unit land)
           mode=availability-method
       ==
