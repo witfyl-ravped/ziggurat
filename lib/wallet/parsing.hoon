@@ -71,12 +71,6 @@
             ['item-id' (numb item-id.u.args)]
         ==
       ::
-          ?(%become-validator %stop-validating)
-        ~[['signature' [%s (scot %p q.signature.u.args)]]]
-      ::
-          ?(%init %join %exit)
-        ~[['signature' [%s (scot %p q.signature.u.args)]] ['town' (numb town.u.args)]]
-      ::
           %custom
         ~[['args' [%s args.u.args]]]
       ==

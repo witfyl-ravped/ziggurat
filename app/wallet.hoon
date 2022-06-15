@@ -198,7 +198,7 @@
           ==
       :~  (tx-update-card egg.p `args.p)
           :*  %pass  /submit-tx/(scot %ux egg-hash)
-              %agent  [node ?:(=(0 town-id.p.egg.p) %ziggurat %sequencer)]
+              %agent  [node %sequencer]
               %poke  %zig-weave-poke
               !>([%forward (silt ~[egg.p])])
           ==
@@ -246,7 +246,7 @@
           ==
       :~  (tx-update-card egg `[%custom args.act])
           :*  %pass  /submit-tx/(scot %ux from.act)/(scot %ux egg-hash)
-              %agent  [node ?:(=(0 town.act) %ziggurat %sequencer)]
+              %agent  [node %sequencer]
               %poke  %zig-weave-poke
               !>([%forward (silt ~[egg])])
           ==
@@ -304,11 +304,6 @@
             (silt ~[id.our-account])
           (silt ~[their-account-id])
         ::
-          %become-validator  [`args.act ~ (silt ~[`@ux`'ziggurat'])]
-          %stop-validating   [`args.act ~ (silt ~[`@ux`'ziggurat'])]
-          %init  [`args.act ~ (silt ~[`@ux`'world'])]
-          %join  [`args.act ~ (silt ~[`@ux`'world'])]
-          %exit  [`args.act ~ (silt ~[`@ux`'world'])]
           %custom  !!
         ==
       =/  keypair       (~(got by keys.state) from.act)
@@ -335,7 +330,7 @@
           ==
       :~  (tx-update-card egg `args.act)
           :*  %pass  /submit-tx/(scot %ux from.act)/(scot %ux egg-hash)
-              %agent  [node ?:(=(0 town.act) %ziggurat %sequencer)]
+              %agent  [node %sequencer]
               %poke  %zig-weave-poke
               !>([%forward (silt ~[egg])])
           ==

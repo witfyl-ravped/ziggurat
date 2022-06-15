@@ -62,12 +62,6 @@
 +$  supported-args
   $%  [%give salt=@ to=id:smart amount=@ud]
       [%give-nft salt=@ to=id:smart item-id=@ud]
-      ::  only used on backend for validators/sequencers
-      [%become-validator =signature]
-      [%stop-validating =signature]
-      [%init =signature town=@ud]
-      [%join =signature town=@ud]
-      [%exit =signature town=@ud]
       [%custom args=@t]
   ==
 ::
