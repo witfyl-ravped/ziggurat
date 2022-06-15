@@ -23,8 +23,7 @@
       globe=town:smart  ::  store town hall info; update end of each epoch
       =height
   ==
-+$  inflated-state-0  [state-0 =mil]
-+$  mil  $_  ~(mill mill !>(0))
++$  inflated-state-0  [state-0 smart-lib-vase=vase]
 --
 ::
 =|  inflated-state-0
@@ -38,13 +37,13 @@
     def   ~(. (default-agent this %|) bowl)
 ::
 ++  on-init
-  `this(state [[%0 %none ~ ~ ~ ~ [~ ~] 0] ~(mill mill ;;(vase (cue q.q.smart-lib-noun)))])
+  `this(state [[%0 %none ~ ~ ~ ~ [~ ~] 0] ;;(vase (cue q.q.smart-lib-noun))])
 ::
 ++  on-save  !>(-.state)
 ++  on-load
   |=  =old=vase
   ^-  (quip card _this)
-  =+  ~(mill mill ;;(vase (cue q.q.smart-lib-noun)))
+  =+  ;;(vase (cue q.q.smart-lib-noun))
   `this(state [!<(state-0 old-vase) -])
 ::
 ++  on-watch
@@ -544,6 +543,7 @@
       ::  if this is the SECOND TO LAST block in the epoch,
       ::  perform global-level transactions
       ::  insert transaction to advance
+      =/  mil  ~(mill mill smart-lib-vase)
       =+  /(scot %p our.bowl)/wallet/(scot %da now.bowl)/account/(scot %ux (need address.state))/(scot %ud relay-town-id)/noun
       =+  .^(account:smart %gx -)
       =/  globe-chunk
@@ -597,8 +597,13 @@
       [%rice @ ~]
     (read-rice t.path height.state relay-town-id p.globe.state)
   ::
-      [%wheat @ @tas @ta ^]  :: grain id, %noun/%json, argument @ta, then any associated rice IDs
-    (read-wheat t.path height.state relay-town-id p.globe.state)
+      [%wheat @ @tas @ta @ ^]  :: grain id, %noun/%json, argument @ta, other +jam'd data, like tx args, then any associated rice IDs
+    %:  ~(read-wheat util smart-lib-vase)
+        t.path
+        height.state
+        relay-town-id
+        p.globe.state
+    ==
   ::
       [%sizeof @ ~]
     ::  give size of item in global granary

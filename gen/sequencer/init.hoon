@@ -93,7 +93,7 @@
       0xdada.dada     ::  lord
       0xdada.dada     ::  holder
       town-id         ::  town-id
-      [%| [`(cue q.q.trivial-contract) ~]]  ::  germ
+      [%| ;;(wheat:smart (cue q.q.trivial-contract))]  ::  germ
   ==
 ::
 ::  NFT stuff

@@ -2,7 +2,7 @@
 =>  |%
     +$  card  card:agent:gall
     --
-|%
+|_  library=vase
 ::
 ::  +allowed-participant: grades whether a ship is permitted to participate
 ::  in Uqbar validation. currently using hardcoded whitelist
@@ -228,14 +228,19 @@
 ::
 ++  read-wheat
   |=  [=path blocknum=@ud town-id=@ud =granary:smart]
-  ^-  (unit (unit cage))
+  |^  ^-  (unit (unit cage))
   ?>  ?=([%wheat @ @tas @ta ^] path)
   =/  id  (slav %ux i.t.path)
   =/  read-type  (slav %tas i.t.t.path)
-  =/  arg=^path  [i.t.t.t.path ~]
+  =/  arg=^path
+    ?:  =('~' i.t.t.t.t.path)
+      [i.t.t.t.path ~]
+    [i.t.t.t.path i.t.t.t.t.path ~]
   =/  contract-rice=(list @ux)
-    %+  turn  t.t.t.t.path
-    |=(addr=@ (slav %ux addr))
+    %+  murn  t.t.t.t.t.path
+    |=  addr=@
+    ?:  =('~' addr)  ~
+    `(slav %ux addr)
   ?~  res=(~(get by granary) id)  ``noun+!>(~)
   ?.  ?=(%| -.germ.u.res)         ``noun+!>(~)
   ?~  cont.p.germ.u.res           ``noun+!>(~)
@@ -246,15 +251,31 @@
     ?~  found=(~(get by granary) find)  ~
     ?.  ?=(%& -.germ.u.found)           ~
     ?.  =(lord.u.found id)              ~
-    `[find u.res]
+    `[find u.found]
   ::  this isn't an ideal method but okay for now
   ::  goal is to return ~ if some rice weren't found
   ?.  =(~(wyt by owns) (lent contract-rice))
     ``noun+!>(~)
-  =/  cont  !<(contract:smart [-:!>(*contract:smart) u.cont.p.germ.u.res])  
+  =/  payload  .*(q.library pay.u.cont.p.germ.u.res)
+  =/  battery  .*([q.library payload] bat.u.cont.p.germ.u.res)
+  =/  dor      [-:!>(*contract:smart) battery]
   =/  cart  [id blocknum town-id owns]
   ?+  read-type  ``noun+!>(~)
-    %noun  ``noun+!>(`~(noun ~(read cont cart) arg))
-    %json  ``json+!>(`~(json ~(read cont cart) arg))
+    :: %noun  ``noun+!>(~(noun ~(read cont cart) arg))
+    %json  ``json+!>(;;(json q:(json-read-shut dor %read !>(cart) !>(arg))))
   ==
+  ::
+  ++  json-read-shut                                               ::  slam a door
+    |=  [dor=vase arm=@tas dor-sam=vase arm-sam=vase]
+    ^-  vase
+    %+  slap
+      (slop dor (slop dor-sam arm-sam))
+    ^-  hoon
+    :-  %cnsg
+    :^    [%json ~]
+        [%cnsg [arm ~] [%$ 2] [%$ 6] ~]  ::  replace sample
+      [%$ 7]
+    ~
+  ::
+  --
 --

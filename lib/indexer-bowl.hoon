@@ -2,7 +2,45 @@
     zig=ziggurat
 /+  smart=zig-sys-smart
 ::
-|%
+|_  =bowl:gall
+++  scry-contract-read-arm-agent
+  |=  $:  scry-dock=[host=@p agent=?(%sequencer %ziggurat)]
+          to=id:smart
+          query-type=?(%egg-args %rice-data)  ::  TODO: generalize to @tas?
+          query-arg=@ta
+      ==
+  .^  json
+      %gx
+      %-  zing
+      :^    /(scot %p host.scry-dock)/[agent.scry-dock]
+          /(scot %da now.bowl)/wheat/(scot %ux to)/json
+        ?:  ?=(%egg-args query-type)
+          /egg-args/[query-arg]/~/noun
+        /rice-data/~/[query-arg]/noun
+      ~
+  ==
+++  scry-contract-read-arm
+  |=  $:  scry-host=@p
+          to=id:smart
+          query-type=?(%egg-args %rice-data)  ::  TODO: generalize to @tas?
+          query-arg=@ta
+      ==
+  =/  from-sequencer=json
+    %:  scry-contract-read-arm-agent
+        [scry-host %sequencer]
+        to
+        query-type
+        query-arg
+    ==
+  ?.  ?=(~ from-sequencer)
+    from-sequencer
+  %:  scry-contract-read-arm-agent
+      [scry-host %ziggurat]
+      to
+      query-type
+      query-arg
+  ==
+::
 ++  enjs
   =,  enjs:format
   |%
@@ -111,7 +149,7 @@
     ^-  json
     %-  pairs
     :+  [%shell (shell p.egg)]
-      [%yolk (yolk q.egg)]
+      [%yolk (yolk egg)]
     ~
   ::
   ++  shell
@@ -130,12 +168,20 @@
     ==
   ::
   ++  yolk
-    |=  =yolk:smart
+    |=  [=shell:smart =yolk:smart]
     ^-  json
     ?>  ?=(account:smart caller.yolk)
+    =/  args=json
+      ?~  args.yolk  ~
+      %:  scry-contract-read-arm
+          our.bowl
+          to.shell
+          %egg-args
+          (scot %ud (jam u.args.yolk))
+      ==
     %-  pairs
     :~  [%caller (account caller.yolk)]
-        [%args ~]  :: TODO: rewrite when can mold
+        [%args args]
         [%my-grains (ids my-grains.yolk)]
         [%cont-grains (ids cont-grains.yolk)]
     ==
@@ -149,7 +195,7 @@
       [%zigs (numb zigs.account)]
     ~
   ::
-  ++  signature
+  ++  signature  ::  TODO: use signature:zig or signature:smart?
     |=  =signature:zig
     ^-  json
     %-  pairs
@@ -193,22 +239,29 @@
         [%lord %s (scot %ux lord.grain)]
         [%holder %s (scot %ux holder.grain)]
         [%town-id (numb town-id.grain)]
-        [%germ (germ germ.grain)]
+        [%germ (germ germ.grain lord.grain id.grain)]
     ==
   ::
   ++  germ
-    ::  TODO: rewrite when can get data/cont molds
-    |=  =germ:smart
+    |=  [=germ:smart wheat-id=id:smart rice-id=id:smart]
     ^-  json
     ?:  ?=(%& -.germ)
+      =/  data=json
+        %:  scry-contract-read-arm
+            our.bowl
+            wheat-id
+            %rice-data
+            (scot %ux rice-id)
+        ==
       %-  pairs
       :^    [%is-rice %b %&]
           [%salt (numb salt.p.germ)]
-        [%data ~]
+        [%data data]
       ~
     %-  pairs
     :^    [%is-rice %b %|]
-        [%cont ~]
+        [%cont ~]  ::  TODO
+        :: [%cont .^(json %gx /=sequencer=/wheat/[wheat-id]/json/[read-arg]/[rice-list])]
       [%owns (ids owns.p.germ)]
     ~
   ::
@@ -399,7 +452,7 @@
       [%zigs ni]
     ~
   ::
-  ++  signature
+  ++  signature  ::  TODO: use signature:zig or signature:smart?
     ^-  $-(json signature:zig)
     %-  ot
     :^    [%hash nu]

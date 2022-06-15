@@ -17,8 +17,7 @@
       hall=(unit hall)
       =basket
   ==
-+$  inflated-state-0  [state-0 =mil]
-+$  mil  $_  ~(mill mill !>(0))
++$  inflated-state-0  [state-0 smart-lib-vase=vase]
 --
 ::
 =|  inflated-state-0
@@ -33,7 +32,7 @@
 ::
 ++  on-init
   :-  ~[(sequencer-sub-card our.bowl)]
-  this(state [[%0 ~ [~ ~] ~ ~] ~(mill mill ;;(vase (cue q.q.smart-lib-noun)))])
+  this(state [[%0 ~ [~ ~] ~ ~] ;;(vase (cue q.q.smart-lib-noun))])
 ::
 ++  on-save  !>(-.state)
 ++  on-load
@@ -41,7 +40,7 @@
   ^-  (quip card _this)
   ::  on-load: pre-cue our compiled smart contract library
   ::  (not yet able to use, but will switch to this)
-  =+  ~(mill mill ;;(vase (cue q.q.smart-lib-noun)))
+  =+  ;;(vase (cue q.q.smart-lib-noun))
   :_  this(state [!<(state-0 old-vase) -])
   ::  connect to our %ziggurat agent
   ?:  (~(has by wex.bowl) [/sequencer/updates our.bowl %ziggurat])  ~
@@ -218,6 +217,7 @@
         .^(account:smart %gx /(scot %p our.bowl)/wallet/(scot %da now.bowl)/account/(scot %ux (need our-address))/(scot %ud (need town-id.state))/noun)
       =/  =height
         .^(height %gx /(scot %p our.bowl)/ziggurat/(scot %da now.bowl)/block-height/noun)
+      =/  mil  ~(mill mill smart-lib-vase)
       =/  our-chunk=chunk
         %+  ~(mill-all mil me (need town-id.state) height)
           town.state
@@ -272,8 +272,13 @@
       [%rice @ ~]
     (read-rice t.path 0 (need town-id.state) p.town.state)
   ::
-      [%wheat @ @ta ^]
-    (read-wheat t.path 0 (need town-id.state) p.town.state)
+      [%wheat @ @tas @ta @ ^]  :: grain id, %noun/%json, argument @ta, other +jam'd data, like tx args, then any associated rice IDs
+    %:  ~(read-wheat util smart-lib-vase)
+        t.path
+        0
+        (need town-id.state)
+        p.town.state
+    ==
   ::
       [%sizeof @ ~]
     ::  give size of item in town granary
