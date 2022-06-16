@@ -29,27 +29,28 @@
 ::  for others to use.
 ::
 ::  /+  *zig-sys-smart
-/=  f  /lib/zig/contracts/lib/fungible
+/=  fungible  /lib/zig/contracts/lib/fungible
+=,  fungible
 |_  =cart
 ++  write
   |=  inp=embryo
   ^-  chick
   |^
   ?~  args.inp  !!
-  (process ;;(arguments:f u.args.inp) (pin caller.inp))
+  (process ;;(arguments:sur u.args.inp) (pin caller.inp))
   ::
   ::  the actual execution arm. branches on argument type and returns final result
   ::  note that many of these lines will crash with bad input. this is good,
   ::  because we don't want failing transactions to waste more gas than required
   ::
   ++  process
-    |=  [args=arguments:f caller-id=id]
+    |=  [args=arguments:sur caller-id=id]
     ?-    -.args
         %give
       ::  grab giver's rice from the input. it should be only rice in the map
       =/  giv=grain  -:~(val by grains.inp)
       ?>  &(=(lord.giv me.cart) ?=(%& -.germ.giv))
-      =/  giver=account:f  ;;(account:f data.p.germ.giv)
+      =/  giver=account:sur  ;;(account:sur data.p.germ.giv)
       ?>  (gte balance.giver amount.args)
       ?~  account.args
         ::  create new rice for reciever and add it to state
@@ -64,7 +65,7 @@
       ::  giving account in embryo, and receiving one in owns.cart
       =/  rec=grain  (~(got by owns.cart) u.account.args)
       ?>  ?=(%& -.germ.rec)
-      =/  receiver=account:f  ;;(account:f data.p.germ.rec)
+      =/  receiver=account:sur  ;;(account:sur data.p.germ.rec)
       ::  assert that tokens match
       ?>  =(metadata.receiver metadata.giver)
       ::  alter the two balances inside the grains
@@ -80,7 +81,7 @@
       ::  the address book should be there to find it, like in %give.
       =/  giv=grain  (~(got by owns.cart) from-rice.args)
       ?>  ?=(%& -.germ.giv)
-      =/  giver=account:f  ;;(account:f data.p.germ.giv)
+      =/  giver=account:sur  ;;(account:sur data.p.germ.giv)
       =/  allowance=@ud  (~(got by allowances.giver) caller-id)
       ::  assert caller is permitted to spend this amount of token
       ?>  (gte balance.giver amount.args)
@@ -98,7 +99,7 @@
       ::  direct send
       =/  rec=grain  (~(got by owns.cart) u.account.args)
       ?>  ?=(%& -.germ.rec)
-      =/  receiver=account:f  ;;(account:f data.p.germ.rec)
+      =/  receiver=account:sur  ;;(account:sur data.p.germ.rec)
       ?>  =(metadata.receiver metadata.giver)
       ::  update the allowance of taker
       =.  allowances.giver
@@ -120,7 +121,7 @@
       ::  single rice expected, account
       =/  acc=grain  -:~(val by grains.inp)
       ?>  &(=(lord.acc me.cart) ?=(%& -.germ.acc))
-      =/  =account:f  ;;(account:f data.p.germ.acc)
+      =/  =account:sur  ;;(account:sur data.p.germ.acc)
       =.  data.p.germ.acc
         account(allowances (~(put by allowances.account) who.args amount.args))
       ::  return single changed rice
@@ -130,7 +131,7 @@
       ::  expects token metadata in owns.cart
       =/  tok=grain  (~(got by owns.cart) token.args)
       ?>  &(=(lord.tok me.cart) ?=(%& -.germ.tok))
-      =/  meta  ;;(token-metadata:f data.p.germ.tok)
+      =/  meta  ;;(token-metadata:sur data.p.germ.tok)
       ::  first, check if token is mintable
       ?>  &(mintable.meta ?=(^ cap.meta) ?=(^ minters.meta))
       ::  check if mint will surpass supply cap
@@ -139,7 +140,7 @@
         %.  add
         %~  rep  in
         ^-  (set @ud)  ::  non-optional cast
-        (~(run in mints.args) |=(=mint:f amount.mint))
+        (~(run in mints.args) |=(=mint:sur amount.mint))
       ?>  (gth u.cap.meta new-total)
       ::  cleared to execute!
       ::  update metadata token
@@ -153,7 +154,7 @@
       =/  changed-rice  (malt ~[[id.tok tok]])
       =/  issued-rice   *(map id grain)
       =/  mints         ~(tap in mints.args)
-      =/  next-mints    *(set mint:f)
+      =/  next-mints    *(set mint:sur)
       |-
       ?~  mints
         ::  finished minting, return chick
@@ -180,7 +181,7 @@
       ::  have rice, can modify
       =/  =grain  (~(got by owns.cart) u.account.i.mints)
       ?>  &(=(lord.grain me.cart) ?=(%& -.germ.grain))
-      =/  acc  ;;(account:f data.p.germ.grain)
+      =/  acc  ;;(account:sur data.p.germ.grain)
       ?>  =(metadata.acc token.args)
       =.  data.p.germ.grain  acc(balance (add balance.acc amount.i.mints))
       $(mints t.mints, changed-rice (~(put by changed-rice) id.grain grain))
@@ -210,7 +211,7 @@
             me.cart
             town-id.cart
             :+  %&  salt
-            ^-  token-metadata:f
+            ^-  token-metadata:sur
             :*  name.args
                 symbol.args
                 decimals.args
@@ -244,12 +245,12 @@
       =/  g=grain  -:~(val by owns.cart)
       ?>  ?=(%& -.germ.g)
       ?.  ?=([@ @ @ @ ?(~ [~ @]) ? ?(~ ^) @ @] data.p.germ.g)
-        (account:enjs:f ;;(account:f data.p.germ.g))
-      (token-metadata:enjs:f ;;(token-metadata:f data.p.germ.g))
+        (account:enjs:lib ;;(account:sur data.p.germ.g))
+      (token-metadata:enjs:lib ;;(token-metadata:sur data.p.germ.g))
     ::
         [%egg-args @ ~]
-      %-  arguments:enjs:f
-      ;;(arguments:f (cue (slav %ud i.t.args)))
+      %-  arguments:enjs:lib
+      ;;(arguments:sur (cue (slav %ud i.t.args)))
     ==
   ::
   ++  noun

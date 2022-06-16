@@ -8,17 +8,18 @@
 ::  structure as rice held and ruled by this contract on-chain.
 ::
 ::  /+  *zig-sys-smart
-/=  lib  /lib/zig/contracts/lib/dao
+/=  dao  /lib/zig/contracts/lib/dao
+=,  dao
 |_  =cart
 ++  write
   |=  inp=embryo
   ^-  chick
   |^
   ?~  args.inp  !!
-  (process ;;(arguments:lib u.args.inp) (pin caller.inp))
+  (process ;;(arguments:sur u.args.inp) (pin caller.inp))
   ::
   ++  process
-    |=  [args=arguments:lib caller-id=id]
+    |=  [args=arguments:sur caller-id=id]
     ?-    -.args
     ::
         %add-dao
@@ -37,7 +38,7 @@
         %vote
       =*  dao-id       dao-id.args
       =*  proposal-id  proposal-id.args
-      =/  [dao-grain=grain =dao:d:lib]
+      =/  [dao-grain=grain =dao:sur]
         (get-grain-and-dao:lib cart dao-id)
       ?>  ?=(%& -.germ.dao-grain)
       ?>  %:  is-allowed:lib
@@ -66,7 +67,7 @@
         %propose
       =*  dao-id  dao-id.args
       =*  update  on-chain-update.args
-      =/  [dao-grain=grain =dao:d:lib]
+      =/  [dao-grain=grain =dao:sur]
         (get-grain-and-dao:lib cart dao-id)
       ?>  ?=(%& -.germ.dao-grain)
       ?>  %:  is-allowed:lib
@@ -88,7 +89,7 @@
       ?>  =(me.cart caller-id)
       =*  dao-id  dao-id.args
       =*  update  on-chain-update.args
-      =/  [dao-grain=grain =dao:d:lib]
+      =/  [dao-grain=grain =dao:sur]
         (get-grain-and-dao:lib cart dao-id)
       ?>  ?=(%& -.germ.dao-grain)
       =.  dao
@@ -130,11 +131,11 @@
       ?>  =(1 ~(wyt by owns.cart))
       =/  g=grain  -:~(val by owns.cart)
       ?>  ?=(%& -.germ.g)
-      (dao:enjs:lib ;;(dao:d:lib data.p.germ.g))
+      (dao:enjs:lib ;;(dao:sur data.p.germ.g))
     ::
         [%egg-args @ ~]
       %-  arguments:enjs:lib
-      ;;(arguments:lib (cue (slav %ud i.t.args)))
+      ;;(arguments:sur (cue (slav %ud i.t.args)))
     ==
   ::
   ++  noun

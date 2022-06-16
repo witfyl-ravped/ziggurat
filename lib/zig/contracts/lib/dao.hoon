@@ -1,6 +1,6 @@
 ::  /+  *zig-sys-smart
 |%
-++  d
+++  sur
   |%
   +$  role     @tas  ::  E.g. %marketing, %development
   +$  address  ?(id resource:r)  ::  [chain=@tas id] for other chains?
@@ -47,451 +47,454 @@
   +$  daos            (map id dao)
   +$  dao-id-to-rid   (map id resource:r)
   +$  dao-rid-to-id   (map resource:r id)
+  ::
+  +$  arguments
+    $%  [%add-dao salt=@ dao=(unit dao)]
+        [%vote dao-id=id proposal-id=id]
+        [%propose dao-id=id =on-chain-update]
+        [%execute dao-id=id =on-chain-update]  ::  called only by this contract
+    ==
   --
 ::
-+$  arguments
-  $%  [%add-dao salt=@ dao=(unit dao:d)]
-      [%vote dao-id=id proposal-id=id]
-      [%propose dao-id=id =on-chain-update:d]
-      [%execute dao-id=id =on-chain-update:d]  ::  called only by this contract
-  ==
-::
-++  get-grain-and-dao
-  |=  [=cart dao-id=id]
-  ^-  [grain dao:d]
-  =/  dao-grain=grain  (~(got by owns.cart) dao-id)
-  ?>  =(lord.dao-grain me.cart)
-  ?>  ?=(%& -.germ.dao-grain)
-  :-  dao-grain
-  ;;(dao:d data.p.germ.dao-grain)
-::  ziggurat/lib/dao/hoon
-::
-++  get-members-and-permissions
-  |=  =dao-identifier:d
-  ^-  (unit [=members:d =permissions:d])
-  ?~  dao=(get-dao dao-identifier)  ~
-  `[members.u.dao permissions.u.dao]
-::
-++  get-id-to-ship
-  |=  =dao-identifier:d
-  ^-  (unit id-to-ship:d)
-  ?~  dao=(get-dao dao-identifier)  ~
-  `id-to-ship.u.dao
-::
-++  get-ship-to-id
-  |=  =dao-identifier:d
-  ^-  (unit ship-to-id:d)
-  ?~  dao=(get-dao dao-identifier)  ~
-  `ship-to-id.u.dao
-::
-++  member-to-id
-  |=  [=member:d =dao-identifier:d]
-  ^-  (unit id)
-  ?:  ?=(%& -.member)  `p.member
-  ?~  dao=(get-dao dao-identifier)  ~
-  (~(get by ship-to-id.u.dao) p.member)
-::
-++  member-to-ship
-  |=  [=member:d =dao-identifier:d]
-  ^-  (unit ship)
-  ?:  ?=(%| -.member)  `p.member
-  ?~  dao=(get-dao dao-identifier)  ~
-  (~(get by id-to-ship.u.dao) p.member)
-::
-++  get-dao
-  |=  =dao-identifier:d
-  ^-  (unit dao:d)
-  ?:  ?=(%& -.dao-identifier)  `p.dao-identifier
-  !!
-::
-++  is-allowed
-  |=  $:  =member:d
-          =address:d
-          permission-name=@tas
-          =dao-identifier:d
-      ==
-  ^-  ?
-  ?~  dao=(get-dao dao-identifier)                                %.n
-  ?~  permissioned=(~(get by permissions.u.dao) permission-name)  %.n
-  ?~  roles-with-access=(~(get ju u.permissioned) address)        %.n
-  ?~  user-id=(member-to-id member [%& u.dao])                    %.n
-  ?~  ship-roles=(~(get ju members.u.dao) u.user-id)              %.n
-  ?!  .=  0
-  %~  wyt  in
-  %-  ~(int in `(set role:d)`ship-roles)
-  `(set role:d)`roles-with-access
-::
-++  is-allowed-admin-write-read
-  |=  $:  =member:d
-          =address:d
-          =dao-identifier:d
-      ==
-  ^-  [? ? ?]
-  ?~  dao=(get-dao dao-identifier)  [%.n %.n %.n]
-  :+  (is-allowed member address %admin [%& u.dao])
-    (is-allowed member address %write [%& u.dao])
-  (is-allowed member address %read [%& u.dao])
-::
-++  is-allowed-write
-  |=  $:  =member:d
-          =address:d
-          =dao-identifier:d
-      ==
-  ^-  ?
-  (is-allowed member address %write dao-identifier)
-::
-++  is-allowed-read
-  |=  $:  =member:d
-          =address:d
-          =dao-identifier:d
-      ==
-  ^-  ?
-  (is-allowed member address %read dao-identifier)
-::
-++  is-allowed-admin
-  |=  $:  =member:d
-          =address:d
-          =dao-identifier:d
-      ==
-  ^-  ?
-  (is-allowed member address %admin dao-identifier)
-::
-++  is-allowed-host
-  |=  $:  =member:d
-          =address:d
-          =dao-identifier:d
-      ==
-  ^-  ?
-  (is-allowed member address %host dao-identifier)
-::
-++  update
-  |_  =dao:d
-  ::
-  ++  add-member
-    |=  [roles=(set role:d) =id him=ship]
-    ^-  dao:d
-    =/  existing-ship=(unit ship)
-      (~(get by id-to-ship.dao) id)
-    ?:  ?=(^ existing-ship)
-      ?:  =(him u.existing-ship)  dao
-      !!
-    =/  existing-id=(unit ^id)
-      (~(get by ship-to-id.dao) him)
-    ?:  ?=(^ existing-id)
-      ?:  =(id u.existing-id)  dao
-      !!
-    ::
-    %=  dao
-      id-to-ship  (~(put by id-to-ship.dao) id him)
-      ship-to-id  (~(put by ship-to-id.dao) him id)
-      members
-        %-  ~(gas ju members.dao)
-        (make-noun-role-pairs id roles)
-    ==
-  ::
-  ++  remove-member
-    |=  [=id]
-    ^-  dao:d
-    ?~  him=(~(get by id-to-ship.dao) id)
-      !!
-    ?~  existing-id=(~(get by ship-to-id.dao) u.him)
-      !!
-    ?>  =(id u.existing-id)
-    ?~  roles=(~(get ju members.dao) id)  !!
-    %=  dao
-      id-to-ship  (~(del by id-to-ship.dao) id)
-      ship-to-id  (~(del by ship-to-id.dao) u.him)
-      members
-        (remove-roles-helper members.dao roles id)
-    ==
-  ::
-  ++  add-permissions
-    |=  [name=@tas =address:d roles=(set role:d)]
-    ^-  dao:d
-    %=  dao
-      permissions
-        %:  add-permissions-helper
-            name
-            permissions.dao
-            roles
-            address
-    ==  ==
-  ::
-  ++  remove-permissions
-    |=  [name=@tas =address:d roles=(set role:d)]
-    ^-  dao:d
-        %=  dao
-          permissions
-            %:  remove-permissions-helper
-                name
-                permissions.dao
-                roles
-                address
-        ==  ==
-  ::
-  ++  add-subdao
-    |=  subdao-id=id
-    ^-  dao:d
-    dao(subdaos (~(put in subdaos.dao) subdao-id))
-  ::
-  ++  remove-subdao
-    |=  subdao-id=id
-    ^-  dao:d
-    dao(subdaos (~(del in subdaos.dao) subdao-id))
-  ::
-  ++  add-roles
-    |=  [roles=(set role:d) =id]
-    ^-  dao:d
-    ?~  (~(get ju members.dao) id)
-      !!
-    %=  dao
-      members
-        %-  ~(gas ju members.dao)
-        (make-noun-role-pairs id roles)
-    ==
-  ::
-  ++  remove-roles
-    |=  [roles=(set role:d) =id]
-    ^-  dao:d
-    ?~  (~(get ju members.dao) id)
-      !!
-    dao(members (remove-roles-helper members.dao roles id))
-  ::
-  ++  add-permissions-helper
-    |=  [name=@tas =permissions:d roles=(set role:d) =address:d]
-    ^-  permissions:d
-    =/  permission=(unit (jug address:d role:d))
-      (~(get by permissions) name)
-    =/  pairs=(list (pair address:d role:d))
-      (make-noun-role-pairs address roles)
-    %+  %~  put  by  permissions
-      name
-    %-  %~  gas  ju
-      ?~  permission
-        *(jug address:d role:d)
-      u.permission
-    pairs
-  ::
-  ++  remove-permissions-helper
-    |=  [name=@tas =permissions:d roles=(set role:d) =address:d]
-    ^-  permissions:d
-    ?~  permission=(~(get by permissions) name)  permissions
-    =/  pairs=(list (pair address:d role:d))
-      (make-noun-role-pairs address roles)
-    |-
-    ?~  pairs  (~(put by permissions) name u.permission)
-    =.  u.permission  (~(del ju u.permission) i.pairs)
-    $(pairs t.pairs)
-  ::
-  ++  remove-roles-helper
-    |=  [=members:d roles=(set role:d) =id]
-    ^-  members:d
-    =/  pairs=(list (pair ^id role:d))
-      (make-noun-role-pairs id roles)
-    |-
-    ?~  pairs  members
-    =.  members  (~(del ju members) i.pairs)
-    $(pairs t.pairs)
-  ::
-  ++  make-noun-role-pairs
-    |*  [noun=* roles=(set role:d)]
-    ^-  (list (pair _noun role:d))
-    ::  cast in tap to avoid crash if passed `~`
-    %+  turn  ~(tap in `(set role:d)`roles)
-    |=  =role:d
-    [p=noun q=role]
-  --
-::
-++  enjs
-  =,  enjs:format
+++  lib
   |%
-  ++  dao
-    |^
-    |=  =dao:d
-    ^-  json
-    %-  pairs
-    :~  [%name %s name.dao]
-        [%permissions (permissions permissions.dao)]
-        [%members (members members.dao)]
-        [%id-to-ship (id-to-ship id-to-ship.dao)]
-        [%ship-to-id (ship-to-id ship-to-id.dao)]
-        [%subdaos (subdaos subdaos.dao)]
-        [%threshold (numb threshold.dao)]
-        [%proposals (proposals proposals.dao)]
-    ==
+  ++  get-grain-and-dao
+    |=  [=cart dao-id=id]
+    ^-  [grain dao:sur]
+    =/  dao-grain=grain  (~(got by owns.cart) dao-id)
+    ?>  =(lord.dao-grain me.cart)
+    ?>  ?=(%& -.germ.dao-grain)
+    :-  dao-grain
+    ;;(dao:sur data.p.germ.dao-grain)
+  ::  ziggurat/lib/dao/hoon
+  ::
+  ++  get-members-and-permissions
+    |=  =dao-identifier:sur
+    ^-  (unit [=members:sur =permissions:sur])
+    ?~  dao=(get-dao dao-identifier)  ~
+    `[members.u.dao permissions.u.dao]
+  ::
+  ++  get-id-to-ship
+    |=  =dao-identifier:sur
+    ^-  (unit id-to-ship:sur)
+    ?~  dao=(get-dao dao-identifier)  ~
+    `id-to-ship.u.dao
+  ::
+  ++  get-ship-to-id
+    |=  =dao-identifier:sur
+    ^-  (unit ship-to-id:sur)
+    ?~  dao=(get-dao dao-identifier)  ~
+    `ship-to-id.u.dao
+  ::
+  ++  member-to-id
+    |=  [=member:sur =dao-identifier:sur]
+    ^-  (unit id)
+    ?:  ?=(%& -.member)  `p.member
+    ?~  dao=(get-dao dao-identifier)  ~
+    (~(get by ship-to-id.u.dao) p.member)
+  ::
+  ++  member-to-ship
+    |=  [=member:sur =dao-identifier:sur]
+    ^-  (unit ship)
+    ?:  ?=(%| -.member)  `p.member
+    ?~  dao=(get-dao dao-identifier)  ~
+    (~(get by id-to-ship.u.dao) p.member)
+  ::
+  ++  get-dao
+    |=  =dao-identifier:sur
+    ^-  (unit dao:sur)
+    ?:  ?=(%& -.dao-identifier)  `p.dao-identifier
+    !!
+  ::
+  ++  is-allowed
+    |=  $:  =member:sur
+            =address:sur
+            permission-name=@tas
+            =dao-identifier:sur
+        ==
+    ^-  ?
+    ?~  dao=(get-dao dao-identifier)                                %.n
+    ?~  permissioned=(~(get by permissions.u.dao) permission-name)  %.n
+    ?~  roles-with-access=(~(get ju u.permissioned) address)        %.n
+    ?~  user-id=(member-to-id member [%& u.dao])                    %.n
+    ?~  ship-roles=(~(get ju members.u.dao) u.user-id)              %.n
+    ?!  .=  0
+    %~  wyt  in
+    %-  ~(int in `(set role:sur)`ship-roles)
+    `(set role:sur)`roles-with-access
+  ::
+  ++  is-allowed-admin-write-read
+    |=  $:  =member:sur
+            =address:sur
+            =dao-identifier:sur
+        ==
+    ^-  [? ? ?]
+    ?~  dao=(get-dao dao-identifier)  [%.n %.n %.n]
+    :+  (is-allowed member address %admin [%& u.dao])
+      (is-allowed member address %write [%& u.dao])
+    (is-allowed member address %read [%& u.dao])
+  ::
+  ++  is-allowed-write
+    |=  $:  =member:sur
+            =address:sur
+            =dao-identifier:sur
+        ==
+    ^-  ?
+    (is-allowed member address %write dao-identifier)
+  ::
+  ++  is-allowed-read
+    |=  $:  =member:sur
+            =address:sur
+            =dao-identifier:sur
+        ==
+    ^-  ?
+    (is-allowed member address %read dao-identifier)
+  ::
+  ++  is-allowed-admin
+    |=  $:  =member:sur
+            =address:sur
+            =dao-identifier:sur
+        ==
+    ^-  ?
+    (is-allowed member address %admin dao-identifier)
+  ::
+  ++  is-allowed-host
+    |=  $:  =member:sur
+            =address:sur
+            =dao-identifier:sur
+        ==
+    ^-  ?
+    (is-allowed member address %host dao-identifier)
+  ::
+  ++  update
+    |_  =dao:sur
     ::
-    ++  permissions
-      |=  =permissions:d
-      ^-  json
-      %-  pairs
-      %+  turn  ~(tap by permissions)
-      |=  [name=@tas p=(jug address:d role:d)]
-      [name (permission p)]
+    ++  add-member
+      |=  [roles=(set role:sur) =id him=ship]
+      ^-  dao:sur
+      =/  existing-ship=(unit ship)
+        (~(get by id-to-ship.dao) id)
+      ?:  ?=(^ existing-ship)
+        ?:  =(him u.existing-ship)  dao
+        !!
+      =/  existing-id=(unit ^id)
+        (~(get by ship-to-id.dao) him)
+      ?:  ?=(^ existing-id)
+        ?:  =(id u.existing-id)  dao
+        !!
+      ::
+      %=  dao
+        id-to-ship  (~(put by id-to-ship.dao) id him)
+        ship-to-id  (~(put by ship-to-id.dao) him id)
+        members
+          %-  ~(gas ju members.dao)
+          (make-noun-role-pairs id roles)
+      ==
     ::
-    ++  permission
-      |=  permission=(jug address:d role:d)
-      ^-  json
-      %-  pairs
-      %+  turn  ~(tap by permission)
-      |=  [=address:d rs=(set role:d)]
-      [(address-key address) (roles rs)]
+    ++  remove-member
+      |=  [=id]
+      ^-  dao:sur
+      ?~  him=(~(get by id-to-ship.dao) id)
+        !!
+      ?~  existing-id=(~(get by ship-to-id.dao) u.him)
+        !!
+      ?>  =(id u.existing-id)
+      ?~  roles=(~(get ju members.dao) id)  !!
+      %=  dao
+        id-to-ship  (~(del by id-to-ship.dao) id)
+        ship-to-id  (~(del by ship-to-id.dao) u.him)
+        members
+          (remove-roles-helper members.dao roles id)
+      ==
     ::
-    ++  members
-      |=  =members:d
-      ^-  json
-      %-  pairs
-      %+  turn  ~(tap by members)
-      |=  [i=id rs=(set role:d)]
-      [(scot %ux i) (roles rs)]
+    ++  add-permissions
+      |=  [name=@tas =address:sur roles=(set role:sur)]
+      ^-  dao:sur
+      %=  dao
+        permissions
+          %:  add-permissions-helper
+              name
+              permissions.dao
+              roles
+              address
+      ==  ==
     ::
-    ++  id-to-ship
-      |=  =id-to-ship:d
-      ^-  json
-      %-  pairs
-      %+  turn  ~(tap by id-to-ship)
-      |=  [i=id s=@p]
-      [(scot %ux i) [%s (scot %p s)]]
+    ++  remove-permissions
+      |=  [name=@tas =address:sur roles=(set role:sur)]
+      ^-  dao:sur
+          %=  dao
+            permissions
+              %:  remove-permissions-helper
+                  name
+                  permissions.dao
+                  roles
+                  address
+          ==  ==
     ::
-    ++  ship-to-id
-      |=  =ship-to-id:d
-      ^-  json
-      %-  pairs
-      %+  turn  ~(tap by ship-to-id)
-      |=  [s=@p i=id]
-      [(scot %p s) [%s (scot %ux i)]]
+    ++  add-subdao
+      |=  subdao-id=id
+      ^-  dao:sur
+      dao(subdaos (~(put in subdaos.dao) subdao-id))
     ::
-    ++  proposals
-      |=  proposals=(map id [on-chain-update:d (set id)])
-      ^-  json
-      %-  pairs
-      %+  turn  ~(tap by proposals)
-      |=  [proposal-id=id update=on-chain-update:d v=(set id)]
-      :-  (scot %ux proposal-id)
-      %-  pairs
-      :+  [%update (on-chain-update update)]
-        [%votes (votes v)]
-      ~
+    ++  remove-subdao
+      |=  subdao-id=id
+      ^-  dao:sur
+      dao(subdaos (~(del in subdaos.dao) subdao-id))
     ::
-    ++  subdaos
-      set-id
+    ++  add-roles
+      |=  [roles=(set role:sur) =id]
+      ^-  dao:sur
+      ?~  (~(get ju members.dao) id)
+        !!
+      %=  dao
+        members
+          %-  ~(gas ju members.dao)
+          (make-noun-role-pairs id roles)
+      ==
     ::
-    ++  votes
-      set-id
+    ++  remove-roles
+      |=  [roles=(set role:sur) =id]
+      ^-  dao:sur
+      ?~  (~(get ju members.dao) id)
+        !!
+      dao(members (remove-roles-helper members.dao roles id))
     ::
-    ++  set-id
-      |=  set-id=(set id)
-      ^-  json
-      :-  %a
-      %+  turn  ~(tap in set-id)
-      |=  i=id
-      [%s (scot %ux i)]
+    ++  add-permissions-helper
+      |=  [name=@tas =permissions:sur roles=(set role:sur) =address:sur]
+      ^-  permissions:sur
+      =/  permission=(unit (jug address:sur role:sur))
+        (~(get by permissions) name)
+      =/  pairs=(list (pair address:sur role:sur))
+        (make-noun-role-pairs address roles)
+      %+  %~  put  by  permissions
+        name
+      %-  %~  gas  ju
+        ?~  permission
+          *(jug address:sur role:sur)
+        u.permission
+      pairs
+    ::
+    ++  remove-permissions-helper
+      |=  [name=@tas =permissions:sur roles=(set role:sur) =address:sur]
+      ^-  permissions:sur
+      ?~  permission=(~(get by permissions) name)  permissions
+      =/  pairs=(list (pair address:sur role:sur))
+        (make-noun-role-pairs address roles)
+      |-
+      ?~  pairs  (~(put by permissions) name u.permission)
+      =.  u.permission  (~(del ju u.permission) i.pairs)
+      $(pairs t.pairs)
+    ::
+    ++  remove-roles-helper
+      |=  [=members:sur roles=(set role:sur) =id]
+      ^-  members:sur
+      =/  pairs=(list (pair ^id role:sur))
+        (make-noun-role-pairs id roles)
+      |-
+      ?~  pairs  members
+      =.  members  (~(del ju members) i.pairs)
+      $(pairs t.pairs)
+    ::
+    ++  make-noun-role-pairs
+      |*  [noun=* roles=(set role:sur)]
+      ^-  (list (pair _noun role:sur))
+      ::  cast in tap to avoid crash if passed `~`
+      %+  turn  ~(tap in `(set role:sur)`roles)
+      |=  =role:sur
+      [p=noun q=role]
     --
   ::
-  ++  arguments
-    |=  a=^arguments
-    %+  frond  -.a
-    ^-  json
-    ?-    -.a
-    ::
-        %add-dao
-      ?>  ?=(^ dao.a)
+  ++  enjs
+    =,  enjs:format
+    |%
+    ++  dao
+      |^
+      |=  =dao:sur
+      ^-  json
       %-  pairs
-      :+  [%salt (numb salt.a)]
-        [%dao (dao u.dao.a)]
-      ~
+      :~  [%name %s name.dao]
+          [%permissions (permissions permissions.dao)]
+          [%members (members members.dao)]
+          [%id-to-ship (id-to-ship id-to-ship.dao)]
+          [%ship-to-id (ship-to-id ship-to-id.dao)]
+          [%subdaos (subdaos subdaos.dao)]
+          [%threshold (numb threshold.dao)]
+          [%proposals (proposals proposals.dao)]
+      ==
+      ::
+      ++  permissions
+        |=  =permissions:sur
+        ^-  json
+        %-  pairs
+        %+  turn  ~(tap by permissions)
+        |=  [name=@tas p=(jug address:sur role:sur)]
+        [name (permission p)]
+      ::
+      ++  permission
+        |=  permission=(jug address:sur role:sur)
+        ^-  json
+        %-  pairs
+        %+  turn  ~(tap by permission)
+        |=  [=address:sur rs=(set role:sur)]
+        [(address-key address) (roles rs)]
+      ::
+      ++  members
+        |=  =members:sur
+        ^-  json
+        %-  pairs
+        %+  turn  ~(tap by members)
+        |=  [i=id rs=(set role:sur)]
+        [(scot %ux i) (roles rs)]
+      ::
+      ++  id-to-ship
+        |=  =id-to-ship:sur
+        ^-  json
+        %-  pairs
+        %+  turn  ~(tap by id-to-ship)
+        |=  [i=id s=@p]
+        [(scot %ux i) [%s (scot %p s)]]
+      ::
+      ++  ship-to-id
+        |=  =ship-to-id:sur
+        ^-  json
+        %-  pairs
+        %+  turn  ~(tap by ship-to-id)
+        |=  [s=@p i=id]
+        [(scot %p s) [%s (scot %ux i)]]
+      ::
+      ++  proposals
+        |=  proposals=(map id [on-chain-update:sur (set id)])
+        ^-  json
+        %-  pairs
+        %+  turn  ~(tap by proposals)
+        |=  [proposal-id=id update=on-chain-update:sur v=(set id)]
+        :-  (scot %ux proposal-id)
+        %-  pairs
+        :+  [%update (on-chain-update update)]
+          [%votes (votes v)]
+        ~
+      ::
+      ++  subdaos
+        set-id
+      ::
+      ++  votes
+        set-id
+      ::
+      ++  set-id
+        |=  set-id=(set id)
+        ^-  json
+        :-  %a
+        %+  turn  ~(tap in set-id)
+        |=  i=id
+        [%s (scot %ux i)]
+      --
     ::
-        %vote
-      %-  pairs
-      :+  [%dao-id %s (scot %ux dao-id.a)]
-        [%proposal-id %s (scot %ux proposal-id.a)]
-      ~
+    ++  arguments
+      |=  a=arguments:sur
+      %+  frond  -.a
+      ^-  json
+      ?-    -.a
+      ::
+          %add-dao
+        ?>  ?=(^ dao.a)
+        %-  pairs
+        :+  [%salt (numb salt.a)]
+          [%dao (dao u.dao.a)]
+        ~
+      ::
+          %vote
+        %-  pairs
+        :+  [%dao-id %s (scot %ux dao-id.a)]
+          [%proposal-id %s (scot %ux proposal-id.a)]
+        ~
+      ::
+          %propose
+        %-  pairs
+        :+  [%dao-id %s (scot %ux dao-id.a)]
+          [%on-chain-update (on-chain-update on-chain-update.a)]
+        ~
+      ::
+          %execute
+        %-  pairs
+        :+  [%dao-id %s (scot %ux dao-id.a)]
+          [%on-chain-update (on-chain-update on-chain-update.a)]
+        ~
+      ==
     ::
-        %propose
-      %-  pairs
-      :+  [%dao-id %s (scot %ux dao-id.a)]
-        [%on-chain-update (on-chain-update on-chain-update.a)]
-      ~
-    ::
-        %execute
-      %-  pairs
-      :+  [%dao-id %s (scot %ux dao-id.a)]
-        [%on-chain-update (on-chain-update on-chain-update.a)]
-      ~
-    ==
-  ::
-  ++  on-chain-update
-    |=  update=on-chain-update:d
-    ^-  json
-    ?-    -.update
-    ::
-        %add-dao
-      ?>  ?=(^ dao.update)
-      %+  frond  %add-dao
-      %-  pairs
-      :+  [%salt (numb salt.update)]
-        [%dao (dao u.dao.update)]
-      ~
-    ::
-        %remove-dao
-      %+  frond  %remove-dao
-      %+  frond
-      %dao-id  [%s (scot %ux dao-id.update)]
-    ::
-        %add-member
-      %+  frond  %add-member
-      %-  pairs
-      :~  [%dao-id %s (scot %ux dao-id.update)]
-          [%roles (roles roles.update)]
+    ++  on-chain-update
+      |=  update=on-chain-update:sur
+      ^-  json
+      ?-    -.update
+      ::
+          %add-dao
+        ?>  ?=(^ dao.update)
+        %+  frond  %add-dao
+        %-  pairs
+        :+  [%salt (numb salt.update)]
+          [%dao (dao u.dao.update)]
+        ~
+      ::
+          %remove-dao
+        %+  frond  %remove-dao
+        %+  frond
+        %dao-id  [%s (scot %ux dao-id.update)]
+      ::
+          %add-member
+        %+  frond  %add-member
+        %-  pairs
+        :~  [%dao-id %s (scot %ux dao-id.update)]
+            [%roles (roles roles.update)]
+            [%id %s (scot %ux id.update)]
+            [%him %s (scot %p him.update)]
+        ==
+      ::
+          %remove-member
+        %+  frond  %remove-member
+        %-  pairs
+        :+  [%dao-id %s (scot %ux dao-id.update)]
           [%id %s (scot %ux id.update)]
-          [%him %s (scot %p him.update)]
+        ~
+      ::
+          ?(%add-permissions %remove-permissions)
+        %+  frond  -.update
+        %-  pairs
+        :~  [%dao-id %s (scot %ux dao-id.update)]
+            [%name %s name.update]
+            [%address [%s (address-key address.update)]]
+            [%roles (roles roles.update)]
+        ==
+      ::
+          ?(%add-subdao %remove-subdao)
+        %+  frond  -.update
+        %-  pairs
+        :+  [%dao-id %s (scot %ux dao-id.update)]
+          [%subdao-id %s (scot %ux subdao-id.update)]
+        ~
+      ::
+          ?(%add-roles %remove-roles)
+        %+  frond  -.update
+        %-  pairs
+        :^    [%dao-id %s (scot %ux dao-id.update)]
+            [%roles (roles roles.update)]
+          [%id %s (scot %ux dao-id.update)]
+        ~
       ==
     ::
-        %remove-member
-      %+  frond  %remove-member
-      %-  pairs
-      :+  [%dao-id %s (scot %ux dao-id.update)]
-        [%id %s (scot %ux id.update)]
-      ~
+    ++  address-key
+      |=  =address:sur
+      ^-  @ta
+      ?:  ?=(id address)
+        (scot %ux address)
+      (enjs-path:rl address)
     ::
-        ?(%add-permissions %remove-permissions)
-      %+  frond  -.update
-      %-  pairs
-      :~  [%dao-id %s (scot %ux dao-id.update)]
-          [%name %s name.update]
-          [%address [%s (address-key address.update)]]
-          [%roles (roles roles.update)]
-      ==
-    ::
-        ?(%add-subdao %remove-subdao)
-      %+  frond  -.update
-      %-  pairs
-      :+  [%dao-id %s (scot %ux dao-id.update)]
-        [%subdao-id %s (scot %ux subdao-id.update)]
-      ~
-    ::
-        ?(%add-roles %remove-roles)
-      %+  frond  -.update
-      %-  pairs
-      :^    [%dao-id %s (scot %ux dao-id.update)]
-          [%roles (roles roles.update)]
-        [%id %s (scot %ux dao-id.update)]
-      ~
-    ==
-  ::
-  ++  address-key
-    |=  =address:d
-    ^-  @ta
-    ?:  ?=(id address)
-      (scot %ux address)
-    (enjs-path:rl address)
-  ::
-  ++  roles
-    |=  roles=(set role:d)
-    ^-  json
-    :-  %a
-    %+  turn  ~(tap in roles)
-    |=  =role:d
-    [%s role]
+    ++  roles
+      |=  roles=(set role:sur)
+      ^-  json
+      :-  %a
+      %+  turn  ~(tap in roles)
+      |=  =role:sur
+      [%s role]
+    --
   --
 ::
 ++  r  ::  landscape/sur/resource/hoon

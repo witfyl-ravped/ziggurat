@@ -7,22 +7,23 @@
 ::  zig spends to be guaranteed not to underflow.
 ::
 ::  /+  *zig-sys-smart
-/=  z  /lib/zig/contracts/lib/zigs
+/=  zigs  /lib/zig/contracts/lib/zigs
+=,  zigs
 |_  =cart
 ++  write
   |=  inp=embryo
   ^-  chick
   |^
   ?~  args.inp  !!
-  (process ;;(arguments:z u.args.inp) (pin caller.inp))
+  (process ;;(arguments:sur u.args.inp) (pin caller.inp))
   ::
   ++  process
-    |=  [args=arguments:z caller-id=id]
+    |=  [args=arguments:sur caller-id=id]
     ?-    -.args
         %give
       =/  giv=grain  -:~(val by grains.inp)
       ?>  &(=(lord.giv me.cart) ?=(%& -.germ.giv))
-      =/  giver=account:z  ;;(account:z data.p.germ.giv)
+      =/  giver=account:sur  ;;(account:sur data.p.germ.giv)
       ?>  (gte balance.giver (add amount.args budget.args))
       ?~  account.args
         ::  if receiver doesn't have an account, must produce one for them
@@ -36,7 +37,7 @@
       ::  otherwise, add to the existing account for that pubkey
       =/  rec=grain  (~(got by owns.cart) u.account.args)
       ?>  &(=(holder.rec to.args) ?=(%& -.germ.rec))
-      =/  receiver=account:z  ;;(account:z data.p.germ.rec)
+      =/  receiver=account:sur  ;;(account:sur data.p.germ.rec)
       ?>  =(metadata.receiver metadata.giver)
       =:  data.p.germ.giv  giver(balance (sub balance.giver amount.args))
           data.p.germ.rec  receiver(balance (add balance.receiver amount.args))
@@ -46,7 +47,7 @@
         %take
       =/  giv=grain  (~(got by owns.cart) from-account.args)
       ?>  ?=(%& -.germ.giv)
-      =/  giver=account:z  ;;(account:z data.p.germ.giv)
+      =/  giver=account:sur  ;;(account:sur data.p.germ.giv)
       =/  allowance=@ud  (~(got by allowances.giver) caller-id)
       ?>  (gte balance.giver amount.args)
       ?>  (gte allowance amount.args)
@@ -60,7 +61,7 @@
         [~ (malt ~[[id.new new]]) ~]
       =/  rec=grain  (~(got by owns.cart) u.account.args)
       ?>  &(=(holder.rec to.args) ?=(%& -.germ.rec))
-      =/  receiver=account:z  ;;(account:z data.p.germ.rec)
+      =/  receiver=account:sur  ;;(account:sur data.p.germ.rec)
       ?>  =(metadata.receiver metadata.giver)
       =:  data.p.germ.rec  receiver(balance (add balance.receiver amount.args))
           data.p.germ.giv
@@ -75,7 +76,7 @@
       =/  acc=grain  -:~(val by grains.inp)
       ?>  !=(who.args holder.acc)
       ?>  &(=(lord.acc me.cart) ?=(%& -.germ.acc))
-      =/  =account:z  ;;(account:z data.p.germ.acc)
+      =/  =account:sur  ;;(account:sur data.p.germ.acc)
       =.  data.p.germ.acc
         account(allowances (~(put by allowances.account) who.args amount.args))
       [%& (malt ~[[id.acc acc]]) ~ ~]
@@ -92,12 +93,12 @@
       =/  g=grain  -:~(val by owns.cart)
       ?>  ?=(%& -.germ.g)
       ?.  ?=([@ @ @ @ ?(~ [~ @]) ? ?(~ ^) @ @] data.p.germ.g)
-        (account:enjs:z ;;(account:z data.p.germ.g))
-      (token-metadata:enjs:z ;;(token-metadata:z data.p.germ.g))
+        (account:enjs:lib ;;(account:sur data.p.germ.g))
+      (token-metadata:enjs:lib ;;(token-metadata:sur data.p.germ.g))
     ::
         [%egg-args @ ~]
-      %-  arguments:enjs:z
-      ;;(arguments:z (cue (slav %ud i.t.args)))
+      %-  arguments:enjs:lib
+      ;;(arguments:sur (cue (slav %ud i.t.args)))
     ==
   ::
   ++  noun

@@ -11,19 +11,20 @@
 ::  TODO: verify ship signatures!
 ::
 ::  /+  *zig-sys-smart
-/=  c  /lib/zig/contracts/lib/capitol
+/=  capitol  /lib/zig/contracts/lib/capitol
+=,  capitol
 |_  =cart
 ++  write
   |=  inp=embryo
   ^-  chick
   |^
   ?~  args.inp  !!
-  (process ;;(arguments:c u.args.inp) (pin caller.inp))
+  (process ;;(arguments:sur u.args.inp) (pin caller.inp))
   ::
   ::  process a call
   ::
   ++  process
-    |=  [args=arguments:c caller-id=id]
+    |=  [args=arguments:sur caller-id=id]
     ?-    -.args
     ::
     ::  calls to join/exit as a sequencer on a town, or make a new one
@@ -32,7 +33,7 @@
       ::  start a new town if one with if that id doesn't exist
       =/  worl=grain  (~(got by owns.cart) `@ux`'world')
       ?>  ?=(%& -.germ.worl)
-      =/  =world:c  ;;(world:c data.p.germ.worl)
+      =/  =world:sur  ;;(world:sur data.p.germ.worl)
       ?:  (~(has by world) town.args)  !!
       =.  data.p.germ.worl
         (~(put by world) town.args (malt ~[[q.sig.args [caller-id sig.args]]]))
@@ -42,8 +43,8 @@
       ::  become a sequencer on an existing town
       =/  worl=grain  (~(got by owns.cart) `@ux`'world')
       ?>  ?=(%& -.germ.worl)
-      =/  =world:c  ;;(world:c data.p.germ.worl)
-      ?~  current=`(unit (map ship [id sig:c]))`(~(get by world) town.args)  !!
+      =/  =world:sur  ;;(world:sur data.p.germ.worl)
+      ?~  current=`(unit (map ship [id sig:sur]))`(~(get by world) town.args)  !!
       =/  new  (~(put by u.current) q.sig.args [caller-id sig.args])
       =.  data.p.germ.worl
         (~(put by world) town.args new)
@@ -53,8 +54,8 @@
       ::  leave a town that you're sequencing on
       =/  worl=grain  (~(got by owns.cart) `@ux`'world')
       ?>  ?=(%& -.germ.worl)
-      =/  =world:c  ;;(world:c data.p.germ.worl)
-      ?~  current=`(unit (map ship [id sig:c]))`(~(get by world) town.args)  !!
+      =/  =world:sur  ;;(world:sur data.p.germ.worl)
+      ?~  current=`(unit (map ship [id sig:sur]))`(~(get by world) town.args)  !!
       =/  new  (~(del by u.current) q.sig.args)
       =.  data.p.germ.worl
         (~(put by world) town.args new)
@@ -65,7 +66,7 @@
         %become-validator
       =/  zigg=grain  (~(got by owns.cart) `@ux`'ziggurat')
       ?>  ?=(%& -.germ.zigg)
-      =/  =ziggurat:c  ;;(ziggurat:c data.p.germ.zigg)
+      =/  =ziggurat:sur  ;;(ziggurat:sur data.p.germ.zigg)
       ?<  (~(has by ziggurat) q.args)
       =.  data.p.germ.zigg  (~(put by ziggurat) q.args +.args)
       [%& (malt ~[[id.zigg zigg]]) ~ ~]
@@ -73,7 +74,7 @@
         %stop-validating
       =/  zigg=grain  (~(got by owns.cart) `@ux`'ziggurat')
       ?>  ?=(%& -.germ.zigg)
-      =/  =ziggurat:c  ;;(ziggurat:c data.p.germ.zigg)
+      =/  =ziggurat:sur  ;;(ziggurat:sur data.p.germ.zigg)
       ?>  (~(has by ziggurat) q.args)
       =.  data.p.germ.zigg  (~(del by ziggurat) q.args)
       [%& (malt ~[[id.zigg zigg]]) ~ ~]
@@ -91,12 +92,12 @@
       ?>  ?=(%& -.germ.g)
       ?>  ?=(^ data.p.germ.g)
       ?.  ?=([@ @ @] +.-.data.p.germ.g)
-        (world:enjs:c ;;(world:c data.p.germ.g))
-      (ziggurat:enjs:c ;;(ziggurat:c data.p.germ.g))
+        (world:enjs:lib ;;(world:sur data.p.germ.g))
+      (ziggurat:enjs:lib ;;(ziggurat:sur data.p.germ.g))
     ::
         [%egg-args @ ~]
-      %-  arguments:enjs:c
-      ;;(arguments:c (cue (slav %ud i.t.args)))
+      %-  arguments:enjs:lib
+      ;;(arguments:sur (cue (slav %ud i.t.args)))
     ==
   ++  noun
     ~
