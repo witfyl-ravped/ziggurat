@@ -7,7 +7,7 @@
 +$  card  card:agent:gall
 +$  state-0
   $:  %0
-      sources=(jar town-id=@ud dock)
+      sources=(jar town=id:smart dock)
       sequencers=(map id:smart sequencer)
   ==
 --
@@ -34,21 +34,30 @@
   |=  =path
   |^  ^-  (quip card _this)
   ?>  =(src.bowl our.bowl)
+  :_  this
   ?+    -.path  !!
       ?(%id %grain %holder %lord)
-    :_  this
-    =/  watch-card=(unit card)  watch-indexer
-    ?~(watch-card ~ ~[u.watch-card])
+    ?.  ?=([@ @ @ ~] path)  ~
+    =/  town=id:smart  (slav %ux i.t.path)
+    ?~  card=(watch-indexer town ~ /[i.path]/[i.t.t.path])  ~
+    ~[u.card]
+  ::
+      %scry
+    ?.  ?=(?(%id %grain %holder %lord) -.+.path)  ~
+    ?.  ?=([@ @ @ @ ~] path)                      ~
+    =/  town=id:smart  (slav %ux i.t.t.path)
+    =/  card=(unit card)
+      (watch-indexer town /[i.path] /[i.t.path]/[i.t.t.t.path])
+    ?~(card ~ ~[u.card])
   ==
   ::
   ++  watch-indexer  ::  TODO: ping indexers and find responsive one?
+    |=  [town=id:smart wire-prefix=wire sub-path=^path]
     ^-  (unit card)
-    ?.  ?=([@ @ @ ~] path)  ~
-    =/  town=id:smart  (slav %ux i.t.path)
     ?~  town-source=(~(get ja sources) town)  ~
     :-  ~
-    %+  ~(watch pass:io /[i.path]/[i.t.t.path])
-    i.town-source  /[i.path]/[i.t.t.path]
+    %+  ~(watch pass:io (weld wire-prefix sub-path))
+    i.town-source  sub-path
   --
 ::
 ++  on-poke
@@ -77,7 +86,7 @@
       %=  state
           sources
         ?~  town-source=(~(get ja sources) town.act)
-          (~(add ja sources) dock.act)
+          (~(add ja sources) town.act dock.act)
         ?>  ?=(^ (find [dock.act]~ town-source))
         %+  ~(put by sources)  town.act
         (snoc town-source dock.act)
@@ -90,7 +99,7 @@
         ?~  town-source=(~(get ja sources) town.act)  !!
         ?~  index=(find [dock.act]~ town-source)      !!
         %+  ~(put by sources)  town.act
-        (oust [index 1] town-source)
+        (oust [u.index 1] `(list dock)`town-source)
       ==
     ==
   ::
@@ -111,41 +120,58 @@
   |^  ^-  (quip card _this)
   ?+    -.wire  (on-agent:def wire sign)
       ?(%id %grain %holder %lord)
-    :_  this
-    =/  agent-card=(unit card)
-      ?+    -.sign  (on-agent:def wire sign)
-          %kick
-        rejoin
-      ::
-          %fact
-        pass-through
-      ==
-    ?~(agent-card ~ ~[u.agent-card])
+    ?+    -.sign  (on-agent:def wire sign)
+        %kick
+      :_  this
+      =/  agent-card=(unit card)  rejoin
+      ?~(agent-card ~ ~[u.agent-card])
+    ::
+        %fact
+      :_  this
+      ~[(pass-through cage.sign)]
+    ==
+  ::
+      %scry
+    ?+    -.sign  (on-agent:def wire sign)
+        %fact
+      :_  this
+      =/  leave-card=(unit card)  leave
+      ?~  leave-card
+        ~&  >>>  "zane: failed to leave {<wire>}"
+        ~[(pass-through cage.sign)]
+      ~[(pass-through cage.sign) u.leave-card]
+    ==
   ==
+  ::
+  ++  pass-through
+    |=  =cage
+    ^-  card
+    (fact:io cage ~[wire])
+  ::
+  ++  leave
+    ^-  (unit card)
+    =/  old-source=(unit dock)
+      get-wex-dock-by-wire
+    ?~  old-source  ~
+    `(~(leave pass:io wire) u.old-source)
   ::
   ++  rejoin  ::  TODO: ping indexers and find responsive one?
     ^-  (unit card)
-    ?~  old-source=(get-wex-dock-by-wire wire)  ~
-    (~(watch pass:io wire) u.old-source wire)
+    =/  old-source=(unit dock)
+      get-wex-dock-by-wire
+    ?~  old-source  ~
+    `(~(watch pass:io wire) u.old-source wire)
   ::
   ++  get-wex-dock-by-wire
     ^-  (unit dock)
     ?:  =(0 ~(wyt by wex.bowl))  ~
-    =/  wexs=(list [w=wire s=ship t=term])
+    =/  wexs=(list [w=^wire s=ship t=term])
       ~(tap in ~(key by wex.bowl))
     |-
     ?~  wexs  ~
     =*  wex  i.wexs
     ?.  =(wire w.wex)  $(wexs t.wexs)
     `[s.wex t.wex]
-  ::
-  ++  pass-through
-    ^-  (unit card)
-    ?.  ?=([@ @ ~] wire)  ~
-    =/  town=id:smart  (slav %ux i.t.wire)
-    =/  item=id:smart  (slav %ux i.t.t.wire)
-    ?~  town-source=(~(get ja sources) town)  ~
-    `(fact:io cage.sign wire)
   --
 ::
 ++  on-arvo
