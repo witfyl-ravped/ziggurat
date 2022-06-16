@@ -30,6 +30,6 @@
 ::
 +$  write
   $%  [%submit =egg:smart]
-      [%submit-many eggs=(list egg:smart)]
+      [%submit-many town=id:smart eggs=(list egg:smart)]
   ==
 --

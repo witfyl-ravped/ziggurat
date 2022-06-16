@@ -111,13 +111,17 @@
   ++  handle-write
     |=  =write
     ^-  (quip card _state)
-    ?-    -.write
-        %submit
-      !!
-    ::
-        %submit-many
-      !!
-    ==
+    =/  town-id  ^-  @ux
+      ?:  ?=(%submit-many -.write)
+        town.write
+      `@ux`town-id.p.egg.write
+    ?~  seq=(~(get by sequencers.state) town-id)
+      ~|("%zane: no known sequencer for that town" !!)
+    :_  state
+    =+  ?:  ?=(%submit-many -.write)
+          [%town-action !>([%receive (silt eggs.write)])]
+        [%town-action !>([%receive (silt ~[egg.write])])]
+    [%pass /submit-transaction %agent [q.u.seq %sequencer] %poke -]~
   --
 ::
 ++  on-agent
