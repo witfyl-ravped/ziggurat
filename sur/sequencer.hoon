@@ -1,6 +1,6 @@
 /+  smart=zig-sys-smart
 |%
-+$  basket     (set egg:smart)  ::  transaction "mempool"
++$  basket     (set [hash=@ux =egg:smart])  ::  transaction "mempool"
 +$  sequencer  (pair address:smart ship)
 ::
 +$  availability-method
@@ -58,7 +58,6 @@
       [%new-sequencer town=id:smart who=ship]
   ==
 ::
-+$  indexer-update
-  $%  [%new-state =town]
-  ==
+::  indexer must verify root is posted to rollup before verifying new state
++$  indexer-update  [%update eggs=(list [@ux egg:smart]) =town root=@ux]
 --
