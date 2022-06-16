@@ -30,8 +30,6 @@
       [%derive-new-address hdpath=tape nick=@t]
       [%delete-address address=@ux]
       [%edit-nickname address=@ux nick=@t]
-      [%set-node town=@ud =ship]
-      [%set-indexer =ship]
       ::  HW wallet stuff
       [%add-tracked-address address=@ux nick=@t]
       [%submit-signed hash=@ eth-hash=@ sig=[v=@ r=@ s=@]]

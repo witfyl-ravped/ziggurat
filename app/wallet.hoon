@@ -4,7 +4,7 @@
 ::  transactions, holding nonce values, and keeping track of owned data.
 ::
 /-  ui=indexer
-/+  *wallet-util, wallet-parsing, default-agent, dbug, verb, bip32, bip39
+/+  *wallet-util, wallet-parsing, zane, default-agent, dbug, verb, bip32, bip39
 /*  smart-lib  %noun  /lib/zig/compiled/smart-lib/noun
 |%
 +$  card  card:agent:gall
@@ -12,13 +12,11 @@
   $:  %0
       seed=[mnem=@t pass=@t address-index=@ud]
       keys=(map pub=@ux [priv=(unit @ux) nick=@t])  ::  keys created from master seed
-      nodes=(map town=@ud =ship)  ::  the sequencer you submit txs to for each town
       nonces=(map pub=@ux (map town=@ud nonce=@ud))
       tokens=(map pub=@ux =book)
       =transaction-store
       pending=(unit [yolk-hash=@ =egg:smart args=supported-args])
       =metadata-store
-      indexer=(unit ship)
   ==
 --
 ::
@@ -32,7 +30,7 @@
 +*  this  .
     def   ~(. (default-agent this %|) bowl)
 ::
-++  on-init  `this(state [%0 ['' '' 0] ~ ~ ~ ~ ~ ~ ~ `our.bowl])
+++  on-init  `this(state [%0 ['' '' 0] ~ ~ ~ ~ ~ ~])
 ::
 ++  on-save  !>(state)
 ++  on-load
@@ -86,7 +84,7 @@
           ?^  priv  ~
           `[pub [~ nick]]
       :-  %+  weld  (clear-all-holder-and-id-subs wex.bowl)
-          (create-holder-and-id-subs ~(key by -) (need indexer.state))
+          (create-holder-and-id-subs ~(key by -) our.bowl)
       %=  state
         transaction-store  ~
         seed  [mnemonic.act password.act 0]
@@ -105,7 +103,7 @@
           ?^  priv  ~
           `[pub [~ nick]]
       :-  %+  weld  (clear-all-holder-and-id-subs wex.bowl)
-          (create-holder-and-id-subs ~(key by (~(put by -) public-key:core [`private-key:core nick.act])) (need indexer.state))
+          (create-holder-and-id-subs ~(key by (~(put by -) public-key:core [`private-key:core nick.act])) our.bowl)
       %=  state
         transaction-store  ~
         seed  [(crip mnem) password.act 0]
@@ -118,14 +116,14 @@
       =+  %-  derive-path:-
           ?:  !=("" hdpath.act)  hdpath.act
           (weld "m/44'/60'/0'/0/" (scow %ud address-index.seed.state))
-      :-  (create-holder-and-id-subs (silt ~[public-key:-]) (need indexer.state))
+      :-  (create-holder-and-id-subs (silt ~[public-key:-]) our.bowl)
       %=  state
         seed  seed(address-index +(address-index.seed))
         keys  (~(put by keys) public-key:- [`private-key:- nick.act])
       ==
     ::
         %add-tracked-address
-      :-  (create-holder-and-id-subs (silt ~[address.act]) (need indexer.state))
+      :-  (create-holder-and-id-subs (silt ~[address.act]) our.bowl)
       state(keys (~(put by keys) address.act [~ nick.act]))
     ::
         %delete-address
@@ -141,15 +139,6 @@
       =+  -:(~(got by keys.state) address.act)
       `state(keys (~(put by keys) address.act [- nick.act]))
     ::
-        %set-node
-      `state(nodes (~(put by nodes) town.act ship.act))
-    ::
-        %set-indexer
-      ::  defaults to our ship, so for testing, just run indexer on same ship
-      :_  state(indexer `ship.act)
-      %+  weld  (clear-asset-subscriptions wex.bowl)
-      (create-asset-subscriptions tokens.state ship.act)
-    ::
         %set-nonce  ::  for testing/debugging
       =+  acc=(~(got by nonces.state) address.act)
       `state(nonces (~(put by nonces) address.act (~(put by acc) town.act new.act)))
@@ -162,7 +151,7 @@
       =+  core=(from-seed:bip32 [64 (to-seed:bip39 mnem "")])
       =+  pub=public-key:core
       =+  (malt ~[[pub [`private-key:core (scot %ux seed.act)]]])
-      :-  (create-holder-and-id-subs ~(key by -) (need indexer.state))
+      :-  (create-holder-and-id-subs ~(key by -) our.bowl)
       %=  state
         seed    [(crip mnem) '' 0]
         keys    -
@@ -170,7 +159,6 @@
         tokens  ~
         transaction-store  ~
         metadata-store  ~
-        nodes   (malt ~[[0 our.bowl] [1 our.bowl] [2 our.bowl]])
       ==
     ::
         %submit-signed
@@ -183,7 +171,6 @@
       ?>  ?=(account:smart from.p.egg.p)
       =*  from   id.from.p.egg.p
       =*  nonce  nonce.from.p.egg.p
-      =/  node=ship  (~(gut by nodes.state) town-id.p.egg.p our.bowl)
       =+  egg-hash=(hash-egg egg.p)
       =/  our-txs
         ?~  o=(~(get by transaction-store) from)
@@ -198,9 +185,9 @@
           ==
       :~  (tx-update-card egg.p `args.p)
           :*  %pass  /submit-tx/(scot %ux egg-hash)
-              %agent  [node %sequencer]
-              %poke  %zig-weave-poke
-              !>([%forward (silt ~[egg.p])])
+              %agent  [our.bowl %zane]
+              %poke  %zane-write
+              !>([%submit egg.p])
           ==
       ==
     ::
@@ -208,7 +195,6 @@
       ::  submit a transaction, with frontend-defined everything
       =/  our-nonces     (~(gut by nonces.state) from.act ~)
       =/  nonce=@ud      (~(gut by our-nonces) town.act 0)
-      =/  node=ship      (~(gut by nodes.state) town.act our.bowl)
       =/  =caller:smart  :+  from.act  +(nonce)
                          (fry-rice:smart from.act `@ux`'zigs-contract' town.act `@`'zigs')
       =/  =yolk:smart    [caller `q:(slap !>(+:(cue q.q.smart-lib)) (ream args.act)) my-grains.act cont-grains.act]
@@ -246,9 +232,9 @@
           ==
       :~  (tx-update-card egg `[%custom args.act])
           :*  %pass  /submit-tx/(scot %ux from.act)/(scot %ux egg-hash)
-              %agent  [node %sequencer]
-              %poke  %zig-weave-poke
-              !>([%forward (silt ~[egg])])
+              %agent  [our.bowl %zane]
+              %poke  %zane-write
+              !>([%submit egg])
           ==
       ==
     ::
@@ -262,7 +248,6 @@
       ::
       =/  our-nonces     (~(gut by nonces.state) from.act ~)
       =/  nonce=@ud      (~(gut by our-nonces) town.act 0)
-      =/  node=ship      (~(gut by nodes.state) town.act our.bowl)
       ~|  "wallet: can't find tokens for that address!"
       =/  =book          (~(got by tokens.state) from.act)
       =/  =caller:smart  :+  from.act  +(nonce)
@@ -277,8 +262,7 @@
           ~|  "wallet can't find our zigs account for that town!"
           =/  our-account=grain:smart  +:(~(got by book) [town.act to.act salt.metadata])
           =/  their-account-id  (fry-rice:smart to.args.act to.act town.act salt.metadata)
-          =/  exists  .^(update:ui %gx /(scot %p our.bowl)/indexer/(scot %da now.bowl)/grain/(scot %ux their-account-id)/noun)
-          ?~  exists
+          ?~  exists=(scry:zane %grain their-account-id [our now]:bowl)
             ::  they don't have an account for this token
             ?:  =(to.act `@ux`'zigs-contract')  ::  zigs special case
               [`[%give to.args.act ~ amount.args.act bud.gas.act] (silt ~[id.our-account]) ~]
@@ -297,8 +281,7 @@
           ~|  "wallet can't find our zigs account for that town!"
           =/  our-account=grain:smart  +:(~(got by book) [town.act to.act salt.metadata])
           =/  their-account-id  (fry-rice:smart to.args.act to.act town.act salt.metadata)
-          =/  exists  .^(update:ui %gx /(scot %p our.bowl)/indexer/(scot %da now.bowl)/grain/(scot %ux their-account-id)/noun)
-          ?~  exists
+          ?~  exists=(scry:zane %grain their-account-id [our now]:bowl)
             [`[%give to.args.act ~ item-id.args.act] (silt ~[id.our-account]) ~]
           :+  `[%give to.args.act `their-account-id item-id.args.act]
             (silt ~[id.our-account])
@@ -330,9 +313,9 @@
           ==
       :~  (tx-update-card egg `args.act)
           :*  %pass  /submit-tx/(scot %ux from.act)/(scot %ux egg-hash)
-              %agent  [node %sequencer]
-              %poke  %zig-weave-poke
-              !>([%forward (silt ~[egg])])
+              %agent  [our.bowl %zane]
+              %poke  %zane-write
+              !>([%submit egg])
           ==
       ==
     ==
@@ -532,15 +515,6 @@
     :~  ['hash' [%s (scot %ux yolk-hash.p)]]
         ['egg' +:(parse-transaction:wallet-parsing 0x0 egg.p `args.p)]
     ==
-  ::
-      [%nodes ~]
-    ::  provides a JSON array of towns we have ships known to be sequencing on
-    =;  =json  ``json+!>(json)
-    =,  enjs:format
-    %-  pairs
-    %+  turn  ~(tap by nodes.state)
-    |=  [id=@ud =^ship]
-    [(scot %ud id) [%s (scot %p ship)]]
   ==
 ::
 ++  on-leave  on-leave:def
