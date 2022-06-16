@@ -33,14 +33,14 @@
     def   ~(. (default-agent this %|) bowl)
 ::
 ++  on-init
-  `this(state [[%0 ~ ~ ~ ~ ~ ~ %off] ~(mill mill ;;(vase (cue q.q.smart-lib-noun)))])
+  `this(state [[%0 ~ ~ ~ ~ ~ ~ %off] ~(mill mill smart-lib)])
 ++  on-save  !>(-.state)
 ++  on-load
   |=  =old=vase
   ^-  (quip card _this)
   ::  on-load: pre-cue our compiled smart contract library
   ::
-  `this(state [!<(state-0 old-vase) ~(mill mill ;;(vase (cue q.q.smart-lib-noun)))])
+  `this(state [!<(state-0 old-vase) ~(mill mill smart-lib)])
 ::
 ++  on-watch
   |=  =path
@@ -76,6 +76,7 @@
     ::
         %init
       ?>  =(src.bowl our.bowl)
+      ?>  =(%off status.state)
       ::  poke rollup ship with params of new town
       ::  (will be rejected if id is taken)
       =/  =land  ?~(starting-state.act [~ ~] u.starting-state.act)
@@ -95,6 +96,7 @@
             private-key  `private-key.act
             town         `town
             status        %available
+            proposed-batch  `[~ land.town 0x0 new-root]
           ==
       :~  [%pass /sub-rollup %agent [rollup-host.act %rollup] %watch /peer-root-updates]
           =+  [%rollup-action !>([%launch-town address.act sig town])]
@@ -121,7 +123,6 @@
         %receive
       ?.  =(%available status.state)
         ~|("%sequencer: error: got egg while not active" !!)
-      ~&  >>  "%sequencer: received eggs from {<src.bowl>}: {<eggs.act>}"
       =-  `state(basket (~(uni in basket) -))
       ^+  basket
       %-  ~(run in eggs.act)

@@ -119,8 +119,8 @@
       ~|("%zane: no known sequencer for that town" !!)
     :_  state
     =+  ?:  ?=(%submit-many -.write)
-          [%town-action !>([%receive (silt eggs.write)])]
-        [%town-action !>([%receive (silt ~[egg.write])])]
+          [%sequencer-town-action !>([%receive (silt eggs.write)])]
+        [%sequencer-town-action !>([%receive (silt ~[egg.write])])]
     [%pass /submit-transaction %agent [q.u.seq %sequencer] %poke -]~
   --
 ::

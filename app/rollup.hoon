@@ -105,7 +105,11 @@
             %+  turn  ~(tap by peer-roots.act)
             |=  [=id:smart root=@ux]
             ?~  hall=(~(get by capitol.state) id)  %.n
-            ?~  (find [root]~ (slag recent-enough roots.u.hall))  %.n
+            =+  ?:  (lte (lent roots.u.hall) recent-enough)
+                  roots.u.hall
+                (slag recent-enough roots.u.hall)
+            ?~  (find [root]~ -)
+              %.n
             %.y
           |=(a=? a)
         ~|("%rollup: rejecting batch; peer roots not recent enough" !!)
