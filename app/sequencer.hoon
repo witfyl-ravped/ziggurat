@@ -50,8 +50,11 @@
   ?>  (allowed-participant [src our now]:bowl)
   ?.  ?=([%indexer %updates ~] path)
     ~|("%sequencer: rejecting %watch on bad path" !!)
-  ::  handle indexer watches here -- send latest state?
-  `this
+  ::  handle indexer watches here -- send latest state
+  ?~  town  `this
+  :_  this
+  =-  [%give %fact ~ %indexer-update -]~
+  !>([%new-state ~ u.town (rear roots.hall.u.town)])
 ::
 ++  on-poke
   |=  [=mark =vase]
