@@ -3,9 +3,9 @@
 ::  managing the zane
 ::
 +$  action
-  $%  [%set-sources indexers=(list [=ship town=id:smart])]
-      [%add-source =ship]  ::  added to end of priority list
-      [%remove-source =ship]
+  $%  [%set-sources indexers=(list [town=id:smart =dock])]
+      [%add-source town=id:smart =dock]  ::  added to end of priority list
+      [%remove-source town=id:smart =dock]
   ==
 ::  ++  on-peek
 ::  reading info from indexer
