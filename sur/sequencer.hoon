@@ -56,8 +56,8 @@
   ==
 ::
 +$  rollup-update
-  $%  [%new-peer-root town=id:smart root=@ux]
-      [%new-sequencer town=id:smart who=ship]
+  $%  [%new-peer-root town-id=id:smart root=@ux]
+      [%new-sequencer town-id=id:smart who=ship]
   ==
 ::
 +$  capitol-update  [%new-capitol =capitol]

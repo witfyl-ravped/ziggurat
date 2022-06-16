@@ -218,13 +218,13 @@
     ?-    -.upd
         %new-peer-root
       ::  update our local map
-      `state(peer-roots (~(put by peer-roots.state) town.upd root.upd))
+      `state(peer-roots (~(put by peer-roots.state) town-id.upd root.upd))
     ::
         %new-sequencer
       ::  check if we have been kicked off our town
       ::  this is in place for later..  TODO expand this functionality
       ?~  town.state                  `state
-      ?.  =(town.upd id.hall.u.town)  `state
+      ?.  =(town-id.upd id.hall.u.town)  `state
       ?:  =(who.upd our.bowl)         `state
       ~&  >>>  "%sequencer: we've been kicked out of town!"
       `state

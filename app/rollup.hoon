@@ -84,7 +84,7 @@
     ::
         %bridge-assets
       ::  for simulation purposes
-      ?~  hall=(~(get by capitol.state) town.act)  !!
+      ?~  hall=(~(get by capitol.state) town-id.act)  !!
       :_  state
       =+  [%town-action !>([%receive-assets assets.act])]
       [%pass /bridge %agent [q.sequencer.u.hall %sequencer] %poke -]~

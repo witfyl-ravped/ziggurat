@@ -3,15 +3,15 @@
 ::  managing the zane
 ::
 +$  action
-  $%  [%set-sources rollup-host=ship indexers=(list [town=id:smart (list dock)])]
-      [%add-source town=id:smart =dock]  ::  added to end of priority list
-      [%remove-source town=id:smart =dock]
+  $%  [%set-sources rollup-host=ship indexers=(list [town-id=id:smart (list dock)])]
+      [%add-source town-id=id:smart =dock]  ::  added to end of priority list
+      [%remove-source town-id=id:smart =dock]
   ==
 ::  ++  on-peek
 ::  reading info from indexer
 ::
 +$  read
-  $%  [%contract =id:smart town=id:smart args=^ grains=(list id:smart)]  ::  perform read direct from sequencer
+  $%  [%contract =id:smart town-id=id:smart args=^ grains=(list id:smart)]  ::  perform read direct from sequencer
       [%grain =id:smart]           ::  get from indexer, once
       [%transaction =id:smart]
   ==
@@ -30,6 +30,6 @@
 ::
 +$  write
   $%  [%submit =egg:smart]
-      [%submit-many town=id:smart eggs=(list egg:smart)]
+      [%submit-many town-id=id:smart eggs=(list egg:smart)]
   ==
 --

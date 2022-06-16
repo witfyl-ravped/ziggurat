@@ -7,7 +7,7 @@
 +$  card  card:agent:gall
 +$  state-0
   $:  %0
-      sources=(jar town=id:smart dock)
+      sources=(jar town-id=id:smart dock)
       sequencers=(map id:smart sequencer)
   ==
 --
@@ -90,10 +90,10 @@
       :-  ~
       %=  state
           sources
-        ?~  town-source=(~(get ja sources) town.act)
-          (~(add ja sources) town.act dock.act)
+        ?~  town-source=(~(get ja sources) town-id.act)
+          (~(add ja sources) town-id.act dock.act)
         ?>  ?=(^ (find [dock.act]~ town-source))
-        %+  ~(put by sources)  town.act
+        %+  ~(put by sources)  town-id.act
         (snoc town-source dock.act)
       ==
     ::
@@ -101,9 +101,9 @@
       :-  ~
       %=  state
           sources
-        ?~  town-source=(~(get ja sources) town.act)  !!
+        ?~  town-source=(~(get ja sources) town-id.act)  !!
         ?~  index=(find [dock.act]~ town-source)      !!
-        %+  ~(put by sources)  town.act
+        %+  ~(put by sources)  town-id.act
         (oust [u.index 1] `(list dock)`town-source)
       ==
     ==
@@ -113,7 +113,7 @@
     ^-  (quip card _state)
     =/  town-id  ^-  @ux
       ?:  ?=(%submit-many -.write)
-        town.write
+        town-id.write
       `@ux`town-id.p.egg.write
     ?~  seq=(~(get by sequencers.state) town-id)
       ~|("%zane: no known sequencer for that town" !!)
