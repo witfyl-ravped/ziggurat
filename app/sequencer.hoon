@@ -228,10 +228,6 @@
       ?:  =(who.upd our.bowl)         `state
       ~&  >>>  "%sequencer: we've been kicked out of town!"
       `state
-    ::
-        %new-capitol
-      ::  these are for indexers, can ignore..
-      `state
     ==
   --
 ::

@@ -57,9 +57,10 @@
 ::
 +$  rollup-update
   $%  [%new-peer-root town=id:smart root=@ux]
-      [%new-capitol capitol]
       [%new-sequencer town=id:smart who=ship]
   ==
+::
++$  capitol-update  [%new-capitol =capitol]
 ::
 ::  indexer must verify root is posted to rollup before verifying new state
 +$  indexer-update  [%update eggs=(list [@ux egg:smart]) =town root=@ux]

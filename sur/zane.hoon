@@ -3,7 +3,7 @@
 ::  managing the zane
 ::
 +$  action
-  $%  [%set-sources indexers=(list [town=id:smart =dock])]
+  $%  [%set-sources rollup-host=ship indexers=(list [town=id:smart (list dock)])]
       [%add-source town=id:smart =dock]  ::  added to end of priority list
       [%remove-source town=id:smart =dock]
   ==

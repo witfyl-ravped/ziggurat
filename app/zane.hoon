@@ -79,7 +79,12 @@
     ^-  (quip card _state)
     ?-    -.act
         %set-sources
-      !!
+      ::  TEMPORARY: subscribe directly to rollup (hardcoded) to know active sequencers.
+      ::  this will only work pre-scaling so make sure to switch source to indexers
+      ::  down the line. also need to be on whitelist for this to work
+      =+  /capitol-updates
+      :-  [%pass - %agent [rollup-host.act %rollup] %watch -]~
+      state(sources (~(gas by *(map id:smart (list dock))) indexers.act))
     ::
         %add-source
       :-  ~
@@ -119,6 +124,16 @@
   |=  [=wire =sign:agent:gall]
   |^  ^-  (quip card _this)
   ?+    -.wire  (on-agent:def wire sign)
+      %capitol-updates
+    ::  set sequencers based on rollup state
+    ?:  ?=(%kick -.sign)
+      :_  this  ::  attempt to re-sub
+      [%pass wire %agent [src.bowl %rollup] %watch (snip `path`wire)]~
+    ?.  ?=(%fact -.sign)  `this
+    =^  cards  state
+      (update-sequencers !<(capitol-update q.cage.sign))
+    [cards this]
+  ::
       ?(%id %grain %holder %lord)
     ?+    -.sign  (on-agent:def wire sign)
         %kick
@@ -187,6 +202,16 @@
     =*  wex  i.wexs
     ?.  =(wire w.wex)  $(wexs t.wexs)
     `[s.wex t.wex]
+  ::
+  ++  update-sequencers
+    |=  upd=capitol-update
+    ^-  (quip card _state)
+    :-  ~
+    %=    state
+        sequencers
+      %-  ~(run by capitol.upd)
+      |=(=hall sequencer.hall)
+    ==
   --
 ::
 ++  on-arvo
