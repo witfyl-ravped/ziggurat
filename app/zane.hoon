@@ -135,11 +135,15 @@
     ?+    -.sign  (on-agent:def wire sign)
         %fact
       :_  this
+      =/  kick-card=(unit card)   kick
       =/  leave-card=(unit card)  leave
+      ?~  kick-card
+        ~&  >>>  "zane: failed to kick {<wire>}"
+        ~[(pass-through cage.sign)]
       ?~  leave-card
         ~&  >>>  "zane: failed to leave {<wire>}"
         ~[(pass-through cage.sign)]
-      ~[(pass-through cage.sign) u.leave-card]
+      ~[(pass-through cage.sign) u.kick-card u.leave-card]
     ==
   ==
   ::
@@ -148,12 +152,23 @@
     ^-  card
     (fact:io cage ~[wire])
   ::
+  ++  get-sup-ship-by-wire
+    ^-  (unit ship)
+    ?:  =(0 ~(wyt by sup.bowl))  ~
+    ?~  sup=(~(get by sup.bowl) ~[wire])  ~
+    `p.u.sup
+  ::
   ++  leave
     ^-  (unit card)
-    =/  old-source=(unit dock)
-      get-wex-dock-by-wire
+    =/  old-source=(unit dock)  get-wex-dock-by-wire
     ?~  old-source  ~
     `(~(leave pass:io wire) u.old-source)
+  ::
+  ++  kick
+    ^-  (unit card)
+    =/  kick-ship=(unit ship)  get-sup-ship-by-wire
+    ?~  kick-ship  ~
+    `(kick-only:io u.kick-ship ~[wire])
   ::
   ++  rejoin  ::  TODO: ping indexers and find responsive one?
     ^-  (unit card)
