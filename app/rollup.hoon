@@ -39,12 +39,20 @@
   ?>  (allowed-participant [src our now]:bowl)
   ::  give new subscibing sequencer recent root from every town
   ::
-  :_  this
-  %+  turn  ~(tap by capitol)
-  |=  [=id:smart =hall:sequencer]
-  ^-  card
-  =-  [%give %fact ~[/peer-root-update] -]
-  [%rollup-update !>([%new-peer-root id (rear roots.hall)])]
+  ?+    -.path  !!
+      %capitol-updates
+    :_  this
+    =-  [%give %fact ~ -]~
+    [%rollup-update !>([%new-capitol capitol])]
+  ::
+      %peer-root-updates
+    :_  this
+    %+  turn  ~(tap by capitol)
+    |=  [=id:smart =hall:sequencer]
+    ^-  card
+    =-  [%give %fact ~ -]
+    [%rollup-update !>([%new-peer-root id (rear roots.hall)])]
+  ==
 ::
 ++  on-poke
   |=  [=mark =vase]
@@ -68,8 +76,11 @@
       ::  create new hall
       ::  TODO remove starting-state from init and populate new towns via
       ::  assets from other towns
-      :_  state(capitol (~(put by capitol) id.hall.act hall.act))
-      [%give %fact ~[/peer-root-update] %rollup-update !>([%new-peer-root id.hall.act (rear roots.hall.act)])]~
+      =+  (~(put by capitol) id.hall.act hall.act)
+      :_  state(capitol -)
+      :~  [%give %fact ~[/peer-root-updates] %rollup-update !>([%new-peer-root id.hall.act (rear roots.hall.act)])]
+          [%give %fact ~[/capitol-updates] %rollup-update !>([%new-capitol -])]
+      ==
     ::
         %bridge-assets
       ::  for simulation purposes
@@ -108,8 +119,11 @@
             latest-diff-hash  diff-hash.act
             roots  (snoc roots.u.hall new-root.act)
           ==
-      :_  state(capitol (~(put by capitol) town-id.act -))
-      [%give %fact ~[/peer-root-update] %rollup-update !>([%new-peer-root town-id.act new-root.act])]~
+      =+  (~(put by capitol) town-id.act -)
+      :_  state(capitol -)
+      :~  [%give %fact ~[/peer-root-updates] %rollup-update !>([%new-peer-root town-id.act new-root.act])]
+          [%give %fact ~[/capitol-updates] %rollup-update !>([%new-capitol -])]
+      ==
     ==
   --
 ::

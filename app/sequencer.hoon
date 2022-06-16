@@ -93,9 +93,9 @@
             town         `town
             status        %available
           ==
-      :~  [%pass /sub-rollup %agent [rollup-host.act %rollup] %watch /rollup-updates]
+      :~  [%pass /sub-rollup %agent [rollup-host.act %rollup] %watch /peer-root-updates]
           =+  [%rollup-action !>([%launch-town address.act sig town])]
-          [%pass /move-submit/(scot %ux new-root) %agent [rollup-host.act %rollup] %poke -]
+          [%pass /batch-submit/(scot %ux new-root) %agent [rollup-host.act %rollup] %poke -]
       ==
     ::
         %clear-state
@@ -192,7 +192,7 @@
       `this(proposed-batch ~)
     `this
   ::
-      [%rollup-updates ~]
+      [%sub-rollup ~]
     ?:  ?=(%kick -.sign)
       :_  this  ::  attempt to re-sub
       [%pass wire %agent [src.bowl %rollup] %watch (snip `path`wire)]~
@@ -217,6 +217,10 @@
       ?.  =(town.upd id.hall.u.town)  `state
       ?:  =(who.upd our.bowl)         `state
       ~&  >>>  "%sequencer: we've been kicked out of town!"
+      `state
+    ::
+        %new-capitol
+      ::  these are for indexers, can ignore..
       `state
     ==
   --
