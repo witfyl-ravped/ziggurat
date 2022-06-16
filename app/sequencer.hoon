@@ -16,7 +16,7 @@
       town=(unit town)                ::  state
       =basket                         ::  mempool
       peer-roots=(map id:smart root=@ux)  ::  track updates from rollup
-      proposed-batch=(unit [=land diff-hash=@ux root=@ux])
+      proposed-batch=(unit [=basket =land diff-hash=@ux root=@ux])
       status=?(%available %off)
   ==
 +$  inflated-state-0  [state-0 =mil]
@@ -119,7 +119,11 @@
       ?.  =(%available status.state)
         ~|("%sequencer: error: got egg while not active" !!)
       ~&  >>  "%sequencer: received eggs from {<src.bowl>}: {<eggs.act>}"
-      `state(basket (~(uni in basket) eggs.act))
+      =-  `state(basket (~(uni in basket) -))
+      ^+  basket
+      %-  ~(run in eggs.act)
+      |=  =egg:smart
+      [`@ux`(shax (jam q.egg)) egg]
     ::
     ::  batching
     ::
@@ -146,7 +150,9 @@
       =+  /(scot %p our.bowl)/wallet/(scot %da now.bowl)/account/(scot %ux addr)/(scot %ud id.hall.town)/noun
       =+  .^(account:smart %gx -)
       =/  new-state=[(list [@ux egg:smart]) =land]
-        (~(mill-all mil - `@ud`id.hall.town 0) land.town ~(tap in `^basket`basket.state))
+        %+  ~(mill-all mil - `@ud`id.hall.town 0)
+          land.town
+        (turn ~(tap in `^basket`basket.state) tail)
       =/  new-root      (shax (jam land.new-state))
       =/  state-diffs  *(list diff)
       =/  diff-hash     (shax (jam state-diffs))
@@ -157,20 +163,20 @@
       =/  sig
         (ecdsa-raw-sign:secp256k1:secp:crypto new-root u.private-key.state)
       ::  3. poke rollup
-      :_  state(proposed-batch `[+.new-state diff-hash new-root])
-      =+  :-  %rollup-action
-          !>  :-  %receive-batch
-              :*  addr
-                  id.hall.town
-                  mode.hall.town
-                  state-diffs
-                  diff-hash
-                  new-root
-                  +.new-state
-                  peer-roots.state
-                  sig
-              ==
-      [%pass /batch-submit/(scot %ux new-root) %agent [u.rollup.state %rollup] %poke -]~
+      :_  state(proposed-batch `[basket.state +.new-state diff-hash new-root], basket ~)
+      =-  [%pass /batch-submit/(scot %ux new-root) %agent [u.rollup.state %rollup] %poke -]~
+      :-  %rollup-action
+      !>  :-  %receive-batch
+          :*  addr
+              id.hall.town
+              mode.hall.town
+              state-diffs
+              diff-hash
+              new-root
+              +.new-state
+              peer-roots.state
+              sig
+          ==
     ==
   --
 ::
@@ -185,8 +191,9 @@
         ~&  >>  "%sequencer: batch approved by rollup"
         ?~  proposed-batch
           ~|("%sequencer: error: received batch approval without proposed batch" !!)
-        :_  this(town (transition-state town u.proposed-batch), proposed-batch ~)
-        [%give %fact ~[/indexer/updates] %indexer-update !>([%new-state land.u.proposed-batch])]~
+        :_  this(town (transition-state town u.proposed-batch), proposed-batch ~, basket ~)
+        =-  [%give %fact ~[/indexer/updates] %indexer-update -]~
+        !>([%new-state ~(tap in basket.u.proposed-batch) land.u.proposed-batch root.u.proposed-batch])
       ::  TODO manage rejected moves here
       ~&  >>>  "%sequencer: our move was rejected by rollup!"
       `this(proposed-batch ~)
