@@ -1,6 +1,6 @@
-::  sequencer [uqbar-dao]
+::  sequencer [UQ| DAO]
 ::
-::  Agent for managing a single Uqbar town. Publishes diffs to rollup.hoon
+::  Agent for managing a single UQ| town. Publishes diffs to rollup.hoon
 ::  Accepts transactions and batches them periodically as moves to town.
 ::
 /+  *sequencer, *rollup, default-agent, dbug, verb

@@ -1,10 +1,10 @@
-::  wallet [uqbar-dao]
+::  wallet [UQ| DAO]
 ::
-::  Uqbar wallet agent. Stores private key and facilitates signing
+::  UQ| wallet agent. Stores private key and facilitates signing
 ::  transactions, holding nonce values, and keeping track of owned data.
 ::
 /-  ui=indexer
-/+  *wallet-util, wallet-parsing, zane, default-agent, dbug, verb, bip32, bip39
+/+  *wallet-util, wallet-parsing, uqbar, default-agent, dbug, verb, bip32, bip39
 /*  smart-lib  %noun  /lib/zig/compiled/smart-lib/noun
 |%
 +$  card  card:agent:gall
@@ -185,8 +185,8 @@
           ==
       :~  (tx-update-card egg.p `args.p)
           :*  %pass  /submit-tx/(scot %ux egg-hash)
-              %agent  [our.bowl %zane]
-              %poke  %zane-write
+              %agent  [our.bowl %uqbar]
+              %poke  %uqbar-write
               !>([%submit egg.p])
           ==
       ==
@@ -232,8 +232,8 @@
           ==
       :~  (tx-update-card egg `[%custom args.act])
           :*  %pass  /submit-tx/(scot %ux from.act)/(scot %ux egg-hash)
-              %agent  [our.bowl %zane]
-              %poke  %zane-write
+              %agent  [our.bowl %uqbar]
+              %poke  %uqbar-write
               !>([%submit egg])
           ==
       ==
@@ -262,7 +262,7 @@
           ~|  "wallet can't find our zigs account for that town!"
           =/  our-account=grain:smart  +:(~(got by book) [town.act to.act salt.metadata])
           =/  their-account-id  (fry-rice:smart to.args.act to.act town.act salt.metadata)
-          ?~  exists=(scry:zane %grain their-account-id [our now]:bowl)
+          ?~  exists=(scry:uqbar %grain their-account-id [our now]:bowl)
             ::  they don't have an account for this token
             ?:  =(to.act `@ux`'zigs-contract')  ::  zigs special case
               [`[%give to.args.act ~ amount.args.act bud.gas.act] (silt ~[id.our-account]) ~]
@@ -281,7 +281,7 @@
           ~|  "wallet can't find our zigs account for that town!"
           =/  our-account=grain:smart  +:(~(got by book) [town.act to.act salt.metadata])
           =/  their-account-id  (fry-rice:smart to.args.act to.act town.act salt.metadata)
-          ?~  exists=(scry:zane %grain their-account-id [our now]:bowl)
+          ?~  exists=(scry:uqbar %grain their-account-id [our now]:bowl)
             [`[%give to.args.act ~ item-id.args.act] (silt ~[id.our-account]) ~]
           :+  `[%give to.args.act `their-account-id item-id.args.act]
             (silt ~[id.our-account])
@@ -313,8 +313,8 @@
           ==
       :~  (tx-update-card egg `args.act)
           :*  %pass  /submit-tx/(scot %ux from.act)/(scot %ux egg-hash)
-              %agent  [our.bowl %zane]
-              %poke  %zane-write
+              %agent  [our.bowl %uqbar]
+              %poke  %uqbar-write
               !>([%submit egg])
           ==
       ==

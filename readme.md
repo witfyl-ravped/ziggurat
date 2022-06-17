@@ -45,7 +45,7 @@ Enter these commands in dojo after following the setup instructions above:
 ```
 :rollup|activate
 :sequencer|init our 0x0 <PRIVATE_KEY>
-:zane|set-sources our 0x0 our
+:uqbar|set-sources our 0x0 our
 :wallet &zig-wallet-poke [%populate <SEED>]
 ```
 

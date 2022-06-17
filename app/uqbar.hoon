@@ -1,8 +1,8 @@
-::  zane [uqbar-dao]
+::  uqbar [UQ| DAO]
 ::
-::  The "vane" for interacting with Uqbar. Provides read/write layer for userspace agents.
+::  The "vane" for interacting with UQ|. Provides read/write layer for userspace agents.
 ::
-/+  *zane, *sequencer, default-agent, dbug, verb, agentio
+/+  *uqbar, *sequencer, default-agent, dbug, verb, agentio
 |%
 +$  card  card:agent:gall
 +$  state-0
@@ -65,12 +65,12 @@
   ^-  (quip card _this)
   |^
   ?>  =(src.bowl our.bowl)
-  ?.  ?=(?(%zane-action %zane-write) mark)
-    ~|("%zane: rejecting erroneous poke" !!)
+  ?.  ?=(?(%uqbar-action %uqbar-write) mark)
+    ~|("%uqbar: rejecting erroneous poke" !!)
   =^  cards  state
     ?-  mark
-      %zane-action  (handle-action !<(action vase))
-      %zane-write  (handle-write !<(write vase))
+      %uqbar-action  (handle-action !<(action vase))
+      %uqbar-write  (handle-write !<(write vase))
     ==
   [cards this]
   ::
@@ -116,7 +116,7 @@
         town-id.write
       `@ux`town-id.p.egg.write
     ?~  seq=(~(get by sequencers.state) town-id)
-      ~|("%zane: no known sequencer for that town" !!)
+      ~|("%uqbar: no known sequencer for that town" !!)
     :_  state
     =+  ?:  ?=(%submit-many -.write)
           [%sequencer-town-action !>([%receive (silt eggs.write)])]
@@ -157,10 +157,10 @@
       =/  kick-card=(unit card)   kick
       =/  leave-card=(unit card)  leave
       ?~  kick-card
-        ~&  >>>  "zane: failed to kick {<wire>}"
+        ~&  >>>  "uqbar: failed to kick {<wire>}"
         ~[(pass-through cage.sign)]
       ?~  leave-card
-        ~&  >>>  "zane: failed to leave {<wire>}"
+        ~&  >>>  "uqbar: failed to leave {<wire>}"
         ~[(pass-through cage.sign)]
       ~[(pass-through cage.sign) u.kick-card u.leave-card]
     ==

@@ -47,7 +47,7 @@
       zigs-wheat-id:smart
       town-id
       :+  %&  `@`'zigs'
-      :*  name='Uqbar Tokens'
+      :*  name='UQ| Tokens'
           symbol='ZIG'
           decimals=18
           supply=1.000.000.000.000.000.000.000.000

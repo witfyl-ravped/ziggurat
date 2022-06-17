@@ -1,6 +1,6 @@
 /+  smart=zig-sys-smart
 |%
-::  managing the zane
+::  managing the uqbar
 ::
 +$  action
   $%  [%set-sources rollup-host=ship indexers=(list [town-id=id:smart (list dock)])]

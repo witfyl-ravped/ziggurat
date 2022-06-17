@@ -1,4 +1,4 @@
-::  testnet rollup, Uqbar
+::  testnet rollup
 ::
 ::  rollup app: run on ONE ship, receive moves from sequencer apps.
 ::

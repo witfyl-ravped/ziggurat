@@ -1,4 +1,4 @@
-::  rollup [uqbar-dao]
+::  rollup [UQ| DAO]
 ::
 ::  Agent that simulates a rollup contract on another chain.
 ::  Receives state transitions (moves) for towns, verifies them,

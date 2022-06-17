@@ -1,4 +1,4 @@
-::  publish.hoon  [uqbar-dao]
+::  publish.hoon  [UQ| DAO]
 ::
 ::  Smart contract that processes deployment and upgrades
 ::  for other smart contracts. Automatically (?) inserted

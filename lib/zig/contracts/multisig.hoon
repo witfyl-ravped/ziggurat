@@ -1,4 +1,4 @@
-::  multisig.hoon  [uqbar-dao]
+::  multisig.hoon  [UQ| DAO]
 ::
 ::  Smart contract to manage a simple multisig wallet.
 ::  New multisigs can be generated through the %create
@@ -32,7 +32,7 @@
     ?.  ?=([thresh=@ud members=*] args)  !!
     =/  members  ;;((set id) members.args)
     =/  new-sig-germ  [%& ~ [members thresh.args ~]]
-    =/  new-sig-id  (fry caller-id 0 new-sig-germ) 
+    =/  new-sig-id  (fry caller-id 0 new-sig-germ)
     =-  [%& ~ (malt ~[[new-sig-id -]])]
     [new-sig-id me.cart me.cart town-id.cart new-sig-germ]
   =/  my-grain=grain  -:~(val by owns.cart)

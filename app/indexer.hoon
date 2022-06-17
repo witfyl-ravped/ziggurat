@@ -1,4 +1,4 @@
-::  indexer [uqbar-dao]:
+::  indexer [UQ| DAO]:
 ::
 ::  Index blocks
 ::
