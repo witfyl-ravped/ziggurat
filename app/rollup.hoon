@@ -1,4 +1,4 @@
-::  rollup [uqbar-dao]
+::  rollup [UQ| DAO]
 ::
 ::  Agent that simulates a rollup contract on another chain.
 ::  Receives state transitions (moves) for towns, verifies them,
@@ -84,7 +84,7 @@
     ::
         %bridge-assets
       ::  for simulation purposes
-      ?~  hall=(~(get by capitol.state) town.act)  !!
+      ?~  hall=(~(get by capitol.state) town-id.act)  !!
       :_  state
       =+  [%town-action !>([%receive-assets assets.act])]
       [%pass /bridge %agent [q.sequencer.u.hall %sequencer] %poke -]~
@@ -105,7 +105,11 @@
             %+  turn  ~(tap by peer-roots.act)
             |=  [=id:smart root=@ux]
             ?~  hall=(~(get by capitol.state) id)  %.n
-            ?~  (find [root]~ (slag recent-enough roots.u.hall))  %.n
+            =+  ?:  (lte (lent roots.u.hall) recent-enough)
+                  roots.u.hall
+                (slag recent-enough roots.u.hall)
+            ?~  (find [root]~ -)
+              %.n
             %.y
           |=(a=? a)
         ~|("%rollup: rejecting batch; peer roots not recent enough" !!)

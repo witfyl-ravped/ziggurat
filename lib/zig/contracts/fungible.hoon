@@ -1,4 +1,4 @@
-::  fungible.hoon [uqbar-dao]
+::  fungible.hoon [UQ| DAO]
 ::
 ::  Fungible token standard. Any new token that wishes to use this standard
 ::  format can be issued through this contract. The contract uses an account
@@ -65,7 +65,7 @@
   +$  arguments
     $%  ::  token holder actions
         ::
-        [%give to=id to-rice=(unit id) amount=@ud]  
+        [%give to=id to-rice=(unit id) amount=@ud]
         [%take to=id to-rice=(unit id) from-rice=id amount=@ud]
         [%set-allowance who=id amount=@ud]  ::  (to revoke, call with amount=0)
         ::  token management actions
@@ -153,7 +153,7 @@
         %=  giver
           balance  (sub balance.giver amount.args)
           allowances  (~(jab by allowances.giver) caller-id |=(old=@ud (sub old amount.args)))
-        == 
+        ==
       ==
       [%& (malt ~[[id.giv giv] [id.rec rec]]) ~ ~]
     ::

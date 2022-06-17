@@ -1,13 +1,13 @@
-::  zane [uqbar-dao]
+::  uqbar [UQ| DAO]
 ::
-::  The "vane" for interacting with Uqbar. Provides read/write layer for userspace agents.
+::  The "vane" for interacting with UQ|. Provides read/write layer for userspace agents.
 ::
-/+  *zane, *sequencer, default-agent, dbug, verb, agentio
+/+  *uqbar, *sequencer, default-agent, dbug, verb, agentio
 |%
 +$  card  card:agent:gall
 +$  state-0
   $:  %0
-      sources=(jar town=id:smart dock)
+      sources=(jar town-id=id:smart dock)
       sequencers=(map id:smart sequencer)
   ==
 --
@@ -65,12 +65,12 @@
   ^-  (quip card _this)
   |^
   ?>  =(src.bowl our.bowl)
-  ?.  ?=(?(%zane-action %zane-write) mark)
-    ~|("%zane: rejecting erroneous poke" !!)
+  ?.  ?=(?(%uqbar-action %uqbar-write) mark)
+    ~|("%uqbar: rejecting erroneous poke" !!)
   =^  cards  state
     ?-  mark
-      %zane-action  (handle-action !<(action vase))
-      %zane-write  (handle-write !<(write vase))
+      %uqbar-action  (handle-action !<(action vase))
+      %uqbar-write  (handle-write !<(write vase))
     ==
   [cards this]
   ::
@@ -90,10 +90,10 @@
       :-  ~
       %=  state
           sources
-        ?~  town-source=(~(get ja sources) town.act)
-          (~(add ja sources) town.act dock.act)
+        ?~  town-source=(~(get ja sources) town-id.act)
+          (~(add ja sources) town-id.act dock.act)
         ?>  ?=(^ (find [dock.act]~ town-source))
-        %+  ~(put by sources)  town.act
+        %+  ~(put by sources)  town-id.act
         (snoc town-source dock.act)
       ==
     ::
@@ -101,9 +101,9 @@
       :-  ~
       %=  state
           sources
-        ?~  town-source=(~(get ja sources) town.act)  !!
+        ?~  town-source=(~(get ja sources) town-id.act)  !!
         ?~  index=(find [dock.act]~ town-source)      !!
-        %+  ~(put by sources)  town.act
+        %+  ~(put by sources)  town-id.act
         (oust [u.index 1] `(list dock)`town-source)
       ==
     ==
@@ -113,14 +113,14 @@
     ^-  (quip card _state)
     =/  town-id  ^-  @ux
       ?:  ?=(%submit-many -.write)
-        town.write
+        town-id.write
       `@ux`town-id.p.egg.write
     ?~  seq=(~(get by sequencers.state) town-id)
-      ~|("%zane: no known sequencer for that town" !!)
+      ~|("%uqbar: no known sequencer for that town" !!)
     :_  state
     =+  ?:  ?=(%submit-many -.write)
-          [%town-action !>([%receive (silt eggs.write)])]
-        [%town-action !>([%receive (silt ~[egg.write])])]
+          [%sequencer-town-action !>([%receive (silt eggs.write)])]
+        [%sequencer-town-action !>([%receive (silt ~[egg.write])])]
     [%pass /submit-transaction %agent [q.u.seq %sequencer] %poke -]~
   --
 ::
@@ -157,10 +157,10 @@
       =/  kick-card=(unit card)   kick
       =/  leave-card=(unit card)  leave
       ?~  kick-card
-        ~&  >>>  "zane: failed to kick {<wire>}"
+        ~&  >>>  "uqbar: failed to kick {<wire>}"
         ~[(pass-through cage.sign)]
       ?~  leave-card
-        ~&  >>>  "zane: failed to leave {<wire>}"
+        ~&  >>>  "uqbar: failed to leave {<wire>}"
         ~[(pass-through cage.sign)]
       ~[(pass-through cage.sign) u.kick-card u.leave-card]
     ==

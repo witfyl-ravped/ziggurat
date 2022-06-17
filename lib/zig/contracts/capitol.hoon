@@ -1,7 +1,7 @@
 ::
 ::  capitol.hoon
 ::
-::  Contract for managing towns on the Uqbar blockchain.
+::  Contract for managing towns on the UQ| blockchain.
 ::  capitol.hoon is deployed on the main chain, where
 ::  validators execute transactions related to town entry
 ::  and exit. For transactions submitted here, the sender

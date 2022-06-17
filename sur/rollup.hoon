@@ -1,4 +1,4 @@
-::  testnet rollup, Uqbar
+::  testnet rollup
 ::
 ::  rollup app: run on ONE ship, receive moves from sequencer apps.
 ::
@@ -8,7 +8,7 @@
 +$  action
   $%  [%activate ~]
       [%launch-town from=address:smart =sig:smart town:sequencer]
-      [%bridge-assets town=id:smart assets=(map id:smart grain:smart)]
+      [%bridge-assets town-id=id:smart assets=(map id:smart grain:smart)]
       [%receive-batch from=address:smart batch:sequencer]
   ==
 --

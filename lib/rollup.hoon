@@ -2,7 +2,7 @@
 |%
 ::
 ::  +allowed-participant: grades whether a ship is permitted to participate
-::  in Uqbar sequencing. currently using hardcoded whitelist
+::  in UQ| sequencing. currently using hardcoded whitelist
 ::
 ++  allowed-participant
   |=  [=ship our=ship now=@da]

@@ -1,6 +1,6 @@
-::  sequencer [uqbar-dao]
+::  sequencer [UQ| DAO]
 ::
-::  Agent for managing a single Uqbar town. Publishes diffs to rollup.hoon
+::  Agent for managing a single UQ| town. Publishes diffs to rollup.hoon
 ::  Accepts transactions and batches them periodically as moves to town.
 ::
 /+  *sequencer, *rollup, default-agent, dbug, verb
@@ -76,6 +76,8 @@
     ::
         %init
       ?>  =(src.bowl our.bowl)
+      ?.  =(%off status.state)
+        ~|("%sequencer: already active" !!)
       ::  poke rollup ship with params of new town
       ::  (will be rejected if id is taken)
       =/  =land  ?~(starting-state.act [~ ~] u.starting-state.act)
@@ -95,6 +97,7 @@
             private-key  `private-key.act
             town         `town
             status        %available
+            proposed-batch  `[~ land.town 0x0 new-root]
           ==
       :~  [%pass /sub-rollup %agent [rollup-host.act %rollup] %watch /peer-root-updates]
           =+  [%rollup-action !>([%launch-town address.act sig town])]
@@ -121,7 +124,6 @@
         %receive
       ?.  =(%available status.state)
         ~|("%sequencer: error: got egg while not active" !!)
-      ~&  >>  "%sequencer: received eggs from {<src.bowl>}: {<eggs.act>}"
       =-  `state(basket (~(uni in basket) -))
       ^+  basket
       %-  ~(run in eggs.act)
@@ -218,13 +220,13 @@
     ?-    -.upd
         %new-peer-root
       ::  update our local map
-      `state(peer-roots (~(put by peer-roots.state) town.upd root.upd))
+      `state(peer-roots (~(put by peer-roots.state) town-id.upd root.upd))
     ::
         %new-sequencer
       ::  check if we have been kicked off our town
       ::  this is in place for later..  TODO expand this functionality
       ?~  town.state                  `state
-      ?.  =(town.upd id.hall.u.town)  `state
+      ?.  =(town-id.upd id.hall.u.town)  `state
       ?:  =(who.upd our.bowl)         `state
       ~&  >>>  "%sequencer: we've been kicked out of town!"
       `state

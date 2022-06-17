@@ -1,11 +1,12 @@
 /-  *sequencer
 /+  smart=zig-sys-smart, ethereum
 /*  zigs-contract  %noun  /lib/zig/compiled/zigs/noun
-/*  nft-contract  %noun  /lib/zig/compiled/nft/noun
-/*  publish-contract  %noun  /lib/zig/compiled/publish/noun
-/*  trivial-contract  %noun  /lib/zig/compiled/trivial/noun
+::  /*  nft-contract  %noun  /lib/zig/compiled/nft/noun
+::  /*  publish-contract  %noun  /lib/zig/compiled/publish/noun
+::  /*  trivial-contract  %noun  /lib/zig/compiled/trivial/noun
 :-  %say
-|=  [[now=@da eny=@uvJ bek=beak] [rollup-host=@p town-id=@ud private-key=@ux ~] ~]
+|=  [[now=@da eny=@uvJ bek=beak] [rollup-host=@p town-id=@ux private-key=@ux ~] ~]
+=/  town-id  `@ud`town-id
 =/  pubkey-1  0x3.e87b.0cbb.431d.0e8a.2ee2.ac42.d9da.cab8.063d.6bb6.2ff9.b2aa.e1b9.0f56.9c3f.3423
 =/  pubkey-2  0x2.eaea.cffd.2bbe.e0c0.02dd.b5f8.dd04.e63f.297f.14cf.d809.b616.2137.126c.da9e.8d3d
 =/  pubkey-3  0x2.4a1c.4643.b429.dc12.6f3b.03f3.f519.aebb.5439.08d3.e0bf.8fc3.cb52.b92c.9802.636e
@@ -46,7 +47,7 @@
       zigs-wheat-id:smart
       town-id
       :+  %&  `@`'zigs'
-      :*  name='Uqbar Tokens'
+      :*  name='UQ| Tokens'
           symbol='ZIG'
           decimals=18
           supply=1.000.000.000.000.000.000.000.000
@@ -67,79 +68,79 @@
       [%| wheat(owns (silt ~[zigs-1 zigs-2 zigs-3 `@ux`'zigs-metadata']))]      ::  germ
   ==
 ::  publish.hoon contract
-=/  publish-grain
-  ^-  grain:smart
-  :*  0x1111.1111     ::  id
-      0x1111.1111     ::  lord
-      0x1111.1111     ::  holder
-      town-id         ::  town-id
-      [%| ;;(wheat:smart (cue q.q.publish-contract))]  ::  germ
-  ==
-::  trivial.hoon contract
-=/  trivial-grain
-  ^-  grain:smart
-  :*  0xdada.dada     ::  id
-      0xdada.dada     ::  lord
-      0xdada.dada     ::  holder
-      town-id         ::  town-id
-      [%| ;;(wheat:smart (cue q.q.trivial-contract))]  ::  germ
-  ==
-::
-::  NFT stuff
-=/  nft-metadata-grain
-  ^-  grain:smart
-  :*  `@ux`'nft-metadata'
-      0xcafe.babe
-      0xcafe.babe
-      town-id
-      :+  %&  `@`'nftsalt'
-      :*  name='Monkey JPEGs'
-          symbol='BADART'
-          attributes=(silt ~['hair' 'eyes' 'mouth'])
-          supply=1
-          cap=~
-          mintable=%.n
-          minters=~
-          deployer=0x0
-          salt=`@`'nftsalt'
-  ==  ==
-=/  item-1
-  [1 (silt ~[['hair' 'red'] ['eyes' 'blue'] ['mouth' 'smile']]) 'a smiling monkey' 'ipfs://QmUbFVTm113tJEuJ4hZY2Hush4Urzx7PBVmQGjv1dXdSV9' %.y]
-=/  nft-acc-id  (fry-rice:smart pubkey-1 0xcafe.babe town-id `@`'nftsalt')
-=/  nft-acc-grain
-  :*  nft-acc-id
-      0xcafe.babe
-      pubkey-1
-      town-id
-      [%& `@`'nftsalt' [`@ux`'nft-metadata' (malt ~[[1 item-1]]) ~ ~]]
-  ==
-=/  nft-wheat-grain
-  ^-  grain:smart
-  =/  =wheat:smart  ;;(wheat:smart (cue q.q.nft-contract))
-  :*  0xcafe.babe     ::  id
-      0xcafe.babe     ::  lord
-      0xcafe.babe     ::  holder
-      town-id         ::  town-id
-      [%| wheat(owns (silt ~[`@ux`'nft-metadata' nft-acc-id]))]  ::  germ
-  ==
+::  =/  publish-grain
+::    ^-  grain:smart
+::    :*  0x1111.1111     ::  id
+::        0x1111.1111     ::  lord
+::        0x1111.1111     ::  holder
+::        town-id         ::  town-id
+::        [%| ;;(wheat:smart (cue q.q.publish-contract))]  ::  germ
+::    ==
+::  ::  trivial.hoon contract
+::  =/  trivial-grain
+::    ^-  grain:smart
+::    :*  0xdada.dada     ::  id
+::        0xdada.dada     ::  lord
+::        0xdada.dada     ::  holder
+::        town-id         ::  town-id
+::        [%| ;;(wheat:smart (cue q.q.trivial-contract))]  ::  germ
+::    ==
+::  ::
+::  ::  NFT stuff
+::  =/  nft-metadata-grain
+::    ^-  grain:smart
+::    :*  `@ux`'nft-metadata'
+::        0xcafe.babe
+::        0xcafe.babe
+::        town-id
+::        :+  %&  `@`'nftsalt'
+::        :*  name='Monkey JPEGs'
+::            symbol='BADART'
+::            attributes=(silt ~['hair' 'eyes' 'mouth'])
+::            supply=1
+::            cap=~
+::            mintable=%.n
+::            minters=~
+::            deployer=0x0
+::            salt=`@`'nftsalt'
+::    ==  ==
+::  =/  item-1
+::    [1 (silt ~[['hair' 'red'] ['eyes' 'blue'] ['mouth' 'smile']]) 'a smiling monkey' 'ipfs://QmUbFVTm113tJEuJ4hZY2Hush4Urzx7PBVmQGjv1dXdSV9' %.y]
+::  =/  nft-acc-id  (fry-rice:smart pubkey-1 0xcafe.babe town-id `@`'nftsalt')
+::  =/  nft-acc-grain
+::    :*  nft-acc-id
+::        0xcafe.babe
+::        pubkey-1
+::        town-id
+::        [%& `@`'nftsalt' [`@ux`'nft-metadata' (malt ~[[1 item-1]]) ~ ~]]
+::    ==
+::  =/  nft-wheat-grain
+::    ^-  grain:smart
+::    =/  =wheat:smart  ;;(wheat:smart (cue q.q.nft-contract))
+::    :*  0xcafe.babe     ::  id
+::        0xcafe.babe     ::  lord
+::        0xcafe.babe     ::  holder
+::        town-id         ::  town-id
+::        [%| wheat(owns (silt ~[`@ux`'nft-metadata' nft-acc-id]))]  ::  germ
+::    ==
 ::
 =/  fake-granary
-  ^-  granary:smart
+  ^-  granary
   =/  grains=(list:smart (pair:smart id:smart grain:smart))
     :~  [id.zigs-wheat-grain zigs-wheat-grain]
         [id.zigs-metadata-grain zigs-metadata-grain]
-        [id.nft-wheat-grain nft-wheat-grain]
-        [id.nft-metadata-grain nft-metadata-grain]
-        [id.publish-grain publish-grain]
-        [id.trivial-grain trivial-grain]
+        ::  [id.nft-wheat-grain nft-wheat-grain]
+        ::  [id.nft-metadata-grain nft-metadata-grain]
+        ::  [id.publish-grain publish-grain]
+        ::  [id.trivial-grain trivial-grain]
         [zigs-1 beef-zigs-grain]
         [zigs-2 dead-zigs-grain]
         [zigs-3 cafe-zigs-grain]
-        [nft-acc-id nft-acc-grain]
+        ::  [nft-acc-id nft-acc-grain]
     ==
   (~(gas by:smart *(map:smart id:smart grain:smart)) grains)
 =/  fake-populace
-  ^-  populace:smart
+  ^-  populace
   %-  %~  gas  by:smart  *(map:smart id:smart @ud)
   ~[[pubkey-1 0] [pubkey-2 0] [pubkey-3 0]]
 ::
