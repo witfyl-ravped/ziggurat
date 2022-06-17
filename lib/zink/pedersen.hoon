@@ -64,6 +64,7 @@
     =/  x  (has a)
     =/  y  (has b)
     +:(do-hash y x)
+    ::
     ++  has
       |=  n=@
       ^-  @
