@@ -76,7 +76,8 @@
     ::
         %init
       ?>  =(src.bowl our.bowl)
-      ?>  =(%off status.state)
+      ?.  =(%off status.state)
+        ~|("%sequencer: already active" !!)
       ::  poke rollup ship with params of new town
       ::  (will be rejected if id is taken)
       =/  =land  ?~(starting-state.act [~ ~] u.starting-state.act)
