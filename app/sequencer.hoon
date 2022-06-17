@@ -7,6 +7,7 @@
 ::  Choose which library smart contracts are executed against here
 ::
 /*  smart-lib-noun  %noun  /lib/zig/compiled/smart-lib/noun
+/*  zink-cax-noun   %noun  /lib/zig/compiled/hash-cache/noun
 =,  util
 |%
 +$  card  card:agent:gall
@@ -17,7 +18,7 @@
       hall=(unit hall)
       =basket
   ==
-+$  inflated-state-0  [state-0 smart-lib-vase=vase]
++$  inflated-state-0  [state-0 smart-lib-vase=vase zink-cax=(map * @)]
 --
 ::
 =|  inflated-state-0
@@ -32,7 +33,12 @@
 ::
 ++  on-init
   :-  ~[(sequencer-sub-card our.bowl)]
-  this(state [[%0 ~ [~ ~] ~ ~] ;;(vase (cue q.q.smart-lib-noun))])
+  %_    this
+      state
+    :+  [%0 ~ [~ ~] ~ ~]
+      ;;(vase (cue q.q.smart-lib-noun))
+    ;;((map * @) (cue q.q.zink-cax-noun))
+  ==
 ::
 ++  on-save  !>(-.state)
 ++  on-load
@@ -40,8 +46,9 @@
   ^-  (quip card _this)
   ::  on-load: pre-cue our compiled smart contract library
   ::  (not yet able to use, but will switch to this)
-  =+  ;;(vase (cue q.q.smart-lib-noun))
-  :_  this(state [!<(state-0 old-vase) -])
+  =/  smart-lib  ;;(vase (cue q.q.smart-lib-noun))
+  =/  zink-cax   ;;((map * @) (cue q.q.zink-cax-noun))
+  :_  this(state [!<(state-0 old-vase) smart-lib zink-cax])
   ::  connect to our %ziggurat agent
   ?:  (~(has by wex.bowl) [/sequencer/updates our.bowl %ziggurat])  ~
   ~[(sequencer-sub-card our.bowl)]
@@ -217,7 +224,7 @@
         .^(account:smart %gx /(scot %p our.bowl)/wallet/(scot %da now.bowl)/account/(scot %ux (need our-address))/(scot %ud (need town-id.state))/noun)
       =/  =height
         .^(height %gx /(scot %p our.bowl)/ziggurat/(scot %da now.bowl)/block-height/noun)
-      =/  mil  ~(mill mill smart-lib-vase)
+      =/  mil  ~(mill mill smart-lib-vase zink-cax)
       =+  %+  ~(mill-all mil me (need town-id.state) height)
             town.state
           ~(tap in basket.state)

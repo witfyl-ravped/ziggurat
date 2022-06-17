@@ -10,6 +10,7 @@
 /-  indexer
 /+  *ziggurat, default-agent, dbug, verb
 /*  smart-lib-noun  %noun  /lib/zig/compiled/smart-lib/noun
+/*  zink-cax-noun   %noun  /lib/zig/compiled/hash-cache/noun
 =,  util
 |%
 +$  card  card:agent:gall
@@ -23,7 +24,7 @@
       globe=town:smart  ::  store town hall info; update end of each epoch
       =height
   ==
-+$  inflated-state-0  [state-0 smart-lib-vase=vase]
++$  inflated-state-0  [state-0 smart-lib-vase=vase zink-cax=(map * @)]
 --
 ::
 =|  inflated-state-0
@@ -37,14 +38,22 @@
     def   ~(. (default-agent this %|) bowl)
 ::
 ++  on-init
-  `this(state [[%0 %none ~ ~ ~ ~ [~ ~] 0] ;;(vase (cue q.q.smart-lib-noun))])
+  :-  ~
+  %_    this
+      state
+    :+  [%0 %none ~ ~ ~ ~ [~ ~] 0]
+      ;;(vase (cue q.q.smart-lib-noun))
+    ;;((map * @) (cue q.q.zink-cax-noun))
+  ==
+
 ::
 ++  on-save  !>(-.state)
 ++  on-load
   |=  =old=vase
   ^-  (quip card _this)
-  =+  ;;(vase (cue q.q.smart-lib-noun))
-  `this(state [!<(state-0 old-vase) -])
+  =/  smart-lib  ;;(vase (cue q.q.smart-lib-noun))
+  =/  zink-cax   ;;((map * @) (cue q.q.zink-cax-noun))
+  `this(state [!<(state-0 old-vase) smart-lib zink-cax])
 ::
 ++  on-watch
   |=  =path
@@ -543,7 +552,7 @@
       ::  if this is the SECOND TO LAST block in the epoch,
       ::  perform global-level transactions
       ::  insert transaction to advance
-      =/  mil  ~(mill mill smart-lib-vase)
+      =/  mil  ~(mill mill smart-lib-vase zink-cax)
       =+  /(scot %p our.bowl)/wallet/(scot %da now.bowl)/account/(scot %ux (need address.state))/(scot %ud relay-town-id)/noun
       =+  .^(account:smart %gx -)
       =/  globe-chunk

@@ -1,7 +1,6 @@
 /+  *zink-zink, smart=zig-sys-smart, ethereum
-/*  zink-cax   %noun  /lib/zig/compiled/hash-cache/noun
 =,  smart
-|_  library=vase
+|_  [library=vase zink-cax=(map * @)]
 ::
 ++  shut                                               ::  slam a door
   |=  [dor=vase arm=@tas dor-sam=vase arm-sam=vase]
@@ -234,16 +233,13 @@
         ^-  [hints (unit chick) rem=@ud =errorcode]
         ~>  %bout
         =/  =cart  [to blocknum town-id owns.crop]
-        =/  payload  .*(q.library pay.cont.crop)
-        =/  battery  .*([q.library payload] bat.cont.crop)
-        =/  dor      [-:!>(*contract) battery]
-        ~&  >  %contract-compiled
-        =/  cax=(map * phash)  ;;(cache (cue q.q.zink-cax))
-        ~&  >  %cax-compiled
+        =/  payload   .*(q.library pay.cont.crop)
+        =/  battery   .*([q.library payload] bat.cont.crop)
+        =/  dor=vase  [-:!>(*contract) battery]
         =/  gun
           (ajar dor %write !>(cart) !>(embryo))
         =/  =book
-          (zebra budget cax gun)
+          (zebra budget zink-cax gun)
         :-  hit.q.book
         ~&  >>  chick+(hole (unit chick) p.p.book)
         ?:  ?=(%| -.p.book)
