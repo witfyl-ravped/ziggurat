@@ -66,19 +66,21 @@
     +:(do-hash y x)
     ++  has
       |=  n=@
+      ^-  @
       ?:  (lte (met 2 n) 63)  n
       =/  rips
-      %^  spin  (tear [3 32] n)  0
-      |=  [x=@ ext=@]
-      ?:  (lth (met 3 x) 32)
-         [x ext]
-      :-  (zero-nib x)
-          (cat 3 ext (first-nib x))
+        %^  spin  (tear [3 32] n)  0
+        |=  [x=@ ext=@]
+        ?:  (lth (met 3 x) 32)
+           [x ext]
+        :-  (zero-nib x)
+        (cat 3 ext (first-nib x))
       =/  r
         ?:  =(q:rips 0)  p.rips
         (into p.rips (lent p.rips) q.rips)
-      =/  hed  (snag 0 r)
-      =/  tal  (slag 1 r)
+      ?~  r  n
+      =/  hed  (snag 0 `(list @)`r)
+      =/  tal  (slag 1 `(list @)`r)
       q:(spin tal hed do-hash)
     ::
     ++  first-nib
@@ -93,7 +95,7 @@
       |=  [s=[@ @] n=@]
       ^-  (list @)
       ?:  =(n 0)  ~[0]
-        (rip s n)
+      (rip s n)
     ::
     ++  do-hash
       |=  [b=@ a=@]
