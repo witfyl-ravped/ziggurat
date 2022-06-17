@@ -33,14 +33,14 @@
     def   ~(. (default-agent this %|) bowl)
 ::
 ++  on-init
-  `this(state [[%0 ~ ~ ~ ~ ~ ~ %off] ~(mill mill smart-lib)])
+  `this(state [[%0 ~ ~ ~ ~ ~ ~ %off] ~(mill mill ;;(vase (cue q.q.smart-lib-noun)))])
 ++  on-save  !>(-.state)
 ++  on-load
   |=  =old=vase
   ^-  (quip card _this)
   ::  on-load: pre-cue our compiled smart contract library
   ::
-  `this(state [!<(state-0 old-vase) ~(mill mill smart-lib)])
+  `this(state [!<(state-0 old-vase) ~(mill mill ;;(vase (cue q.q.smart-lib-noun)))])
 ::
 ++  on-watch
   |=  =path

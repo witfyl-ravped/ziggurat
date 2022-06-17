@@ -80,10 +80,10 @@
     ^-  [^land fee=@ud =errorcode]
     ?.  ?=(account from.p.egg)  [land 0 %1]
     ::  validate transaction signature
-    =+  ?~(eth-hash.p.egg (sham (jam q.egg)) u.eth-hash.p.egg)
-    ?.  (verify-sig id.from.p.egg - sig.p.egg ?=(^ eth-hash.p.egg))
-    ~&  >>>  "mill: signature mismatch"
-      [land 0 %2]  ::  signed tx doesn't match account
+    ::  =+  ?~(eth-hash.p.egg (sham (jam q.egg)) u.eth-hash.p.egg)
+    ::  ?.  (verify-sig id.from.p.egg - sig.p.egg ?=(^ eth-hash.p.egg))
+    ::  ~&  >>>  "mill: signature mismatch"
+    ::    [land 0 %2]  ::  signed tx doesn't match account
     ::
     ?.  =(nonce.from.p.egg +((~(gut by q.land) id.from.p.egg 0)))
       ~&  >>>  "mill: tx rejected; bad nonce"
