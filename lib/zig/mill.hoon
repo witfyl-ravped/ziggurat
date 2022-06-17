@@ -48,25 +48,28 @@
       |=  [a=egg b=egg]
       (gth rate.p.a rate.p.b)
     =|  [processed=(list [@ux egg]) reward=@ud]
+    =|  lis-hits=(list (list hints))
     |-
-    ^-  [(list [@ux egg]) ^town]  ::  TODO add 'crow's to chunk -- list of announcements
+    ::  TODO add 'crow's to chunk -- list of announcements
+    ^-  [our-chunk=[(list [@ux egg]) ^town] hits=(list (list hints))]
     ?~  pending
-      [processed town(p (~(pay tax p.town) reward))]
-    =+  [res fee err]=(mill town i.pending)
+      [[processed town(p (~(pay tax p.town) reward))] (flop lis-hits)]
+    =+  [res fee err hits]=(mill town i.pending)
     =+  i.pending(status.p err)
     %_  $
       pending    t.pending
       processed  [[`@ux`(shax (jam -)) -] processed]
       town       res
       reward     (add reward fee)
+      lis-hits  [hits lis-hits]
     ==
   ::
   ::  +mill: processes a single egg and returns updated town
   ::
   ++  mill
     |=  [=town =egg]
-    ^-  [^town fee=@ud =errorcode]
-    ?.  ?=(account from.p.egg)  [town 0 %1]
+    ^-  [^town fee=@ud =errorcode hits=(list hints)]
+    ?.  ?=(account from.p.egg)  [town 0 %1 ~]
     ::  validate transaction signature
     ::  using ecdsa-raw-sign in wallet, TODO review this
     ::  comment this out if testing mill
@@ -85,19 +88,19 @@
       recovered
     ?.  =(id.from.p.egg caller-address)
     ~&  >>>  "mill: signature mismatch: expected {<id.from.p.egg>}, got {<`@ux`caller-address>}"
-      [town 0 %2]  ::  signed tx doesn't match account
+      [town 0 %2 ~]  ::  signed tx doesn't match account
     ::
     ?.  =(nonce.from.p.egg +((~(gut by q.town) id.from.p.egg 0)))
       ~&  >>>  "tx rejected; bad nonce"
-      [town 0 %3]  ::  bad nonce
+      [town 0 %3 ~]  ::  bad nonce
     ::
     ?.  (~(audit tax p.town) egg)
       ~&  >>>  "tx rejected; not enough budget"
-      [town 0 %4]  ::  can't afford gas
+      [town 0 %4 ~]  ::  can't afford gas
     ::
-    =+  [gan rem err]=(~(work farm p.town) egg)
+    =+  [hits gan rem err]=(~(work farm p.town) egg)
     =/  fee=@ud   (sub budget.p.egg rem)
-    :_  [fee err]
+    :_  [fee err hits]
     :-  (~(charge tax ?~(gan p.town u.gan)) from.p.egg fee)
     (~(put by q.town) id.from.p.egg nonce.from.p.egg)
   ::
@@ -150,22 +153,23 @@
     ::  +work: take egg and return updated granary, remaining budget, and errorcode (0=success)
     ++  work
       |=  =egg
-      ^-  [(unit ^granary) rem=@ud =errorcode]
+      ^-  [(list hints) (unit ^granary) rem=@ud =errorcode]
       =/  hatchling
-        (incubate egg(budget.p (div budget.p.egg rate.p.egg)))
+        (incubate egg(budget.p (div budget.p.egg rate.p.egg)) ~)
+      :-  (flop hits.hatchling)
       ?~  final.hatchling
         [~ rem.hatchling errorcode.hatchling]
-      +.hatchling
+      +>.hatchling
     ::  +incubate: fertilize and germinate, then grow
     ++  incubate
-      |=  =egg
-      ^-  [(unit rooster) final=(unit ^granary) rem=@ud =errorcode]
+      |=  [=egg hits=(list hints)]
+      ^-  [hits=(list hints) (unit rooster) final=(unit ^granary) rem=@ud =errorcode]
       |^
       =/  args  (fertilize q.egg)
       ?~  stalk=(germinate to.p.egg cont-grains.q.egg)
         ~&  >>>  "mill: failed to germinate"
-        [~ ~ budget.p.egg %5]
-      (grow u.stalk args egg)
+        [~ ~ ~ budget.p.egg %5]
+      (grow u.stalk args egg hits)
       ::  +fertilize: take yolk (contract arguments) and populate with granary data
       ++  fertilize
         |=  =yolk
@@ -204,62 +208,51 @@
       --
     ::  +grow: recursively apply any calls stemming from egg, return on rooster or failure
     ++  grow
-      |=  [=crop =embryo =egg]
-      ^-  [(unit rooster) final=(unit ^granary) rem=@ud =errorcode]
+      |=  [=crop =embryo =egg hits=(list hints)]
+      ^-  [(list hints) (unit rooster) final=(unit ^granary) rem=@ud =errorcode]
       |^
-      =+  [chick rem err]=(weed to.p.egg budget.p.egg)
-      ?~  chick  [~ ~ rem err]
+      =+  [hit chick rem err]=(weed to.p.egg budget.p.egg)
+      ?~  chick  [hit^hits ~ ~ rem err]
       ?:  ?=(%& -.u.chick)
         ::  rooster result, finished growing
         ?~  gan=(harvest p.u.chick to.p.egg from.p.egg)
-          [~ ~ rem %7]
-        [`p.u.chick gan rem err]
+          [hit^hits ~ ~ rem %7]
+        [hit^hits `p.u.chick gan rem err]
       ::  hen result, continuation
       =*  next  next.p.u.chick
       ::  continuation calls can alter grains
       ?~  gan=(harvest roost.p.u.chick to.p.egg from.p.egg)
-        [~ ~ rem %7]
-      %-  ~(incubate farm u.gan)
-      egg(from.p to.p.egg, to.p to.next, budget.p rem, q args.next)
+        [hit^hits ~ ~ rem %7]
+      %+  ~(incubate farm u.gan)
+        egg(from.p to.p.egg, to.p to.next, budget.p rem, q args.next)
+      hit^hits
       ::
       ::  +weed: run contract formula with arguments and memory, bounded by bud
       ::
       ++  weed
         |=  [to=id budget=@ud]
-        ^-  [(unit chick) rem=@ud =errorcode]
+        ^-  [hints (unit chick) rem=@ud =errorcode]
         ~>  %bout
         =/  =cart  [to blocknum town-id owns.crop]
         =/  payload  .*(q.library pay.cont.crop)
         =/  battery  .*([q.library payload] bat.cont.crop)
         =/  dor      [-:!>(*contract) battery]
-        ::  ~&  >>>  cart
-        ::  ~&  >>  embryo
-        ::  this simply SHUTs
-        ::
-        =/  res
-          (mule |.(;;(chick q:(shut dor %write !>(cart) !>(embryo)))))^(sub budget 7)
-        ?:  ?=(%| -.-.res)
+        ~&  >  %contract-compiled
+        =/  cax=(map * phash)  ;;(cache (cue q.q.zink-cax))
+        ~&  >  %cax-compiled
+        =/  gun
+          (ajar dor %write !>(cart) !>(embryo))
+        =/  =book
+          (zebra budget cax gun)
+        :-  hit.q.book
+        ~&  >>  chick+(hole (unit chick) p.p.book)
+        ?:  ?=(%| -.p.book)
           ::  error in contract execution
           [~ budget %6]
-        ::
-        [`p.-.res budget %0]
-        ::  this uses ZINK
-        ::  
-        ::  ~&  >  %contract-compiled
-        ::  =/  cax=(map * phash)  ;;(cache (cue q.q.zink-cax))
-        ::  ~&  >  %cax-compiled
-        ::  =/  gun
-        ::    (ajar dor %write !>(cart) !>(embryo))
-        ::  =/  =book
-        ::    (zebra budget cax gun)
-        ::  ~&  >>  chick+(hole (unit chick) p.p.book)
-        ::  ?:  ?=(%| -.p.book)
-        ::    ::  error in contract execution
-        ::    [~ budget %6]
-        ::  ::  chick result
-        ::  ?~  p.p.book
-        ::    [~ 0 %0]
-        ::  [`(hole chick u.p.p.book) bud.q.book %0]
+        ::  chick result
+        ?~  p.p.book
+          [~ 0 %0]
+        [`(hole chick u.p.p.book) bud.q.book %0]
       --
     ::
     ::  +harvest: take a completed execution and validate all changes and additions to granary state

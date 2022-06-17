@@ -550,14 +550,14 @@
         (~(mill-all mil - relay-town-id height.state) globe.state ~(tap in basket.state))
       =+  :_  height.state
           %+  ~(put by (~(gut by queue.state) slot-num ~))
-          relay-town-id  globe-chunk
+          relay-town-id  our-chunk.globe-chunk
       =^  cards  cur
         (~(our-block epo cur prev-hash [our now src]:bowl) -)
       :-  cards
       %=  state
         basket  ~
         height  +(height)
-        globe   +.globe-chunk
+        globe   +.our-chunk.globe-chunk
         queue   (~(del by queue) slot-num)
         epochs  (put:poc epochs num.cur cur)
       ==

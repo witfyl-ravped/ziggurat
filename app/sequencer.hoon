@@ -218,10 +218,9 @@
       =/  =height
         .^(height %gx /(scot %p our.bowl)/ziggurat/(scot %da now.bowl)/block-height/noun)
       =/  mil  ~(mill mill smart-lib-vase)
-      =/  our-chunk=chunk
-        %+  ~(mill-all mil me (need town-id.state) height)
-          town.state
-        ~(tap in basket.state)
+      =+  %+  ~(mill-all mil me (need town-id.state) height)
+            town.state
+          ~(tap in basket.state)
       ::  currently clearing mempool with every chunk, but
       ::  this is not necessary: we forward our basket
       :_  this(basket ~, town +.our-chunk)
