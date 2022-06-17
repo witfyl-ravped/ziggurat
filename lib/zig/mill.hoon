@@ -132,7 +132,15 @@
     ++  pay
       |=  total=@ud
       ^-  ^granary
-      ?~  zigs=(~(get by granary) zigs.miller)  granary
+      ?~  zigs=(~(get by granary) zigs.miller)
+        ::  create a new account rice for the sequencer
+        ::
+        =/  =token-account  [total ~ `@ux`'zigs-metadata']
+        =/  =id  (fry-rice id.miller zigs-wheat-id town-id `@`'zigs')
+        %+  ~(put by granary)  id
+        [id zigs-wheat-id id.miller town-id [%& `@`'zigs' token-account]]
+      ::  use existing account
+      ::
       ?.  ?=(%& -.germ.u.zigs)                  granary
       =/  acc  (hole token-account data.p.germ.u.zigs)
       ?.  =(`@ux`'zigs-metadata' metadata.acc)  granary
