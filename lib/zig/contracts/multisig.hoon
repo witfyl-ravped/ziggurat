@@ -6,7 +6,7 @@
 ::
 ::  TODO totally rewrite
 ::
-/+  *zig-sys-smart
+::  /+  *zig-sys-smart
 =>  |%
     +$  multisig-data
       $:  members=(set id)

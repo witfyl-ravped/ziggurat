@@ -76,7 +76,7 @@
   ^-  book
   =/  =book  *book
   ?.  ?=(%grain -.update)  book
-  =/  grains-list  `(list [@da =town-location:ui =grain:smart])`~(val by grains.update)
+  =/  grains-list  `(list [@da =batch-location:ui =grain:smart])`~(val by grains.update)
   |-  ^-  ^book
   ?~  grains-list  book
   =/  =grain:smart  grain.i.grains-list

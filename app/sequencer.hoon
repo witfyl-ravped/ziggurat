@@ -54,7 +54,7 @@
   ?~  town  `this
   :_  this
   =-  [%give %fact ~ %indexer-update -]~
-  !>([%new-state ~ u.town (rear roots.hall.u.town)])
+  !>(`indexer-update`[%update ~ u.town (rear roots.hall.u.town)])
 ::
 ++  on-poke
   |=  [=mark =vase]
@@ -196,9 +196,11 @@
         ~&  >>  "%sequencer: batch approved by rollup"
         ?~  proposed-batch
           ~|("%sequencer: error: received batch approval without proposed batch" !!)
-        :_  this(town (transition-state town u.proposed-batch), proposed-batch ~, basket ~)
+        =/  new-town=(unit ^town)
+          (transition-state town u.proposed-batch)
+        :_  this(town new-town, proposed-batch ~, basket ~)
         =-  [%give %fact ~[/indexer/updates] %indexer-update -]~
-        !>([%new-state ~(tap in basket.u.proposed-batch) land.u.proposed-batch root.u.proposed-batch])
+        !>(`indexer-update`[%update ~(tap in basket.u.proposed-batch) (need new-town) root.u.proposed-batch])
       ::  TODO manage rejected moves here
       ~&  >>>  "%sequencer: our move was rejected by rollup!"
       `this(proposed-batch ~)

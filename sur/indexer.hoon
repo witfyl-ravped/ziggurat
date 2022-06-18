@@ -30,7 +30,7 @@
 +$  batch-location
   [town-id=id:smart batch-root=id:smart]
 +$  egg-location
-  [batch-location egg-num=@ud]
+  [town-id=id:smart batch-root=id:smart egg-num=@ud]
 ::
 +$  batches-by-town
   (map town-id=id:smart [=batches =batch-order])
@@ -39,7 +39,7 @@
 +$  batch-order
   (list id:smart)  ::  0-index -> most recent batch
 +$  batch
-  [eggs=(list [@ux egg:smart]) town:seq]
+  [transactions=(list [@ux egg:smart]) town:seq]
 ::
 +$  update
   $@  ~
