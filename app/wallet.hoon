@@ -12,7 +12,7 @@
   $:  %0
       seed=[mnem=@t pass=@t address-index=@ud]
       keys=(map pub=@ux [priv=(unit @ux) nick=@t])  ::  keys created from master seed
-      nonces=(map pub=@ux (map town=@ud nonce=@ud))
+      nonces=(map pub=@ux (map town=@ux nonce=@ud))
       tokens=(map pub=@ux =book)
       =transaction-store
       pending=(unit [yolk-hash=@ =egg:smart args=supported-args])
@@ -440,8 +440,8 @@
         :-  'nonces'
         %-  pairs
         %+  turn  ~(tap by (~(gut by nonces.state) pub ~))
-        |=  [town=@ud nonce=@ud]
-        [(scot %ud town) (numb nonce)]
+        |=  [town=@ux nonce=@ud]
+        [(scot %ux town) (numb nonce)]
     ==
       [%keys ~]
     ``noun+!>(~(key by keys.state))

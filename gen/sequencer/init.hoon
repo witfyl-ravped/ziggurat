@@ -6,7 +6,6 @@
 ::  /*  trivial-contract  %noun  /lib/zig/compiled/trivial/noun
 :-  %say
 |=  [[now=@da eny=@uvJ bek=beak] [rollup-host=@p town-id=@ux private-key=@ux ~] ~]
-=/  town-id  `@ud`town-id
 =/  pubkey-1  0x3.e87b.0cbb.431d.0e8a.2ee2.ac42.d9da.cab8.063d.6bb6.2ff9.b2aa.e1b9.0f56.9c3f.3423
 =/  pubkey-2  0x2.eaea.cffd.2bbe.e0c0.02dd.b5f8.dd04.e63f.297f.14cf.d809.b616.2137.126c.da9e.8d3d
 =/  pubkey-3  0x2.4a1c.4643.b429.dc12.6f3b.03f3.f519.aebb.5439.08d3.e0bf.8fc3.cb52.b92c.9802.636e
@@ -152,7 +151,7 @@
     rollup-host
     address
     private-key
-    `@ux`town-id
+    town-id
     `[fake-granary fake-populace]
     [%full-publish ~]
 ==

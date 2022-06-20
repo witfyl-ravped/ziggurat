@@ -7,17 +7,17 @@
 ::  contract can serve unlimited DAOs, who simply store their
 ::  structure as rice held and ruled by this contract on-chain.
 ::
-:: /+  *zig-sys-smart
+::  /+  *zig-sys-smart
 |_  =cart
 ++  write
   |=  inp=embryo
   ^-  chick
   |^
   ?~  args.inp  !!
-  (process (hole arguments u.args.inp) (pin caller.inp))
+  (process ;;(arguments u.args.inp) (pin caller.inp))
   ::
   +$  arguments
-    $%  [%add-dao salt=@ =dao:d]
+    $%  [%add-dao salt=@ dao=(unit dao:d)]
         [%vote dao-id=id proposal-id=id]
         [%propose dao-id=id =on-chain-update:d]
         [%execute dao-id=id =on-chain-update:d]  ::  called only by this contract
@@ -30,14 +30,15 @@
     ?>  =(lord.dao-grain me.cart)
     ?>  ?=(%& -.germ.dao-grain)
     :-  dao-grain
-    (hole dao:d data.p.germ.dao-grain)
+    ;;(dao:d data.p.germ.dao-grain)
   ::
   ++  process
     |=  [args=arguments caller-id=id]
     ?-    -.args
     ::
         %add-dao
-      =/  new-dao-germ=germ  [%& +.args]
+      ?>  ?=(^ dao.args)
+      =/  new-dao-germ=germ  [%& salt.args u.dao.args]
       =/  new-dao-id=id
         (fry-rice me.cart me.cart town-id.cart salt.args)
       =-  [%& ~ (malt ~[[new-dao-id -]]) ~]
@@ -75,7 +76,6 @@
           owns.cart
         (~(put by owns.cart) dao-id dao-grain)
       ==
-      :: $(args [me.cart `update.prop grains.inp])
     ::
         %propose
       =*  dao-id  dao-id.args
@@ -128,7 +128,6 @@
         ::
             %remove-roles
           (~(remove-roles update:dao-lib dao) +.+.update)
-        ::
         ==
       [%& (malt ~[[id.dao-grain dao-grain(data.p.germ dao)]]) ~ ~]
     ::
@@ -206,7 +205,6 @@
       ?~  ship
         ~
       `[u.ship i.t.t.path]
-    ::
     --
   ::
   ++  d  ::  ziggurat/sur/dao/hoon
@@ -233,7 +231,7 @@
       ==
     ::
     +$  on-chain-update
-      $%  [%add-dao salt=@ =dao]
+      $%  [%add-dao salt=@ dao=(unit dao)]
           [%remove-dao dao-id=id]
           [%add-member dao-id=id roles=(set role) =id him=ship]
           [%remove-member dao-id=id =id]
@@ -506,15 +504,325 @@
         %+  turn  ~(tap in `(set role:d)`roles)
         |=  =role:d
         [p=noun q=role]
-      ::
       --
-    ::
     --
-  ::
   --
 ::
 ++  read
-  |=  inp=path
-  ^-  *
-  "TBD"
+  |_  args=path
+  ++  json
+    |^  ^-  ^json
+    ?+    args  !!
+        [%rice-data ~]
+      ?>  =(1 ~(wyt by owns.cart))
+      =/  g=grain  -:~(val by owns.cart)
+      ?>  ?=(%& -.germ.g)
+      (enjs-dao ;;(dao:d data.p.germ.g))
+    ::
+        [%egg-args @ ~]
+      %-  enjs-arguments
+      ;;(arguments (cue (slav %ud i.t.args)))
+    ==
+    ::
+    ++  enjs-dao
+      =,  enjs:format
+      |^
+      |=  =dao:d
+      ^-  ^json
+      %-  pairs
+      :~  [%name %s name.dao]
+          [%permissions (enjs-permissions permissions.dao)]
+          [%members (enjs-members members.dao)]
+          [%id-to-ship (enjs-id-to-ship id-to-ship.dao)]
+          [%ship-to-id (enjs-ship-to-id ship-to-id.dao)]
+          [%subdaos (enjs-subdaos subdaos.dao)]
+          [%threshold (numb threshold.dao)]
+          [%proposals (enjs-proposals proposals.dao)]
+      ==
+      ::
+      ++  enjs-permissions
+        |=  =permissions:d
+        ^-  ^json
+        %-  pairs
+        %+  turn  ~(tap by permissions)
+        |=  [name=@tas p=(jug address:d role:d)]
+        [name (enjs-permission p)]
+      ::
+      ++  enjs-permission
+        |=  permission=(jug address:d role:d)
+        ^-  ^json
+        %-  pairs
+        %+  turn  ~(tap by permission)
+        |=  [=address:d rs=(set role:d)]
+        [(enjs-address-key address) (enjs-roles rs)]
+      ::
+      ++  enjs-members
+        |=  =members:d
+        ^-  ^json
+        %-  pairs
+        %+  turn  ~(tap by members)
+        |=  [i=id rs=(set role:d)]
+        [(scot %ux i) (enjs-roles rs)]
+      ::
+      ++  enjs-id-to-ship
+        |=  =id-to-ship:d
+        ^-  ^json
+        %-  pairs
+        %+  turn  ~(tap by id-to-ship)
+        |=  [i=id s=@p]
+        [(scot %ux i) [%s (scot %p s)]]
+      ::
+      ++  enjs-ship-to-id
+        |=  =ship-to-id:d
+        ^-  ^json
+        %-  pairs
+        %+  turn  ~(tap by ship-to-id)
+        |=  [s=@p i=id]
+        [(scot %p s) [%s (scot %ux i)]]
+      ::
+      ++  enjs-proposals
+        |=  proposals=(map id [on-chain-update:d (set id)])
+        ^-  ^json
+        %-  pairs
+        %+  turn  ~(tap by proposals)
+        |=  [proposal-id=id update=on-chain-update:d v=(set id)]
+        :-  (scot %ux proposal-id)
+        %-  pairs
+        :+  [%update (enjs-on-chain-update update)]
+          [%votes (enjs-votes v)]
+        ~
+      ::
+      ++  enjs-subdaos
+        enjs-set-id
+      ::
+      ++  enjs-votes
+        enjs-set-id
+      ::
+      ++  enjs-set-id
+        |=  set-id=(set id)
+        ^-  ^json
+        :-  %a
+        %+  turn  ~(tap in set-id)
+        |=  i=id
+        [%s (scot %ux i)]
+      --
+    ::
+    ++  enjs-arguments
+      =,  enjs:format
+      |=  a=arguments
+      %+  frond  -.a
+      ^-  ^json
+      ?-    -.a
+      ::
+          %add-dao
+        ?>  ?=(^ dao.a)
+        %-  pairs
+        :+  [%salt (numb salt.a)]
+          [%dao (enjs-dao u.dao.a)]
+        ~
+      ::
+          %vote
+        %-  pairs
+        :+  [%dao-id %s (scot %ux dao-id.a)]
+          [%proposal-id %s (scot %ux proposal-id.a)]
+        ~
+      ::
+          %propose
+        %-  pairs
+        :+  [%dao-id %s (scot %ux dao-id.a)]
+          [%on-chain-update (enjs-on-chain-update on-chain-update.a)]
+        ~
+      ::
+          %execute
+        %-  pairs
+        :+  [%dao-id %s (scot %ux dao-id.a)]
+          [%on-chain-update (enjs-on-chain-update on-chain-update.a)]
+        ~
+      ==
+    ::
+    ++  enjs-on-chain-update
+      =,  enjs:format
+      |=  update=on-chain-update:d
+      ^-  ^json
+      ?-    -.update
+          %add-dao
+        ?>  ?=(^ dao.update)
+        %+  frond  %add-dao
+        %-  pairs
+        :+  [%salt (numb salt.update)]
+          [%dao (enjs-dao u.dao.update)]
+        ~
+      ::
+          %remove-dao
+        %+  frond  %remove-dao
+        %+  frond
+        %dao-id  [%s (scot %ux dao-id.update)]
+      ::
+          %add-member
+        %+  frond  %add-member
+        %-  pairs
+        :~  [%dao-id %s (scot %ux dao-id.update)]
+            [%roles (enjs-roles roles.update)]
+            [%id %s (scot %ux id.update)]
+            [%him %s (scot %p him.update)]
+        ==
+      ::
+          %remove-member
+        %+  frond  %remove-member
+        %-  pairs
+        :+  [%dao-id %s (scot %ux dao-id.update)]
+          [%id %s (scot %ux id.update)]
+        ~
+      ::
+          ?(%add-permissions %remove-permissions)
+        %+  frond  -.update
+        %-  pairs
+        :~  [%dao-id %s (scot %ux dao-id.update)]
+            [%name %s name.update]
+            [%address [%s (enjs-address-key address.update)]]
+            [%roles (enjs-roles roles.update)]
+        ==
+      ::
+          ?(%add-subdao %remove-subdao)
+        %+  frond  -.update
+        %-  pairs
+        :+  [%dao-id %s (scot %ux dao-id.update)]
+          [%subdao-id %s (scot %ux subdao-id.update)]
+        ~
+      ::
+          ?(%add-roles %remove-roles)
+        %+  frond  -.update
+        %-  pairs
+        :^    [%dao-id %s (scot %ux dao-id.update)]
+            [%roles (enjs-roles roles.update)]
+          [%id %s (scot %ux dao-id.update)]
+        ~
+      ==
+    ::
+    ++  enjs-address-key
+      |=  =address:d
+      ^-  @ta
+      ?:  ?=(id address)
+        (scot %ux address)
+      (enjs-path:rl address)
+    ::
+    ++  enjs-roles
+      |=  roles=(set role:d)
+      ^-  ^json
+      :-  %a
+      %+  turn  ~(tap in roles)
+      |=  =role:d
+      [%s role]
+    ::
+    +$  arguments
+      $%  [%add-dao salt=@ dao=(unit dao:d)]
+          [%vote dao-id=id proposal-id=id]
+          [%propose dao-id=id =on-chain-update:d]
+          [%execute dao-id=id =on-chain-update:d]  ::  called only by this contract
+      ==
+      ::
+      ++  r  ::  landscape/sur/resource/hoon
+        ^?
+        |%
+        +$  resource   [=entity name=term]
+        +$  resources  (set resource)
+        ::
+        +$  entity
+          $@  ship
+          $%  !!
+          ==
+        --
+    ::
+    ++  rl  ::  landscape/lib/resource/hoon
+      =<  resource
+      |%
+      +$  resource  resource:r
+      ++  en-path
+        |=  =resource
+        ^-  path
+        ~[%ship (scot %p entity.resource) name.resource]
+      ::
+      ++  de-path
+        |=  =path
+        ^-  resource
+        (need (de-path-soft path))
+      ::
+      ++  de-path-soft
+        |=  =path
+        ^-  (unit resource)
+        ?.  ?=([%ship @ @ *] path)
+          ~
+        =/  ship
+          (slaw %p i.t.path)
+        ?~  ship
+          ~
+        `[u.ship i.t.t.path]
+      ::
+      ++  enjs
+        |=  =resource
+        ^-  ^json
+        %-  pairs:enjs:format
+        :~  ship+(ship:enjs:format entity.resource)
+            name+s+name.resource
+        ==
+      ::
+      ++  enjs-path
+        |=  =resource
+        %-  spat
+        (en-path resource)
+      --
+    ::
+    ++  d  ::  ziggurat/sur/dao/hoon
+      |%
+      +$  role     @tas  ::  E.g. %marketing, %development
+      +$  address  ?(id resource:r)  ::  [chain=@tas id] for other chains?
+      +$  member   (each id @p)
+      ::  name might be, e.g., %read or %write for a graph;
+      ::  %spend for treasury/rice
+      +$  permissions  (map name=@tas (jug address role))
+      +$  members      (jug id role)
+      +$  id-to-ship   (map id @p)
+      +$  ship-to-id   (map @p id)
+      +$  dao
+        $:  name=@t
+            =permissions
+            =members
+            =id-to-ship
+            =ship-to-id
+            subdaos=(set id)
+            :: owners=(set id)  ::  ? or have this in permissions?
+            threshold=@ud
+            proposals=(map @ux [update=on-chain-update votes=(set id)])
+        ==
+      ::
+      +$  on-chain-update
+        $%  [%add-dao salt=@ dao=(unit dao)]
+            [%remove-dao dao-id=id]
+            [%add-member dao-id=id roles=(set role) =id him=@p]
+            [%remove-member dao-id=id =id]
+            [%add-permissions dao-id=id name=@tas =address roles=(set role)]
+            [%remove-permissions dao-id=id name=@tas =address roles=(set role)]
+            [%add-subdao dao-id=id subdao-id=id]
+            [%remove-subdao dao-id=id subdao-id=id]
+            [%add-roles dao-id=id roles=(set role) =id]
+            [%remove-roles dao-id=id roles=(set role) =id]
+        ==
+      ::  off-chain
+      ::
+      +$  off-chain-update
+        $%  on-chain-update
+            [%add-comms dao-id=id rid=resource:r]
+            [%remove-comms dao-id=id]
+        ==
+      ::
+      +$  dao-identifier  (each dao address)
+      +$  daos            (map id dao)
+      +$  dao-id-to-rid   (map id resource:r)
+      +$  dao-rid-to-id   (map resource:r id)
+      --
+    --
+  ::
+  ++  noun
+    ~
+  --
 --

@@ -260,7 +260,6 @@
   ::
   ++  on-peek
     |=  =path
-    ^-  (unit (unit cage))
     |^  ^-  (unit (unit cage))
     ?+    path  (on-peek:def path)
       ::   [%x %block-height ~]

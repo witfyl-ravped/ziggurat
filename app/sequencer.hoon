@@ -3,10 +3,11 @@
 ::  Agent for managing a single UQ| town. Publishes diffs to rollup.hoon
 ::  Accepts transactions and batches them periodically as moves to town.
 ::
-/+  *sequencer, *rollup, default-agent, dbug, verb
+/+  *sequencer, *rollup, zink=zink-zink, default-agent, dbug, verb
 ::  Choose which library smart contracts are executed against here
 ::
 /*  smart-lib-noun  %noun  /lib/zig/compiled/smart-lib/noun
+/*  zink-cax-noun   %noun  /lib/zig/compiled/hash-cache/noun
 |%
 +$  card  card:agent:gall
 +$  state-0
@@ -19,7 +20,7 @@
       proposed-batch=(unit [=basket =land diff-hash=@ux root=@ux])
       status=?(%available %off)
   ==
-+$  inflated-state-0  [state-0 smart-lib-vase=vase]
++$  inflated-state-0  [state-0 smart-lib-vase=vase zink-cax-map=(map * @)]
 --
 ::
 =|  inflated-state-0
@@ -32,14 +33,13 @@
     def   ~(. (default-agent this %|) bowl)
 ::
 ++  on-init
-  `this(state [[%0 ~ ~ ~ ~ ~ ~ %off] ;;(vase (cue q.q.smart-lib-noun))])
+  `this(state [[%0 ~ ~ ~ ~ ~ ~ %off] ;;(vase (cue q.q.smart-lib-noun)) ;;((map * @) (cue q.q.zink-cax-noun))])
 ++  on-save  !>(-.state)
 ++  on-load
   |=  =old=vase
-  ^-  (quip card _this)
   ::  on-load: pre-cue our compiled smart contract library
   ::
-  `this(state [!<(state-0 old-vase) ;;(vase (cue q.q.smart-lib-noun))])
+  `this(state [!<(state-0 old-vase) ;;(vase (cue q.q.smart-lib-noun)) ;;((map * @) (cue q.q.zink-cax-noun))])
 ::
 ++  on-watch
   |=  =path
@@ -149,18 +149,16 @@
       ::  publish full diff data
       ::
       ::  1. produce diff and new state with mill
-      ::  TODO: adjust what mill returns to get diff for submission
       =/  addr  p.sequencer.hall.town
-      =/  mil  ~(mill mill smart-lib-vase)
+      =/  mil  ~(mill mill smart-lib-vase zink-cax-map)
       =+  /(scot %p our.bowl)/wallet/(scot %da now.bowl)/account/(scot %ux addr)/(scot %ud id.hall.town)/noun
       =+  .^(account:smart %gx -)
-      =/  new-state=[(list [@ux egg:smart]) =land]
-        %+  ~(mill-all mil - `@ud`id.hall.town 0)
+      =/  new=state-transition
+        %+  ~(mill-all mil - id.hall.town now.bowl)
           land.town
         (turn ~(tap in `^basket`basket.state) tail)
-      =/  new-root      (shax (jam land.new-state))
-      =/  state-diffs  *(list diff)
-      =/  diff-hash     (shax (jam state-diffs))
+      =/  new-root      (shax (jam land.new))
+      =/  diff-hash     (shax (jam diff.new))
       ::  2. generate our signature
       ::  (address sig, that is)
       ?~  private-key.state
@@ -168,17 +166,17 @@
       =/  sig
         (ecdsa-raw-sign:secp256k1:secp:crypto new-root u.private-key.state)
       ::  3. poke rollup
-      :_  state(proposed-batch `[basket.state +.new-state diff-hash new-root], basket ~)
+      :_  state(proposed-batch `[basket.state land.new diff-hash new-root], basket ~)
       =-  [%pass /batch-submit/(scot %ux new-root) %agent [u.rollup.state %rollup] %poke -]~
       :-  %rollup-action
       !>  :-  %receive-batch
           :*  addr
               id.hall.town
               mode.hall.town
-              state-diffs
+              diff.new
               diff-hash
               new-root
-              +.new-state
+              land.new
               peer-roots.state
               sig
           ==
@@ -227,9 +225,9 @@
         %new-sequencer
       ::  check if we have been kicked off our town
       ::  this is in place for later..  TODO expand this functionality
-      ?~  town.state                  `state
+      ?~  town.state                     `state
       ?.  =(town-id.upd id.hall.u.town)  `state
-      ?:  =(who.upd our.bowl)         `state
+      ?:  =(who.upd our.bowl)            `state
       ~&  >>>  "%sequencer: we've been kicked out of town!"
       `state
     ==

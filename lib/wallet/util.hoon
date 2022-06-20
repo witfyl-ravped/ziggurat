@@ -100,7 +100,7 @@
 ::
 ++  find-new-metadata
   |=  [=book our=ship =metadata-store [our=ship now=time]]
-  =/  book=(list [[town=@ud lord=id:smart salt=@] [=token-type =grain:smart]])  ~(tap by book)
+  =/  book=(list [[town=id:smart lord=id:smart salt=@] [=token-type =grain:smart]])  ~(tap by book)
   |-  ^-  ^metadata-store
   ?~  book  metadata-store
   ?:  (~(has by metadata-store) salt.i.book)  $(book t.book)
