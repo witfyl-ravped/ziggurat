@@ -68,6 +68,33 @@ seed: 0xcafe  public key: 0x2.4a1c.4643.b429.dc12.6f3b.03f3.f519.aebb.5439.08d3.
 
 
 ---
+
+## Compiling Contracts and the Standard Library
+
+
+The following line compiles the `dao.hoon` contract. In general, you can replace `dao` with the name of any other contract.
+```hoon
+.dao/noun +zig!deploy /=zig=/lib/zig/contracts/dao/hoon
+```
+
+Run the following if you've made changes to the standard library and want to recompile it.
+```hoon
+.smart-lib/noun +zig!mk-smart
+```
+
+The above instructions output their content into the `put` directory of your pier, located at e.g. `nec/.urb/put`.
+
+To include the compiled contracts into the git tree, run the following:
+
+```bash
+cp ./<fakezod_pier>/.urb/put/*.noun ./<urbit-git-dir>/pkg/ziggurat/lib/zig/compiled/
+```
+
+(This assumes you've cloned this repo (ziggurat) as a submodule into the pkg folder as instructed above.)
+
+
+
+---
 ## Using the Wallet
 
 1. Scry for a JSON dict of accounts, keyed by address, containing private key, nickname, and nonces:
@@ -129,18 +156,6 @@ Example pokes that will work upon chain initialization in dojo):
 ```
 
 ---
-## Build DAO contracts
-
-If run on a fakezod located at `~/urbit/zod`, the following will create the compiled DAO contract at `~/urbit/zod/.urb/put/dao.noun`:`
-```
-=hoon .^(@t %cx /(scot %p our)/zig/(scot %da now)/lib/zig/sys/hoon/hoon)
-=smart .^(@t %cx /(scot %p our)/zig/(scot %da now)/lib/zig/sys/smart/hoon)
-=contract .^(@t %cx /(scot %p our)/zig/(scot %da now)/lib/zig/contracts/dao/hoon)
-=step0 (slap !>(~) (ream hoon))
-=step1 (slap step0 (ream smart))
-=step2 (slap step1 (ream contract))
-.dao/noun q:(slap step2 (ream '-'))
-```
 
 ### DAO set up
 
@@ -292,25 +307,3 @@ For the HTTP API, the app to subscribe to is `"indexer"`, and the path is `"/slo
 
 ---
 
-## Compiling Contracts and the Standard Library
-
-
-The following line compiles the `dao.hoon` contract. In general, you can replace `dao` with the name of any other contract.
-```hoon
-.dao/noun +zig!deploy /=zig=/lib/zig/contracts/dao/hoon
-```
-
-Run the following if you've made changes to the standard library and want to recompile it.
-```hoon
-.smart-lib/noun +zig!mk-smart
-```
-
-The above instructions output their content into the `put` directory of your pier, located at e.g. `nec/.urb/put`.
-
-To include the compiled contracts into the git tree, run the following:
-
-```bash
-cp ./<fakezod_pier>/.urb/put/*.noun ./<urbit-git-dir>/pkg/ziggurat/lib/zig/compiled/
-```
-
-(This assumes you've cloned this repo (ziggurat) as a submodule into the pkg folder as instructed above.)
