@@ -19,8 +19,7 @@
       proposed-batch=(unit [=basket =land diff-hash=@ux root=@ux])
       status=?(%available %off)
   ==
-+$  inflated-state-0  [state-0 =mil]
-+$  mil  $_  ~(mill mill !>(0))
++$  inflated-state-0  [state-0 smart-lib-vase=vase]
 --
 ::
 =|  inflated-state-0
@@ -33,14 +32,14 @@
     def   ~(. (default-agent this %|) bowl)
 ::
 ++  on-init
-  `this(state [[%0 ~ ~ ~ ~ ~ ~ %off] ~(mill mill ;;(vase (cue q.q.smart-lib-noun)))])
+  `this(state [[%0 ~ ~ ~ ~ ~ ~ %off] ;;(vase (cue q.q.smart-lib-noun))])
 ++  on-save  !>(-.state)
 ++  on-load
   |=  =old=vase
   ^-  (quip card _this)
   ::  on-load: pre-cue our compiled smart contract library
   ::
-  `this(state [!<(state-0 old-vase) ~(mill mill ;;(vase (cue q.q.smart-lib-noun)))])
+  `this(state [!<(state-0 old-vase) ;;(vase (cue q.q.smart-lib-noun))])
 ::
 ++  on-watch
   |=  =path
@@ -152,6 +151,7 @@
       ::  1. produce diff and new state with mill
       ::  TODO: adjust what mill returns to get diff for submission
       =/  addr  p.sequencer.hall.town
+      =/  mil  ~(mill mill smart-lib-vase)
       =+  /(scot %p our.bowl)/wallet/(scot %da now.bowl)/account/(scot %ux addr)/(scot %ud id.hall.town)/noun
       =+  .^(account:smart %gx -)
       =/  new-state=[(list [@ux egg:smart]) =land]
@@ -265,10 +265,10 @@
     ?~  town  [~ ~]
     (read-grain t.path p.land.u.town)
   ::
-      [%read @ @tas @ta ^]  ::  execute contract read
+      [%read @ @tas @ta @ ^]  :: grain id, %noun/%json, argument @ta, other +jam'd data, like tx args, then any associated rice IDs
     ?~  town  [~ ~]
     ::  TODO pre-;; library
-    (read-wheat t.path now.bowl id.hall.u.town p.land.u.town ;;(vase q.q.smart-lib-noun))
+    (read-wheat t.path now.bowl id.hall.u.town p.land.u.town smart-lib-vase)
   ==
 ::
 ++  on-leave  on-leave:def

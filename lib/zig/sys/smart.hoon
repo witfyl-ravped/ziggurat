@@ -52,7 +52,7 @@
 ::
 +$  cart
   $:  me=id
-      block=@ud
+      now=@da  ::  TODO: ?
       town-id=@ud
       owns=(map id grain)
   ==

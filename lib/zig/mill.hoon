@@ -234,7 +234,8 @@
         |=  [to=id budget=@ud]
         ^-  [(unit chick) rem=@ud =errorcode]
         ~>  %bout
-        =/  =cart  [to blocknum town-id owns.crop]
+        =/  =cart  [to *@da town-id owns.crop]  ::  TODO: fix hack
+        :: =/  =cart  [to blocknum town-id owns.crop]
         =/  payload  .*(q.library pay.cont.crop)
         =/  battery  .*([q.library payload] bat.cont.crop)
         =/  dor      [-:!>(*contract) battery]

@@ -13,7 +13,7 @@
       %gx
       %-  zing
       :^    /(scot %p scry-host)/sequencer
-          /(scot %da now.bowl)/wheat/(scot %ux to)/json
+          /(scot %da now.bowl)/read/(scot %ux to)/json
         ?:  ?=(%egg-args query-type)
           /egg-args/[query-arg]/~/noun
         /rice-data/~/[query-arg]/noun
