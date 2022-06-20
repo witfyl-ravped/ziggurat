@@ -3,10 +3,11 @@
 ::  Agent for managing a single Uqbar town. Publishes diffs to rollup.hoon
 ::  Accepts transactions and batches them periodically as moves to town.
 ::
-/+  *sequencer, *rollup, default-agent, dbug, verb
+/+  *sequencer, *rollup, zink=zink-zink, default-agent, dbug, verb
 ::  Choose which library smart contracts are executed against here
 ::
 /*  smart-lib-noun  %noun  /lib/zig/compiled/smart-lib/noun
+/*  zink-cax-noun   %noun  /lib/zig/compiled/hash-cache/noun
 |%
 +$  card  card:agent:gall
 +$  state-0
@@ -20,7 +21,7 @@
       status=?(%available %off)
   ==
 +$  inflated-state-0  [state-0 =mil]
-+$  mil  $_  ~(mill mill !>(0))
++$  mil  $_  ~(mill mill !>(0) *(map * @))
 --
 ::
 =|  inflated-state-0
@@ -33,14 +34,24 @@
     def   ~(. (default-agent this %|) bowl)
 ::
 ++  on-init
-  `this(state [[%0 ~ ~ ~ ~ ~ ~ %off] ~(mill mill ;;(vase (cue q.q.smart-lib-noun)))])
+  :-  ~
+  %_    this
+      state
+    :-  [%0 ~ ~ ~ ~ ~ ~ %off]
+    %~  mill  mill
+    :-  ;;(vase (cue q.q.smart-lib-noun))
+    ;;((map * @) (cue q.q.zink-cax-noun))
+  ==
+::
 ++  on-save  !>(-.state)
 ++  on-load
   |=  =old=vase
-  ^-  (quip card _this)
   ::  on-load: pre-cue our compiled smart contract library
-  ::
-  `this(state [!<(state-0 old-vase) ~(mill mill ;;(vase (cue q.q.smart-lib-noun)))])
+  =/  mil
+    %~  mill  mill
+    :-  ;;(vase (cue q.q.smart-lib-noun))
+    ;;((map * @) (cue q.q.zink-cax-noun))
+  `this(state [!<(state-0 old-vase) mil])
 ::
 ++  on-watch
   |=  =path
@@ -149,7 +160,7 @@
       =/  addr  p.sequencer.hall.town
       =+  /(scot %p our.bowl)/wallet/(scot %da now.bowl)/account/(scot %ux addr)/(scot %ud id.hall.town)/noun
       =+  .^(account:smart %gx -)
-      =/  new-state=[(list [@ux egg:smart]) =land]
+      =/  new-state=[(list [@ux egg:smart]) =land hits=(list (list hints:zink))]
         %+  ~(mill-all mil - `@ud`id.hall.town 0)
           land.town
         (turn ~(tap in `^basket`basket.state) tail)
@@ -163,7 +174,7 @@
       =/  sig
         (ecdsa-raw-sign:secp256k1:secp:crypto new-root u.private-key.state)
       ::  3. poke rollup
-      :_  state(proposed-batch `[basket.state +.new-state diff-hash new-root], basket ~)
+      :_  state(proposed-batch `[basket.state land.new-state diff-hash new-root], basket ~)
       =-  [%pass /batch-submit/(scot %ux new-root) %agent [u.rollup.state %rollup] %poke -]~
       :-  %rollup-action
       !>  :-  %receive-batch
@@ -173,7 +184,7 @@
               state-diffs
               diff-hash
               new-root
-              +.new-state
+              land.new-state
               peer-roots.state
               sig
           ==
