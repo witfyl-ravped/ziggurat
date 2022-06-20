@@ -54,6 +54,7 @@
   ::
   ++  mill-all
     |=  [=land basket=(list egg)]
+    ^-  state-transition
     =/  pending
       %+  sort  basket
       |=  [a=egg b=egg]
@@ -61,10 +62,16 @@
     =|  [processed=(list [@ux egg]) reward=@ud]
     =|  lis-hits=(list (list hints))
     |-
-    ::  TODO add 'crow's to chunk -- list of announcements
-    ^-  [(list [@ux egg]) =^land hits=(list (list hints))]
+    ::  TODO add 'crow's to chunk -- list of events
+    ::  TODO add diff granary, burn granary
     ?~  pending
-      [processed land(p (~(pay tax p.land) reward)) (flop lis-hits)]
+      :*  land(p (~(pay tax p.land) reward))
+          processed
+          (flop lis-hits)
+          diff=*granary
+          crows=*(list crow)
+          burns=*granary
+      ==
     =+  [res fee err hits]=(mill land i.pending)
     =+  i.pending(status.p err)
     %_  $

@@ -161,17 +161,15 @@
       ::  publish full diff data
       ::
       ::  1. produce diff and new state with mill
-      ::  TODO: adjust what mill returns to get diff for submission
       =/  addr  p.sequencer.hall.town
       =+  /(scot %p our.bowl)/wallet/(scot %da now.bowl)/account/(scot %ux addr)/(scot %ud id.hall.town)/noun
       =+  .^(account:smart %gx -)
-      =/  new-state=[(list [@ux egg:smart]) =land hits=(list (list hints:zink))]
-        %+  ~(mill-all mil - `@ud`id.hall.town now.bowl)
+      =/  new=state-transition
+        %+  ~(mill-all mil - id.hall.town now.bowl)
           land.town
         (turn ~(tap in `^basket`basket.state) tail)
-      =/  new-root      (shax (jam land.new-state))
-      =/  state-diffs  *(list diff)
-      =/  diff-hash     (shax (jam state-diffs))
+      =/  new-root      (shax (jam land.new))
+      =/  diff-hash     (shax (jam diff.new))
       ::  2. generate our signature
       ::  (address sig, that is)
       ?~  private-key.state
@@ -179,17 +177,17 @@
       =/  sig
         (ecdsa-raw-sign:secp256k1:secp:crypto new-root u.private-key.state)
       ::  3. poke rollup
-      :_  state(proposed-batch `[basket.state land.new-state diff-hash new-root], basket ~)
+      :_  state(proposed-batch `[basket.state land.new diff-hash new-root], basket ~)
       =-  [%pass /batch-submit/(scot %ux new-root) %agent [u.rollup.state %rollup] %poke -]~
       :-  %rollup-action
       !>  :-  %receive-batch
           :*  addr
               id.hall.town
               mode.hall.town
-              state-diffs
+              diff.new
               diff-hash
               new-root
-              land.new-state
+              land.new
               peer-roots.state
               sig
           ==

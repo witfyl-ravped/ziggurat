@@ -120,8 +120,9 @@
   ==
 ::
 +$  chick    (each rooster hen)
-::  new: crow, emit information about transaction to be picked up by interested parties
-+$  rooster  [changed=(map id grain) issued=(map id grain) crow=(list [@tas json])]
++$  crow     (list [@tas json])
+::
++$  rooster  [changed=(map id grain) issued=(map id grain) =crow]
 +$  hen      [next=[to=id town-id=id args=yolk] roost=rooster]
 ::
 ::  JSON, from lull.hoon and zuse.hoon
