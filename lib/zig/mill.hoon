@@ -96,11 +96,11 @@
     ::
     ?.  =(nonce.from.p.egg +((~(gut by q.land) id.from.p.egg 0)))
       ~&  >>>  "mill: tx rejected; bad nonce"
-      [land 0 %3]  ::  bad nonce
+      [land 0 %3 ~]  ::  bad nonce
     ::
     ?.  (~(audit tax p.land) egg)
       ~&  >>>  "mill: tx rejected; not enough budget"
-      [land 0 %4]  ::  can't afford gas
+      [land 0 %4 ~]  ::  can't afford gas
     ::
     =+  [hits gan rem err]=(~(work farm p.land) egg)
     =/  fee=@ud   (sub budget.p.egg rem)
