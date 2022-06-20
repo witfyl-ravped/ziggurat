@@ -58,7 +58,7 @@
 ++  dao-contract-id  ::  TODO: remove hardcode
   `@ux`'dao'
 ++  dao-town-id  ::  TODO: remove hardcode
-  1
+  0x1
 --
 ::
 =|  state-zero

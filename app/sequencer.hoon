@@ -155,7 +155,7 @@
       =+  /(scot %p our.bowl)/wallet/(scot %da now.bowl)/account/(scot %ux addr)/(scot %ud id.hall.town)/noun
       =+  .^(account:smart %gx -)
       =/  new-state=[(list [@ux egg:smart]) =land]
-        %+  ~(mill-all mil - `@ud`id.hall.town 0)
+        %+  ~(mill-all mil - id.hall.town now.bowl)
           land.town
         (turn ~(tap in `^basket`basket.state) tail)
       =/  new-root      (shax (jam land.new-state))
@@ -225,9 +225,9 @@
         %new-sequencer
       ::  check if we have been kicked off our town
       ::  this is in place for later..  TODO expand this functionality
-      ?~  town.state                  `state
+      ?~  town.state                     `state
       ?.  =(town-id.upd id.hall.u.town)  `state
-      ?:  =(who.upd our.bowl)         `state
+      ?:  =(who.upd our.bowl)            `state
       ~&  >>>  "%sequencer: we've been kicked out of town!"
       `state
     ==

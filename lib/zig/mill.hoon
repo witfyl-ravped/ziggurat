@@ -49,7 +49,7 @@
   !<(typ [-:!>(*typ) val])
 ::
 ++  mill
-  |_  [miller=account town-id=@ud blocknum=@ud]
+  |_  [miller=account town-id=id now=@da]
   ::
   ::  +mill-all: mills all eggs in basket
   ::
@@ -105,8 +105,8 @@
     |_  =granary
     +$  token-account
       $:  balance=@ud
-          allowances=(map sender=id:smart @ud)
-          metadata=id:smart
+          allowances=(map sender=id @ud)
+          metadata=id
       ==
     ::  +audit: evaluate whether a caller can afford gas
     ++  audit
@@ -204,9 +204,6 @@
         ?.  =(lord.u.res find)          ~
         ?.  =(town-id.u.res town-id)    ~
         `[id u.res]
-      ::  ++  telescope
-      ::    |=  =wheat
-      ::    cons together the library nocks against q.q.smart-lib
       --
     ::  +grow: recursively apply any calls stemming from egg, return on rooster or failure
     ++  grow
@@ -234,7 +231,7 @@
         |=  [to=id budget=@ud]
         ^-  [(unit chick) rem=@ud =errorcode]
         ~>  %bout
-        =/  =cart  [to blocknum town-id owns.crop]
+        =/  =cart    [to now town-id owns.crop]
         =/  payload  .*(q.library pay.cont.crop)
         =/  battery  .*([q.library payload] bat.cont.crop)
         =/  dor      [-:!>(*contract) battery]

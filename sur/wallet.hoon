@@ -2,7 +2,7 @@
 |%
 +$  signature   [p=@ux q=ship r=life]
 ::
-+$  book  (map [town=@ud lord=id:smart salt=@] [=token-type =grain:smart])
++$  book  (map [town=@ux lord=id:smart salt=@] [=token-type =grain:smart])
 +$  transaction-store  (map pub=@ux [sent=(map @ux [=egg:smart args=supported-args]) received=(map @ux =egg:smart)])
 +$  metadata-store  (map @ asset-metadata)  ::  metadata is keyed by SALT of grains associated.
 ::
@@ -34,7 +34,7 @@
       [%add-tracked-address address=@ux nick=@t]
       [%submit-signed hash=@ eth-hash=@ sig=[v=@ r=@ s=@]]
       ::  testing and internal
-      [%set-nonce address=@ux town=@ud new=@ud]
+      [%set-nonce address=@ux town=id:smart new=@ud]
       [%populate seed=@ux]
       ::  TX submit pokes
       ::  if we have a private key for the 'from' address, sign. if not,
@@ -42,7 +42,7 @@
       $:  %submit-custom
           from=id:smart
           to=id:smart
-          town=@ud
+          town=id:smart
           gas=[rate=@ud bud=@ud]
           args=@t  ::  literally `ream`ed to form args
           my-grains=(set id:smart)
@@ -51,7 +51,7 @@
       $:  %submit
           from=id:smart
           to=id:smart
-          town=@ud
+          town=id:smart
           gas=[rate=@ud bud=@ud]
           args=supported-args
       ==
