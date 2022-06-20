@@ -1,4 +1,4 @@
-::  nft.hoon [uqbar-dao]
+::  nft.hoon [UQ| DAO]
 ::
 ::  NFT standard. Provides abilities similar to ERC-721 tokens, also ability
 ::  to deploy and mint new sets of tokens.
@@ -112,7 +112,7 @@
         %=  giver
           items  (~(del by items.giver) item-id.args)
           allowances  (~(del ju allowances.giver) caller-id item-id.args)
-        == 
+        ==
       ==
       [%& (malt ~[[id.giv giv] [id.rec rec]]) ~ ~]
     ::

@@ -48,7 +48,7 @@
   !<(typ [-:!>(*typ) val])
 ::
 ++  mill
-  |_  [miller=account town-id=@ud blocknum=@ud]
+  |_  [miller=account town-id=id now=@da]
   ::
   ::  +mill-all: mills all eggs in basket
   ::
@@ -89,33 +89,18 @@
     ^-  [^land fee=@ud =errorcode hits=(list hints)]
     ?.  ?=(account from.p.egg)  [land 0 %1 ~]
     ::  validate transaction signature
-    ::  using ecdsa-raw-sign in wallet, TODO review this
-    ::  comment this out if testing mill
-    ::  TODO figure out how to guarantee raw-recover non-crashing
-    =?  v.sig.p.egg  (gte v.sig.p.egg 27)  (sub v.sig.p.egg 27)
-    =/  recovered
-      %+  ecdsa-raw-recover:secp256k1:secp:crypto
-        ?~(eth-hash.p.egg (sham (jam q.egg)) u.eth-hash.p.egg)
-      sig.p.egg
-    =/  caller-address
-      ?~  eth-hash.p.egg
-        %-  compress-point:secp256k1:secp:crypto
-        recovered
-      %-  address-from-pub:key:ethereum
-      %-  serialize-point:secp256k1:secp:crypto
-      recovered
-    =+  ?~(eth-hash.p.egg (sham (jam q.egg)) u.eth-hash.p.egg)
-    ?.  (verify-sig id.from.p.egg - sig.p.egg ?=(^ eth-hash.p.egg))
-    ~&  >>>  "mill: signature mismatch: expected {<id.from.p.egg>}, got {<`@ux`caller-address>}"
-      [land 0 %2 ~]  ::  signed tx doesn't match account
+    ::  =+  ?~(eth-hash.p.egg (sham (jam q.egg)) u.eth-hash.p.egg)
+    ::  ?.  (verify-sig id.from.p.egg - sig.p.egg ?=(^ eth-hash.p.egg))
+    ::  ~&  >>>  "mill: signature mismatch"
+    ::    [land 0 %2]  ::  signed tx doesn't match account
     ::
     ?.  =(nonce.from.p.egg +((~(gut by q.land) id.from.p.egg 0)))
-      ~&  >>>  "tx rejected; bad nonce"
-      [land 0 %3 ~]  ::  bad nonce
+      ~&  >>>  "mill: tx rejected; bad nonce"
+      [land 0 %3]  ::  bad nonce
     ::
     ?.  (~(audit tax p.land) egg)
-      ~&  >>>  "tx rejected; not enough budget"
-      [land 0 %4 ~]  ::  can't afford gas
+      ~&  >>>  "mill: tx rejected; not enough budget"
+      [land 0 %4]  ::  can't afford gas
     ::
     =+  [hits gan rem err]=(~(work farm p.land) egg)
     =/  fee=@ud   (sub budget.p.egg rem)
@@ -129,8 +114,8 @@
     |_  =granary
     +$  token-account
       $:  balance=@ud
-          allowances=(map sender=id:smart @ud)
-          metadata=id:smart
+          allowances=(map sender=id @ud)
+          metadata=id
       ==
     ::  +audit: evaluate whether a caller can afford gas
     ++  audit
@@ -156,7 +141,15 @@
     ++  pay
       |=  total=@ud
       ^-  ^granary
-      ?~  zigs=(~(get by granary) zigs.miller)  granary
+      ?~  zigs=(~(get by granary) zigs.miller)
+        ::  create a new account rice for the sequencer
+        ::
+        =/  =token-account  [total ~ `@ux`'zigs-metadata']
+        =/  =id  (fry-rice id.miller zigs-wheat-id town-id `@`'zigs')
+        %+  ~(put by granary)  id
+        [id zigs-wheat-id id.miller town-id [%& `@`'zigs' token-account]]
+      ::  use existing account
+      ::
       ?.  ?=(%& -.germ.u.zigs)                  granary
       =/  acc  (hole token-account data.p.germ.u.zigs)
       ?.  =(`@ux`'zigs-metadata' metadata.acc)  granary
@@ -221,9 +214,6 @@
         ?.  =(lord.u.res find)          ~
         ?.  =(town-id.u.res town-id)    ~
         `[id u.res]
-      ::  ++  telescope
-      ::    |=  =wheat
-      ::    cons together the library nocks against q.q.smart-lib
       --
     ::  +grow: recursively apply any calls stemming from egg, return on rooster or failure
     ++  grow
@@ -252,7 +242,7 @@
         |=  [to=id budget=@ud]
         ^-  [hints (unit chick) rem=@ud =errorcode]
         ~>  %bout
-        =/  =cart  [to blocknum town-id owns.crop]
+        =/  =cart  [to now town-id owns.crop]
         =/  payload   .*(q.library pay.cont.crop)
         =/  battery   .*([q.library payload] bat.cont.crop)
         =/  dor=vase  [-:!>(*contract) battery]

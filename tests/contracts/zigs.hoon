@@ -11,7 +11,7 @@
           `@ux`'zigs'
           1  ::  town-id
           :+  %&  `@`'zigs'
-          :*  name='Zigs: Uqbar Tokens'
+          :*  name='Zigs: UQ| Tokens'
               symbol='ZIG'
               decimals=18
               supply=100

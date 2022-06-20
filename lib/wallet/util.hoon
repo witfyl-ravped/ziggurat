@@ -16,18 +16,18 @@
   [%give %fact ~[/tx-updates] %zig-wallet-update !>(-)]
 ::
 ++  create-holder-and-id-subs
-  |=  [pubkeys=(set @ux) indexer=ship]
+  |=  [pubkeys=(set @ux) our=@p]
   ^-  (list card)
   %+  weld
     %+  turn
       ~(tap in pubkeys)
     |=  k=@ux
-    =-  [%pass - %agent [indexer %indexer] %watch -]
+    =-  [%pass - %agent [our %uqbar] %watch -]
     /id/(scot %ux k)
   %+  turn
     ~(tap in pubkeys)
   |=  k=@ux
-  =-  [%pass - %agent [indexer %indexer] %watch -]
+  =-  [%pass - %agent [our %uqbar] %watch -]
   /holder/(scot %ux k)
 ::
 ++  clear-holder-and-id-sub
@@ -46,7 +46,7 @@
   |=  [[=wire =ship =term] *]
   ^-  (unit card)
   ?.  |(?=([%id *] wire) ?=([%holder *] wire))  ~
-  `[%pass wire %agent [ship term] %leave ~]  
+  `[%pass wire %agent [ship term] %leave ~]
 ::
 ++  create-asset-subscriptions
   |=  [tokens=(map @ux =book) indexer=ship]
@@ -100,7 +100,7 @@
 ::
 ++  find-new-metadata
   |=  [=book our=ship =metadata-store [our=ship now=time]]
-  =/  book=(list [[town=@ud lord=id:smart salt=@] [=token-type =grain:smart]])  ~(tap by book)
+  =/  book=(list [[town=id:smart lord=id:smart salt=@] [=token-type =grain:smart]])  ~(tap by book)
   |-  ^-  ^metadata-store
   ?~  book  metadata-store
   ?:  (~(has by metadata-store) salt.i.book)  $(book t.book)

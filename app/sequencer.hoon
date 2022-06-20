@@ -1,6 +1,6 @@
-::  sequencer [uqbar-dao]
+::  sequencer [UQ| DAO]
 ::
-::  Agent for managing a single Uqbar town. Publishes diffs to rollup.hoon
+::  Agent for managing a single UQ| town. Publishes diffs to rollup.hoon
 ::  Accepts transactions and batches them periodically as moves to town.
 ::
 /+  *sequencer, *rollup, zink=zink-zink, default-agent, dbug, verb
@@ -61,8 +61,11 @@
   ?>  (allowed-participant [src our now]:bowl)
   ?.  ?=([%indexer %updates ~] path)
     ~|("%sequencer: rejecting %watch on bad path" !!)
-  ::  handle indexer watches here -- send latest state?
-  `this
+  ::  handle indexer watches here -- send latest state
+  ?~  town  `this
+  :_  this
+  =-  [%give %fact ~ %indexer-update -]~
+  !>([%new-state ~ u.town (rear roots.hall.u.town)])
 ::
 ++  on-poke
   |=  [=mark =vase]
@@ -84,6 +87,8 @@
     ::
         %init
       ?>  =(src.bowl our.bowl)
+      ?.  =(%off status.state)
+        ~|("%sequencer: already active" !!)
       ::  poke rollup ship with params of new town
       ::  (will be rejected if id is taken)
       =/  =land  ?~(starting-state.act [~ ~] u.starting-state.act)
@@ -103,10 +108,11 @@
             private-key  `private-key.act
             town         `town
             status        %available
+            proposed-batch  `[~ land.town 0x0 new-root]
           ==
-      :~  [%pass /sub-rollup %agent [rollup-host.act %rollup] %watch /rollup-updates]
+      :~  [%pass /sub-rollup %agent [rollup-host.act %rollup] %watch /peer-root-updates]
           =+  [%rollup-action !>([%launch-town address.act sig town])]
-          [%pass /move-submit/(scot %ux new-root) %agent [rollup-host.act %rollup] %poke -]
+          [%pass /batch-submit/(scot %ux new-root) %agent [rollup-host.act %rollup] %poke -]
       ==
     ::
         %clear-state
@@ -129,7 +135,6 @@
         %receive
       ?.  =(%available status.state)
         ~|("%sequencer: error: got egg while not active" !!)
-      ~&  >>  "%sequencer: received eggs from {<src.bowl>}: {<eggs.act>}"
       =-  `state(basket (~(uni in basket) -))
       ^+  basket
       %-  ~(run in eggs.act)
@@ -160,7 +165,7 @@
       =+  /(scot %p our.bowl)/wallet/(scot %da now.bowl)/account/(scot %ux addr)/(scot %ud id.hall.town)/noun
       =+  .^(account:smart %gx -)
       =/  new=state-transition
-        %+  ~(mill-all mil - `@ud`id.hall.town 0)
+        %+  ~(mill-all mil - id.hall.town now.bowl)
           land.town
         (turn ~(tap in `^basket`basket.state) tail)
       =/  new-root      (shax (jam land.new))
@@ -208,7 +213,7 @@
       `this(proposed-batch ~)
     `this
   ::
-      [%rollup-updates ~]
+      [%sub-rollup ~]
     ?:  ?=(%kick -.sign)
       :_  this  ::  attempt to re-sub
       [%pass wire %agent [src.bowl %rollup] %watch (snip `path`wire)]~
@@ -224,14 +229,14 @@
     ?-    -.upd
         %new-peer-root
       ::  update our local map
-      `state(peer-roots (~(put by peer-roots.state) town.upd root.upd))
+      `state(peer-roots (~(put by peer-roots.state) town-id.upd root.upd))
     ::
         %new-sequencer
       ::  check if we have been kicked off our town
       ::  this is in place for later..  TODO expand this functionality
-      ?~  town.state                  `state
-      ?.  =(town.upd id.hall.u.town)  `state
-      ?:  =(who.upd our.bowl)         `state
+      ?~  town.state                     `state
+      ?.  =(town-id.upd id.hall.u.town)  `state
+      ?:  =(who.upd our.bowl)            `state
       ~&  >>>  "%sequencer: we've been kicked out of town!"
       `state
     ==

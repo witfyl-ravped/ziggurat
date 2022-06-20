@@ -16,7 +16,7 @@
 ::  * (test all constraints in contract: balance, gas, +give, etc)
 ::  * executing multiple calls with +mill-all
 ::
-/+  *test, mill=zig-mill, *zig-sys-smart
+/+  *test, mill=zig-mill, *zig-sys-smart, *sequencer
 /*  smart-lib-noun  %noun  /lib/zig/compiled/smart-lib/noun
 /*  zigs-contract  %noun  /lib/zig/compiled/zigs/noun
 |%
@@ -75,18 +75,18 @@
     %-  %~  gas  by  *(map id @ud)
     ~[[0xbeef 0] [0xdead 0] [0xcafe 0]]
   ++  fake-town
-    ^-  town
+    ^-  land
     [fake-granary fake-populace]
   --
 ++  test-trivial-fail
   =/  mil  ~(mill mill ;;(vase (cue q.q.smart-lib-noun)))
-  =/  caller  [0xbeef 1 0x1.beef] 
+  =/  caller  [0xbeef 1 0x1.beef]
   =/  yok=yolk
     [caller `[%init ~] ~ ~]
   =/  shel=shell
     [caller [0 0 0] ~ zigs-wheat-id 1 333 0 0]
   =/  egg  [shel yok]
-  =/  [=town fee=@ud err=errorcode]
+  =/  [=land fee=@ud err=errorcode]
     %+  ~(mill mil [0xdead 1 0x1.dead] 0 1)
       fake-town:zigs
     egg
@@ -101,7 +101,7 @@
   =/  shel=shell
     [caller [0 0 0] ~ zigs-wheat-id 1 500 0 0]
   =/  egg  [shel yok]
-  =/  [=town fee=@ud =errorcode]
+  =/  [=land fee=@ud =errorcode]
     %+  ~(mill mil [0xcafe 1 0x1.cafe] 0 1)
       fake-town:zigs
     egg
@@ -110,18 +110,18 @@
   =/  correct  dead-zigs-grain:zigs
   =.  germ.correct  [%& `@`'zigs' [200.777 ~ `@ux`'zigs-metadata']]
   %+  expect-eq
-    !>((~(got by p.town) 0x1.dead))
+    !>((~(got by p.land) 0x1.dead))
   !>(correct)
 ::
 ++  test-single-c-call
   =/  mil  ~(mill mill ;;(vase (cue q.q.smart-lib-noun)))
-  =/  caller  [0xbeef 1 0x1.beef] 
+  =/  caller  [0xbeef 1 0x1.beef]
   =/  yok=yolk
     [caller `[%give 0x1234 ~ 777 333] (silt ~[0x1.beef]) ~]
   =/  shel=shell
     [caller [0 0 0] ~ zigs-wheat-id 1 500 0 0]
   =/  egg  [shel yok]
-  =/  [=town fee=@ud =errorcode]
+  =/  [=land fee=@ud =errorcode]
     %+  ~(mill mil [0xcafe 1 0x1.cafe] 0 1)
       fake-town:zigs
     egg
@@ -137,6 +137,6 @@
         [%& `@`'zigs' [777 ~ `@ux`'zigs-metadata']]
     ==
   %+  expect-eq
-    !>((~(got by p.town) correct-id))
+    !>((~(got by p.land) correct-id))
   !>(correct)
 --

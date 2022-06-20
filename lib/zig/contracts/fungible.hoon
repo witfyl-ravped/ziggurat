@@ -1,4 +1,4 @@
-::  fungible.hoon [uqbar-dao]
+::  fungible.hoon [UQ| DAO]
 ::
 ::  Fungible token standard. Any new token that wishes to use this standard
 ::  format can be issued through this contract. The contract uses an account
@@ -153,7 +153,7 @@
         %=  giver
           balance  (sub balance.giver amount.args)
           allowances  (~(jab by allowances.giver) caller-id |=(old=@ud (sub old amount.args)))
-        == 
+        ==
       ==
       [%& (malt ~[[id.giv giv] [id.rec rec]]) ~ ~]
     ::

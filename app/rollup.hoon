@@ -1,4 +1,4 @@
-::  rollup [uqbar-dao]
+::  rollup [UQ| DAO]
 ::
 ::  Agent that simulates a rollup contract on another chain.
 ::  Receives state transitions (moves) for towns, verifies them,
@@ -39,12 +39,20 @@
   ?>  (allowed-participant [src our now]:bowl)
   ::  give new subscibing sequencer recent root from every town
   ::
-  :_  this
-  %+  turn  ~(tap by capitol)
-  |=  [=id:smart =hall:sequencer]
-  ^-  card
-  =-  [%give %fact ~[/peer-root-update] -]
-  [%rollup-update !>([%new-peer-root id (rear roots.hall)])]
+  ?+    -.path  !!
+      %capitol-updates
+    :_  this
+    =-  [%give %fact ~ -]~
+    [%rollup-update !>([%new-capitol capitol])]
+  ::
+      %peer-root-updates
+    :_  this
+    %+  turn  ~(tap by capitol)
+    |=  [=id:smart =hall:sequencer]
+    ^-  card
+    =-  [%give %fact ~ -]
+    [%rollup-update !>([%new-peer-root id (rear roots.hall)])]
+  ==
 ::
 ++  on-poke
   |=  [=mark =vase]
@@ -68,12 +76,15 @@
       ::  create new hall
       ::  TODO remove starting-state from init and populate new towns via
       ::  assets from other towns
-      :_  state(capitol (~(put by capitol) id.hall.act hall.act))
-      [%give %fact ~[/peer-root-update] %rollup-update !>([%new-peer-root id.hall.act (rear roots.hall.act)])]~
+      =+  (~(put by capitol) id.hall.act hall.act)
+      :_  state(capitol -)
+      :~  [%give %fact ~[/peer-root-updates] %rollup-update !>([%new-peer-root id.hall.act (rear roots.hall.act)])]
+          [%give %fact ~[/capitol-updates] %rollup-update !>([%new-capitol -])]
+      ==
     ::
         %bridge-assets
       ::  for simulation purposes
-      ?~  hall=(~(get by capitol.state) town.act)  !!
+      ?~  hall=(~(get by capitol.state) town-id.act)  !!
       :_  state
       =+  [%town-action !>([%receive-assets assets.act])]
       [%pass /bridge %agent [q.sequencer.u.hall %sequencer] %poke -]~
@@ -94,7 +105,11 @@
             %+  turn  ~(tap by peer-roots.act)
             |=  [=id:smart root=@ux]
             ?~  hall=(~(get by capitol.state) id)  %.n
-            ?~  (find [root]~ (slag recent-enough roots.u.hall))  %.n
+            =+  ?:  (lte (lent roots.u.hall) recent-enough)
+                  roots.u.hall
+                (slag recent-enough roots.u.hall)
+            ?~  (find [root]~ -)
+              %.n
             %.y
           |=(a=? a)
         ~|("%rollup: rejecting batch; peer roots not recent enough" !!)
@@ -108,8 +123,11 @@
             latest-diff-hash  diff-hash.act
             roots  (snoc roots.u.hall new-root.act)
           ==
-      :_  state(capitol (~(put by capitol) town-id.act -))
-      [%give %fact ~[/peer-root-update] %rollup-update !>([%new-peer-root town-id.act new-root.act])]~
+      =+  (~(put by capitol) town-id.act -)
+      :_  state(capitol -)
+      :~  [%give %fact ~[/peer-root-updates] %rollup-update !>([%new-peer-root town-id.act new-root.act])]
+          [%give %fact ~[/capitol-updates] %rollup-update !>([%new-capitol -])]
+      ==
     ==
   --
 ::

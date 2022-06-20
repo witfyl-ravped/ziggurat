@@ -22,6 +22,8 @@
       latest-diff-hash=@ux
       roots=(list @ux)
   ==
+::  capitol: tracks sequencer and state roots / diffs for all towns
++$  capitol  (map id:smart hall:sequencer)
 ::
 +$  diff   granary  ::  state transitions for one batch
 +$  state-transition
@@ -63,9 +65,11 @@
   ==
 ::
 +$  rollup-update
-  $%  [%new-peer-root town=id:smart root=@ux]
-      [%new-sequencer town=id:smart who=ship]
+  $%  [%new-peer-root town-id=id:smart root=@ux]
+      [%new-sequencer town-id=id:smart who=ship]
   ==
+::
++$  capitol-update  [%new-capitol =capitol]
 ::
 ::  indexer must verify root is posted to rollup before verifying new state
 +$  indexer-update  [%update eggs=(list [@ux egg:smart]) =town root=@ux]

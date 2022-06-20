@@ -48,38 +48,24 @@ To run all tests, enter `-test ~[/=zig=/tests]`, or `-test ~[/=zig=/tests/contra
 We'll use a pubkey/seed combo here that has tokens pre-minted for us.
 Enter these commands in dojo after following the setup instructions above:
 ```
-:ziggurat &zig-chain-poke [%set-addr 0x3.e87b.0cbb.431d.0e8a.2ee2.ac42.d9da.cab8.063d.6bb6.2ff9.b2aa.e1b9.0f56.9c3f.3423]
-:ziggurat|start-testnet now
-:indexer &set-chain-source [our %ziggurat]
-:wallet &zig-wallet-poke [%populate 0xbeef]
+:rollup|activate
+:sequencer|init our 0x0 <PRIVATE_KEY>
+:uqbar|set-sources our 0x0 our
+:wallet &zig-wallet-poke [%populate <SEED>]
 ```
-You can initialize a town on your new testnet with the generator in `/gen/sequencer/init.hoon`. Use this as a template to create your own town with pre-generated data if you desire to test a specific contract.
-```
-:sequencer|init 1
-```
-(1 here is the town-id)
 
 ---
 
 **To join an existing testnet:**
 
-1. Start by setting your local indexer to track from a ship that's already in the testnet: `:indexer &set-chain-source [<SHIP> %ziggurat]`
+(TBD)
 
-2. Populate your wallet with an account. If you know of a pubkey/seed combo with existing tokens, you can use it here: `:wallet &zig-wallet-poke [%populate <SEED>]` Otherwise, you can use the wallet frontend to generate a hot wallet and ask someone in the testnet to send tokens to your address -- you'll need them to submit your chain-join transaction. Here is the set of accounts with tokens pre-minted in the default testnet init script:
 ```
 seed: 0xbeef  public key: 0x3.e87b.0cbb.431d.0e8a.2ee2.ac42.d9da.cab8.063d.6bb6.2ff9.b2aa.e1b9.0f56.9c3f.3423
 seed: 0xdead  public key: 0x2.eaea.cffd.2bbe.e0c0.02dd.b5f8.dd04.e63f.297f.14cf.d809.b616.2137.126c.da9e.8d3d
 seed: 0xcafe  public key: 0x2.4a1c.4643.b429.dc12.6f3b.03f3.f519.aebb.5439.08d3.e0bf.8fc3.cb52.b92c.9802.636e
 ```
 
-3. Set your wallet to submit transactions to a ship already in the testnet: `:wallet &zig-wallet-poke [%set-node 0 <SHIP>]`
-
-4. Give your validator agent a pubkey to match either the data you populated the wallet with, or generated and had tokens sent to:
-`:ziggurat &zig-chain-poke [%set-addr <PUBLIC KEY>]` (this is the address which gas fees earned by your sequencing will be sent to)
-
-5. Submit a transaction to join the testnet. Once again, use a ship here that's already active in the testnet you wish to join: `:ziggurat &zig-chain-poke [%start %validator ~ validators=(silt ~[<SHIP>]) [~ ~]]`
-
-You should see `%ziggurat: attempting to join relay chain`, and if the transaction was accepted, you will begin participating in the relay chain at the beginning of the next epoch.
 
 ---
 ## Using the Wallet
@@ -130,6 +116,7 @@ You should see `%ziggurat: attempting to join relay chain`, and if the transacti
 }
 ```
 Example pokes that will work upon chain initialization in dojo):
+*NEED INDEXER INFO TO WORK NON-CUSTOM*
 ```
 #  ZIGS
 :wallet &zig-wallet-poke [%submit 0x3.e87b.0cbb.431d.0e8a.2ee2.ac42.d9da.cab8.063d.6bb6.2ff9.b2aa.e1b9.0f56.9c3f.3423 0x74.6361.7274.6e6f.632d.7367.697a 0 [1 10.000] [%give 1.936.157.050 0x2.eaea.cffd.2bbe.e0c0.02dd.b5f8.dd04.e63f.297f.14cf.d809.b616.2137.126c.da9e.8d3d 777]]

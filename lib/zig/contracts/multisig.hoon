@@ -1,4 +1,4 @@
-::  multisig.hoon  [uqbar-dao]
+::  multisig.hoon  [UQ| DAO]
 ::
 ::  Smart contract to manage a simple multisig wallet.
 ::  New multisigs can be generated through the %create
@@ -29,7 +29,7 @@
       ?>  (gth init-thresh.args 0)  :: threshold of 0 is disallowed
       =/  salt=@
         (sham (cat 3 block.cart (cat 3 caller-id (sham-ids members.args))))
-      =/  lord               me.cart  
+      =/  lord               me.cart
       =/  holder             me.cart  ::  TODO should holder be me.cart or caller-id
       =/  new-sig-germ=germ  [%& salt [members.args init-thresh.args ~]]
       =/  new-sig-id=id      (fry-rice holder lord town-id.cart salt)
@@ -40,7 +40,7 @@
     ?>  ?=(%& -.germ.my-grain)
     =/  state=multisig-state  ;;(multisig-state data.p.germ.my-grain)
     ::  ?>  ?=(multisig-state data.p.germ.my-grain)  :: doesn't work due to fish-loop
-    ::  N.B. because no type assert has been made, 
+    ::  N.B. because no type assert has been made,
     ::  data.p.germ.my-grain is basically * and thus has no type checking done on its modification
     ::  therefore, we explicitly modify `state` to retain typechecking then modify `data`
     ::

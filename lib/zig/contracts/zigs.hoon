@@ -1,7 +1,7 @@
-::  zigs.hoon [uqbar-dao]
+::  zigs.hoon [UQ| DAO]
 ::
 ::  Contract for 'zigs' (official name TBD) token, the gas-payment
-::  token for the Uqbar network.
+::  token for the UQ| network.
 ::  This token is unique from those defined by the token standard
 ::  because %give must include their gas budget, in order for
 ::  zig spends to be guaranteed not to underflow.
@@ -92,7 +92,7 @@
         %=  giver
           balance  (sub balance.giver amount.args)
           allowances  (~(jab by allowances.giver) caller-id |=(old=@ud (sub old amount.args)))
-        == 
+        ==
       ==
       [%& (malt ~[[id.giv giv] [id.rec rec]]) ~ ~]
     ::

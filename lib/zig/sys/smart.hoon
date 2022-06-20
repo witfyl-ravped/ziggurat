@@ -5,19 +5,19 @@
 ::  +fry: hash lord+town+germ to make contract grain pubkey
 ::
 ++  fry-contract
-  |=  [lord=id town=@ud bat=*]
+  |=  [lord=id town-id=id bat=*]
   ^-  id
   =+  (jam bat)
-  `@ux`(sham (cat 3 lord (cat 3 town -)))
+  `@ux`(sham (cat 3 lord (cat 3 town-id -)))
 ::
 ++  fry-rice
-  |=  [holder=id lord=id town=@ud salt=@]
+  |=  [holder=id lord=id town-id=id salt=@]
   ::  TODO remove town from this possibly, for cross-town transfers
   ^-  id
   ^-  @ux
   %^  cat  3
     (end [3 8] (sham holder))
-  (end [3 8] (sham (cat 3 town (cat 3 lord salt))))
+  (end [3 8] (sham (cat 3 town-id (cat 3 lord salt))))
 ::
 ::  +pin: get ID from caller
 ::
@@ -40,7 +40,7 @@
 ::
 ::  a grain holds either rice (data) or wheat (functions)
 ::
-+$  grain  [=id lord=id holder=id town-id=@ud =germ]
++$  grain  [=id lord=id holder=id town-id=id =germ]
 +$  germ   (each rice wheat)
 ::
 +$  rice   [salt=@ data=*]
@@ -52,8 +52,8 @@
 ::
 +$  cart
   $:  me=id
-      block=@ud
-      town-id=@ud
+      now=@da
+      town-id=id
       owns=(map id grain)
   ==
 ::
@@ -103,11 +103,11 @@
       to=id
       rate=@ud
       budget=@ud
-      town-id=@ud
+      town-id=id
       status=@ud  ::  error code
   ==
 +$  yolk
-  $:  =caller
+  $:  =caller  ::  TODO remove, redundant
       args=(unit *)
       my-grains=(set id)
       cont-grains=(set id)
@@ -121,9 +121,9 @@
 ::
 +$  chick    (each rooster hen)
 +$  crow     (list [@tas json])
-::  new: crow, emit information about transaction to be picked up by interested parties
+::
 +$  rooster  [changed=(map id grain) issued=(map id grain) =crow]
-+$  hen      [next=[to=id town-id=@ud args=yolk] roost=rooster]
++$  hen      [next=[to=id town-id=id args=yolk] roost=rooster]
 ::
 ::  JSON, from lull.hoon and zuse.hoon
 ::  allows read arm of contracts to perform enjs operations
