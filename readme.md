@@ -288,3 +288,33 @@ For the HTTP API, the app to subscribe to is `"indexer"`, and the path is `"/slo
 =smartlib-txt .^(@t %cx /=zig=/lib/zig/sys/smart/hoon)
 =cax (conq:c hoonlib-txt smartlib-txt cax 100)
 ```
+
+
+---
+
+## Recompiling Contracts and the Standard Library
+
+
+Run the following in the dojo after you have thoroughly tested out the contracts.
+```hoon
+.capitol/noun +zig!deploy /=zig=/lib/zig/contracts/multisig/hoon
+.dao/noun +zig!deploy /=zig=/lib/zig/contracts/dao/hoon
+.fungible/noun +zig!deploy /=zig=/lib/zig/contracts/fungible/hoon
+.multisig/noun +zig!deploy /=zig=/lib/zig/contracts/multisig/hoon
+.nft/noun +zig!deploy /=zig=/lib/zig/contracts/nft/hoon
+.publish/noun +zig!deploy /=zig=/lib/zig/contracts/publish/hoon
+.trivial/noun +zig!deploy /=zig=/lib/zig/contracts/trivial/hoon
+.zigs/noun +zig!deploy /=zig=/lib/zig/contracts/zigs/hoon
+
+```
+
+Run the following if you've made changes to the standard library
+```hoon
+.smart-lib/noun +zig!mk-smart
+```
+
+Then copy the files into the git tree. (This assumes you've cloned this repo (ziggurat) as a submodule into the pkg folder as instructed above.)
+
+```bash
+cp ./<fakezod_pier>/.urb/put/*.noun ./<urbit-git-dir>/pkg/ziggurat/lib/zig/compiled/
+```
