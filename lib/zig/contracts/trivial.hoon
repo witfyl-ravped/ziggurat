@@ -1,5 +1,6 @@
-/=  library    /lib/zig/contracts/library/hoon
-/=  library-2  /lib/zig/contracts/library-2/hoon
+::  /+  *zig-sys-smart
+/=  library    /lib/zig/contracts/library
+/=  library-2  /lib/zig/contracts/library-2
 |_  =cart
 ++  write
   |=  =embryo
