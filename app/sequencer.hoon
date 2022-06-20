@@ -14,8 +14,8 @@
   $:  %0
       rollup=(unit ship)  ::  replace in future with ETH/starknet contract address
       private-key=(unit @ux)
-      town=(unit town)                ::  state
-      =basket                         ::  mempool
+      town=(unit town)    ::  state
+      =basket             ::  mempool
       peer-roots=(map id:smart root=@ux)  ::  track updates from rollup
       proposed-batch=(unit [=basket =land diff-hash=@ux root=@ux])
       status=?(%available %off)
