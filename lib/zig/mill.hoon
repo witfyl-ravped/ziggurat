@@ -61,6 +61,7 @@
       (gth rate.p.a rate.p.b)
     =|  [processed=(list [@ux egg]) reward=@ud]
     =|  lis-hits=(list (list hints))
+    =|  crows=(list crow)
     |-
     ::  TODO add 'crow's to chunk -- list of events
     ::  TODO add diff granary, burn granary
@@ -69,25 +70,26 @@
           processed
           (flop lis-hits)
           diff=*granary
-          crows=*(list crow)
+          crows
           burns=*granary
       ==
-    =+  [res fee err hits]=(mill land i.pending)
+    =+  [res fee err hits cro]=(mill land i.pending)
     =+  i.pending(status.p err)
     %_  $
       pending    t.pending
       processed  [[`@ux`(shax (jam -)) -] processed]
       land       res
       reward     (add reward fee)
-      lis-hits  [hits lis-hits]
+      lis-hits   [hits lis-hits]
+      crows      [cro crows]
     ==
   ::
   ::  +mill: processes a single egg and returns updated land
   ::
   ++  mill
     |=  [=land =egg]
-    ^-  [^land fee=@ud =errorcode hits=(list hints)]
-    ?.  ?=(account from.p.egg)  [land 0 %1 ~]
+    ^-  [^land fee=@ud =errorcode hits=(list hints) =crow]
+    ?.  ?=(account from.p.egg)  [land 0 %1 ~ ~]
     ::  validate transaction signature
     ::  =+  ?~(eth-hash.p.egg (sham (jam q.egg)) u.eth-hash.p.egg)
     ::  ?.  (verify-sig id.from.p.egg - sig.p.egg ?=(^ eth-hash.p.egg))
@@ -96,15 +98,15 @@
     ::
     ?.  =(nonce.from.p.egg +((~(gut by q.land) id.from.p.egg 0)))
       ~&  >>>  "mill: tx rejected; bad nonce"
-      [land 0 %3 ~]  ::  bad nonce
+      [land 0 %3 ~ ~]  ::  bad nonce
     ::
     ?.  (~(audit tax p.land) egg)
       ~&  >>>  "mill: tx rejected; not enough budget"
-      [land 0 %4 ~]  ::  can't afford gas
+      [land 0 %4 ~ ~]  ::  can't afford gas
     ::
-    =+  [hits gan rem err]=(~(work farm p.land) egg)
+    =+  [hits cro gan rem err]=(~(work farm p.land) egg)
     =/  fee=@ud   (sub budget.p.egg rem)
-    :_  [fee err hits]
+    :_  [fee err hits cro]
     :-  (~(charge tax ?~(gan p.land u.gan)) from.p.egg fee)
     (~(put by q.land) id.from.p.egg nonce.from.p.egg)
   ::
@@ -165,17 +167,19 @@
     ::  +work: take egg and return updated granary, remaining budget, and errorcode (0=success)
     ++  work
       |=  =egg
-      ^-  [(list hints) (unit ^granary) rem=@ud =errorcode]
+      ^-  [(list hints) =crow (unit ^granary) rem=@ud =errorcode]
       =/  hatchling
         (incubate egg(budget.p (div budget.p.egg rate.p.egg)) ~)
       :-  (flop hits.hatchling)
       ?~  final.hatchling
-        [~ rem.hatchling errorcode.hatchling]
-      +>.hatchling
+        [~ ~ rem.hatchling errorcode.hatchling]
+      ?~  roost.hatchling
+        [~ ~ rem.hatchling errorcode.hatchling]
+      [crow.u.roost.hatchling +>.hatchling]
     ::  +incubate: fertilize and germinate, then grow
     ++  incubate
       |=  [=egg hits=(list hints)]
-      ^-  [hits=(list hints) (unit rooster) final=(unit ^granary) rem=@ud =errorcode]
+      ^-  [hits=(list hints) roost=(unit rooster) final=(unit ^granary) rem=@ud =errorcode]
       |^
       =/  args  (fertilize q.egg)
       ?~  stalk=(germinate to.p.egg cont-grains.q.egg)
