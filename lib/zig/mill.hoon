@@ -94,7 +94,7 @@
     ::  =+  ?~(eth-hash.p.egg (sham (jam q.egg)) u.eth-hash.p.egg)
     ::  ?.  (verify-sig id.from.p.egg - sig.p.egg ?=(^ eth-hash.p.egg))
     ::  ~&  >>>  "mill: signature mismatch"
-    ::    [land 0 %2]  ::  signed tx doesn't match account
+    ::    [land 0 %2 ~ ~]  ::  signed tx doesn't match account
     ::
     ?.  =(nonce.from.p.egg +((~(gut by q.land) id.from.p.egg 0)))
       ~&  >>>  "mill: tx rejected; bad nonce"
@@ -250,19 +250,30 @@
         =/  payload   .*(q.library pay.cont.crop)
         =/  battery   .*([q.library payload] bat.cont.crop)
         =/  dor=vase  [-:!>(*contract) battery]
-        =/  gun
-          (ajar dor %write !>(cart) !>(embryo))
-        =/  =book
-          (zebra budget zink-cax gun)
-        :-  hit.q.book
-        ~&  >>  chick+(hole (unit chick) p.p.book)
-        ?:  ?=(%| -.p.book)
+        ::  MULE
+        ::
+        =/  res
+          (mule |.(;;(chick q:(shut dor %write !>(cart) !>(embryo)))))^(sub budget 7)
+        ?:  ?=(%| -.-.res)
           ::  error in contract execution
-          [~ budget %6]
-        ::  chick result
-        ?~  p.p.book
-          [~ 0 %0]
-        [`(hole chick u.p.p.book) bud.q.book %0]
+          [~ ~ +.res %6]
+        [~ `p.-.res +.res %0]
+        ::  ZEBRA
+        ::  (not working, needs new hash-cache I think)
+        ::
+        ::  =/  gun
+        ::    (ajar dor %write !>(cart) !>(embryo))
+        ::  =/  =book
+        ::    (zebra budget zink-cax gun)
+        ::  :-  hit.q.book
+        ::  ~&  >>  chick+(hole (unit chick) p.p.book)
+        ::  ?:  ?=(%| -.p.book)
+        ::    ::  error in contract execution
+        ::    [~ budget %6]
+        ::  ::  chick result
+        ::  ?~  p.p.book
+        ::    [~ 0 %0]
+        ::  [`(hole chick u.p.p.book) bud.q.book %0]
       --
     ::
     ::  +harvest: take a completed execution and validate all changes and additions to granary state

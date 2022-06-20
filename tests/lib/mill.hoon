@@ -87,7 +87,7 @@
     ^-  land
     [fake-granary fake-populace]
   --
-::  TODO write assertions for hits and crow maybe
+::
 ++  test-trivial-fail
   =*  mil     mil:zigs
   =/  caller  [0xbeef 1 0x1.beef]
@@ -101,8 +101,8 @@
       fake-town:zigs
     egg
   %+  expect-eq
-    !>(%6)  
-    !>(errorcode)  
+    !>(%6)
+  !>(errorcode)
 ::
 ++  test-zigs-give
   =*  mil     mil:zigs
@@ -122,8 +122,7 @@
   =.  germ.correct  [%& `@`'zigs' [200.777 ~ `@ux`'zigs-metadata']]
   %+  expect-eq
     !>(correct)
-    !>((~(got by p.land) 0x1.dead))
-  
+  !>((~(got by p.land) 0x1.dead))
 ::
 ++  test-single-c-call
   =*  mil     mil:zigs
@@ -150,5 +149,5 @@
     ==
   %+  expect-eq
     !>(correct)
-    !>((~(got by p.land) correct-id))
+  !>((~(got by p.land) correct-id))
 --
