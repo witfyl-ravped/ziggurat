@@ -4,96 +4,119 @@
 ::  New multisigs can be generated through the %create
 ::  argument, and are stored in account-controlled rice.
 ::
-::  TODO totally rewrite
-::
-/+  *zig-sys-smart
-=>  |%
-    +$  multisig-data
-      $:  members=(set id)
-          threshold=@ud
-          pending=(map @ux [=egg votes=(set id)])
-      ==
-    --
+::  Uncomment the following line to run tests
+::/+  *zig-sys-smart
+/=  lib  /lib/zig/contracts/lib/multisig
+=,  lib
 |_  =cart
 ++  write
   |=  inp=embryo
   ^-  chick
+  |^
   ?~  args.inp  !!
-  =/  caller-id
-    ^-  id
-    ?:  ?=(@ux caller.inp)
-      caller.inp
-    id.caller.inp
-  =*  args  +.u.args.inp
-  ?:  ?=(%create-multisig -.u.args.inp)
-    ::  issue a new multisig rice
-    ::  expected args: initial threshold, initial member set
-    ::  (each following arg is a member id, terminated by ~)
-    ?.  ?=([thresh=@ud members=*] args)  !!
-    =/  members  ;;((set id) members.args)
-    =/  new-sig-germ  [%& ~ [members thresh.args ~]]
-    =/  new-sig-id  (fry caller-id 0 new-sig-germ)
-    =-  [%& ~ (malt ~[[new-sig-id -]])]
-    [new-sig-id me.cart me.cart town-id.cart new-sig-germ]
-  =/  my-grain=grain  -:~(val by owns.cart)
-  ?>  =(lord.my-grain me.cart)
-  ?>  ?=(%& -.germ.my-grain)
-  =/  data  (hole multisig-data data.p.germ.my-grain)
-  ?:  ?=(%vote -.u.args.inp)
-    ::  expected args: tx hash
-    ::  should emit event triggering actual call
-    ::  if this sig pushes it over thresh
-    ?.  ?=(hash=@ux args)  !!
-    ::  validate member in multisig
-    ?.  (~(has in members.data) caller-id)  !!
-    ?~  prop=(~(get by pending.data) hash.args)  !!
-    =/  prop  u.prop(votes (~(put in votes.u.prop) caller-id))
-    =.  pending.data  (~(put by pending.data) hash.args prop)
-    ::  check if proposal is at threshold, execute if so
-    ::  otherwise simply update rice
-    ?:  (gth threshold.data ~(wyt in votes.prop))
-      =.  data.p.germ.my-grain  data
-      [%& (malt ~[[id.my-grain my-grain]]) ~]
-    =.  data.p.germ.my-grain
-      data(pending (~(del by pending.data) hash.args))
-    ::  if the pending egg is a multisig action, just
-    ::  recurse with $
-    ::  otherwise issue a hen chick with the call.
-    *chick
-  =.  data.p.germ.my-grain
-    ?+    -.u.args.inp  !!
-        %submit-tx
-      ::  validate member in multisig
-      ?.  (~(has in members.data) caller-id)  !!
-      ::  expected args: tx (call)
-      =/  submitted  ;;(egg args)
-      data(pending (~(put by pending.data) (mug submitted) [submitted (silt ~[caller-id])]))
+  (process ;;(action u.args.inp) caller.inp)
+  ::
+  ++  process
+    |=  [args=action =caller]
+    ^-  chick
+    =/  caller-id=id  (pin caller.inp)
+    ?:  ?=(%create-multisig -.args)
+      ::  issue a new multisig rice
+      =/  member-count  ~(wyt in members.args)
+      ?>  (gth member-count 0)
+      ::  invariant: threshold must be <= member-count
+      ?>  (lte init-thresh.args member-count)
+      ?>  (gth init-thresh.args 0)  :: threshold of 0 is disallowed
+      =/  salt=@
+        (sham (cat 3 block.cart (cat 3 caller-id (sham-ids members.args))))
+      =/  lord               me.cart
+      =/  holder             me.cart  ::  TODO should holder be me.cart or caller-id
+      =/  new-sig-germ=germ  [%& salt [members.args init-thresh.args ~]]
+      =/  new-sig-id=id      (fry-rice holder lord town-id.cart salt)
+      =/  new-sig=grain      [new-sig-id lord holder town-id.cart new-sig-germ]
+      [%& changed=~ issued=(malt ~[[new-sig-id new-sig]]) crow=~]
+    =/  my-grain=grain  -:~(val by owns.cart)
+    ?>  =(lord.my-grain me.cart)
+    ?>  ?=(%& -.germ.my-grain)
+    =/  state=multisig-state  ;;(multisig-state data.p.germ.my-grain)
+    ::  ?>  ?=(multisig-state data.p.germ.my-grain)  :: doesn't work due to fish-loop
+    ::  N.B. because no type assert has been made,
+    ::  data.p.germ.my-grain is basically * and thus has no type checking done on its modification
+    ::  therefore, we explicitly modify `state` to retain typechecking then modify `data`
     ::
+    ::  TODO find a good alias name for data.p.germ.my-grain
+    ?-    -.args
+        %vote
+      ?>  (~(has in members.state) caller-id)
+      =*  tx-hash  tx-hash.args
+      =/  prop     (~(got by pending.state) tx-hash)
+      ?>  !(~(has in votes.prop) caller-id)            :: cannot vote for prop you already voted for
+      =.  votes.prop     (~(put in votes.prop) caller-id)
+      =.  pending.state  (~(put by pending.state) tx-hash prop)
+      ::  if votes are not at threshold, just update state
+      ::  otherwise update state and issue tx
+      ?:  (lth ~(wyt in votes.prop) threshold.state)
+        =.  data.p.germ.my-grain  state
+        [%& (malt ~[[id.my-grain my-grain]]) ~ ~]
+      =.  pending.state         (~(del by pending.state) tx-hash)
+      =.  data.p.germ.my-grain  state
+      =/  crow=(list [@tas json])
+        :~  (event-to-json [%vote-passed tx-hash votes.prop id.my-grain])
+        ==
+      =/  roost=rooster  [changed=(malt ~[[id.my-grain my-grain]]) issued=~ crow]
+      [%| [next=[to.p.egg town-id.p.egg q.egg]:prop roost]]
+
+    ::
+        %submit-tx
+      ?>  (~(has in members.state) caller-id)
+      ::  N.B: Due to separation of concerns, we do not automatically record
+      ::       a vote on caller-id's part. they must send a vote tx as well.
+      ::
+      ::  TODO we should overwrite [sig eth-hash]:p.egg and caller-id.q.egg
+      ::  to always be from this contract (signing it ourselves etc.)
+      =.  from.p.egg.args       me.cart
+      =/  egg-hash              (sham-egg egg.args caller block.cart)
+      =.  pending.state         (~(put by pending.state) egg-hash [egg.args *(set id)])
+      =.  data.p.germ.my-grain  state
+      [%& (malt ~[[id.my-grain my-grain]]) ~ ~]
+    ::
+      ::  The following must be sent by the contract itself
+      ::
         %add-member
-      ::  this must be sent by contract
-      ?.  =(me.cart caller-id)  !!
-      ::  expected args: id
-      ?.  ?=(=id args)  !!
-      data(members (~(put in members.data) id.args))
+      ?>  =(me.cart caller-id)
+      ?>  !(~(has in members.state) id.args)  :: adding an existing member is disallowed
+      =.  members.state         (~(put in members.state) id.args)
+      =.  data.p.germ.my-grain  state
+      [%& (malt ~[[id.my-grain my-grain]]) ~ ~]
     ::
         %remove-member
-      ::  this must be sent by contract
-      ?.  =(me.cart caller-id)  !!
-      ::  expected args: id
-      ?.  ?=(=id args)  !!
-      data(members (~(del in members.data) id))
+      =/  member-count  ~(wyt in members.state)
+      ?>  =(me.cart caller-id)
+      ?>  (~(has in members.state) id.args)
+      ?>  (gth member-count 1)              :: multisig cannot have 0 members
+      ::  5:5, lose 1, 5:4 -> 4:4
+      ::  invariant: threshold must be <= member-count
+      =/  new-member-count  (dec member-count)
+      =?  threshold.state   (gth new-member-count threshold.state)
+        new-member-count
+      =.  members.state         (~(del in members.state) id.args)
+      =.  data.p.germ.my-grain  state
+      [%& (malt ~[[id.my-grain my-grain]]) ~ ~]
     ::
         %set-threshold
-      ::  this must be sent by contract
-      ?.  =(me.cart caller-id)  !!
-      ::  expected args: new-thresh
-      ?.  ?=(new-thresh=@ud args)  !!
-      data(threshold new-thresh.args)
+      ?>  =(me.cart caller-id)
+      ?>  (lte threshold.state ~(wyt in members.state))  :: cannot set threshold higher than member count
+      =.  threshold.state       new-thresh.args
+      =.  data.p.germ.my-grain  state
+      [%& (malt ~[[id.my-grain my-grain]]) ~ ~]
     ==
-  [%& (malt ~[[id.my-grain my-grain]]) ~]
+  --
 ::
 ++  read
-  |=  inp=path
-  ^-  *
-  ~
+  |_  =path
+    ++  json
+      ~
+    ++  noun
+      ~
+    --
 --
