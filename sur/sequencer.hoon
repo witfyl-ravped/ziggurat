@@ -1,4 +1,4 @@
-/+  smart=zig-sys-smart
+/+  smart=zig-sys-smart, zink=zink-zink
 |%
 +$  basket     (set [hash=@ux =egg:smart])  ::  transaction "mempool"
 +$  sequencer  (pair address:smart ship)
@@ -24,6 +24,15 @@
   ==
 ::
 +$  diff   granary  ::  state transitions for one batch
++$  state-transition
+  $:  =land
+      processed=(list [id:smart egg:smart])
+      hits=(list (list hints:zink))
+      =diff
+      crows=(list crow:smart)
+      burns=granary
+  ==
+::
 +$  batch  ::  state transition
   $:  town-id=id:smart
       mode=availability-method
