@@ -20,17 +20,16 @@
 /+  *test, mill=zig-mill, *zig-sys-smart, *sequencer
 /*  smart-lib-noun  %noun  /lib/zig/compiled/smart-lib/noun
 /*  zink-cax-noun   %noun  /lib/zig/compiled/hash-cache/noun
-/*  zigs-contract  %noun  /lib/zig/compiled/zigs/noun
+/*  zigs-contract   %noun  /lib/zig/compiled/zigs/noun
 |%
+++  init-now  *@da
+::
+++  mil
+  %~  mill  mill
+  :-  ;;(vase (cue q.q.smart-lib-noun))
+  ;;((map * @) (cue q.q.zink-cax-noun))
 ++  zigs
   |%
-  ::  technically not related to zigs but still necessary
-  ++  init-now  *@da
-  ++  mil
-    %~  mill  mill
-    :-  ;;(vase (cue q.q.smart-lib-noun))
-    ;;((map * @) (cue q.q.zink-cax-noun))
-  ::
   +$  account-mold
     $:  balance=@ud
         allowances=(map sender=id @ud)
@@ -116,8 +115,6 @@
     %+  ~(mill mil [0xcafe 1 0x1.cafe] 0x0 init-now:zigs)
       fake-town:zigs
     egg
-  ::  ?>  =(fee set-fee:zigs)
-  ::  ?>  =(errorcode %0)
   =/  correct  dead-zigs-grain:zigs
   =.  germ.correct  [%& `@`'zigs' [200.777 ~ `@ux`'zigs-metadata']]
   %+  expect-eq
