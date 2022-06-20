@@ -292,29 +292,25 @@ For the HTTP API, the app to subscribe to is `"indexer"`, and the path is `"/slo
 
 ---
 
-## Recompiling Contracts and the Standard Library
+## Compiling Contracts and the Standard Library
 
 
-Run the following in the dojo after you have thoroughly tested out the contracts.
+The following line compiles the `dao.hoon` contract. In general, you can replace `dao` with the name of any other contract.
 ```hoon
-.capitol/noun +zig!deploy /=zig=/lib/zig/contracts/multisig/hoon
 .dao/noun +zig!deploy /=zig=/lib/zig/contracts/dao/hoon
-.fungible/noun +zig!deploy /=zig=/lib/zig/contracts/fungible/hoon
-.multisig/noun +zig!deploy /=zig=/lib/zig/contracts/multisig/hoon
-.nft/noun +zig!deploy /=zig=/lib/zig/contracts/nft/hoon
-.publish/noun +zig!deploy /=zig=/lib/zig/contracts/publish/hoon
-.trivial/noun +zig!deploy /=zig=/lib/zig/contracts/trivial/hoon
-.zigs/noun +zig!deploy /=zig=/lib/zig/contracts/zigs/hoon
-
 ```
 
-Run the following if you've made changes to the standard library
+Run the following if you've made changes to the standard library and want to recompile it.
 ```hoon
 .smart-lib/noun +zig!mk-smart
 ```
 
-Then copy the files into the git tree. (This assumes you've cloned this repo (ziggurat) as a submodule into the pkg folder as instructed above.)
+The above instructions output their content into the `put` directory of your pier, located at e.g. `nec/.urb/put`.
+
+To include the compiled contracts into the git tree, run the following:
 
 ```bash
 cp ./<fakezod_pier>/.urb/put/*.noun ./<urbit-git-dir>/pkg/ziggurat/lib/zig/compiled/
 ```
+
+(This assumes you've cloned this repo (ziggurat) as a submodule into the pkg folder as instructed above.)
