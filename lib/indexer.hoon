@@ -117,8 +117,7 @@
         [%to %s (scot %ux to.shell)]
         [%rate (numb rate.shell)]
         [%budget (numb budget.shell)]
-        [%town-id (numb town-id.shell)]
-        :: [%town-id %s (scot %ux town-id.shell)]
+        [%town-id %s (scot %ux town-id.shell)]
         [%status (numb status.shell)]
     ==
   ::
@@ -185,7 +184,7 @@
     :~  [%id %s (scot %ux id.grain)]
         [%lord %s (scot %ux lord.grain)]
         [%holder %s (scot %ux holder.grain)]
-        [%town-id (numb town-id.grain)]
+        [%town-id (scot %ux town-id.grain)]
         [%germ (germ germ.grain)]
     ==
   ::

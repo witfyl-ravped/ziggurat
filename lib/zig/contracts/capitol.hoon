@@ -23,7 +23,7 @@
   ::
   +$  sig       [p=@ux q=ship r=@ud]
   +$  ziggurat  (map ship sig)
-  +$  world     (map town-id=@ud council=(map ship [id sig]))
+  +$  world     (map town-id=@ux council=(map ship [id sig]))
   ::
   +$  arguments
     $%  [%init =sig town=@ud]
@@ -128,8 +128,8 @@
       ^-  ^json
       %-  pairs
       %+  turn  ~(tap by worl)
-      |=  [town-id=@ud council=(map @p [id sig])]
-      [(scot %ud town-id) (enjs-council council)]
+      |=  [town-id=@ux council=(map @p [id sig])]
+      [(scot %ux town-id) (enjs-council council)]
       ::
       ++  enjs-council
         |=  council=(map @p [id sig])
@@ -189,7 +189,7 @@
     ::
     +$  sig       [p=@ux q=ship r=@ud]
     +$  ziggurat  (map ship sig)
-    +$  world     (map town-id=@ud council=(map ship [id sig]))
+    +$  world     (map town-id=@ux council=(map ship [id sig]))
     ::
     +$  arguments
       $%  [%init =sig town=@ud]

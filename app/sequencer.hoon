@@ -151,7 +151,7 @@
       ::  1. produce diff and new state with mill
       =/  addr  p.sequencer.hall.town
       =/  mil  ~(mill mill smart-lib-vase zink-cax-map)
-      =+  /(scot %p our.bowl)/wallet/(scot %da now.bowl)/account/(scot %ux addr)/(scot %ud id.hall.town)/noun
+      =+  /(scot %p our.bowl)/wallet/(scot %da now.bowl)/account/(scot %ux addr)/(scot %ux id.hall.town)/noun
       =+  .^(account:smart %gx -)
       =/  new=state-transition
         %+  ~(mill-all mil - id.hall.town now.bowl)

@@ -209,7 +209,7 @@
     :~  [%id %s (scot %ux id.grain)]
         [%lord %s (scot %ux lord.grain)]
         [%holder %s (scot %ux holder.grain)]
-        [%town-id %s (scot %ux town-id.shell)]
+        [%town-id %s (scot %ux town-id.grain)]
         [%germ (germ germ.grain lord.grain id.grain)]
     ==
   ::
