@@ -111,6 +111,21 @@
   ++  handle-write
     |=  =write
     ^-  (quip card _state)
+    ::  TODO: this arm should do a few things to assist wallet and other agents.
+    ::
+    ::  Each write should create a subscription, which will forward 3 things:
+    ::
+    ::  - a "receipt" from sequencer, which contains a signed hash of the egg
+    ::    (signed by both urbit ID and uqbar address -- enforcing that reputational link)
+    ::
+    ::  - once the egg gets submitted in batch to rollup, a card with the status/errorcode
+    ::
+    ::  - a card containing the new nonce of the address submitting the egg
+    ::    (apps can ignore and track on their own, or use this)
+    ::
+    ::  To enable status update, uqbar.hoon should subscribe to indexer for that egg
+    ::  and unsub when either status is received, or batch is rejected. (TODO how to determine latter?)
+    ::
     =/  town-id  ^-  @ux
       ?:  ?=(%submit-many -.write)
         town-id.write
