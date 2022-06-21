@@ -15,8 +15,9 @@
       %101  ::  101: transaction received by sequencer
       %103  ::  103: failure: transaction rejected by sequencer
       ::  see smart.hoon: mill errorcodes
-      %0  %1  %2  %3
-      %4  %5  %6  %7
+      %0  %1  %2
+      %3  %4  %5
+      %6  %7  %8
   ==
 ::
 +$  wallet-update
