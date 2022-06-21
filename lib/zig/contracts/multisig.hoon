@@ -28,7 +28,7 @@
       ?>  (lte init-thresh.args member-count)
       ?>  (gth init-thresh.args 0)  :: threshold of 0 is disallowed
       =/  salt=@
-        (sham (cat 3 block.cart (cat 3 caller-id (sham-ids members.args))))
+        (sham (cat 3 `@ud`now.cart (cat 3 caller-id (sham-ids members.args))))
       =/  lord               me.cart
       =/  holder             me.cart  ::  TODO should holder be me.cart or caller-id
       =/  new-sig-germ=germ  [%& salt [members.args init-thresh.args ~]]
@@ -75,7 +75,7 @@
       ::  TODO we should overwrite [sig eth-hash]:p.egg and caller-id.q.egg
       ::  to always be from this contract (signing it ourselves etc.)
       =.  from.p.egg.args       me.cart
-      =/  egg-hash              (sham-egg egg.args caller block.cart)
+      =/  egg-hash              (sham-egg egg.args caller `@ud`now.cart)
       =.  pending.state         (~(put by pending.state) egg-hash [egg.args *(set id)])
       =.  data.p.germ.my-grain  state
       [%& (malt ~[[id.my-grain my-grain]]) ~ ~]

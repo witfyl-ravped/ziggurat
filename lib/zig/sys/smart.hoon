@@ -93,6 +93,7 @@
       %5  ::  5: couldn't find contract
       %6  ::  6: crash in contract execution
       %7  ::  7: validation of changed/issued rice failed
+      %8  ::  8: ran out of gas while executing
   ==
 ::
 +$  egg  (pair shell yolk)
