@@ -135,6 +135,8 @@
         %receive
       ?.  =(%available status.state)
         ~|("%sequencer: error: got egg while not active" !!)
+      ::  TODO: "receipt"
+      ::  is poke-ack enough?
       =-  `state(basket (~(uni in basket) -))
       ^+  basket
       %-  ~(run in eggs.act)

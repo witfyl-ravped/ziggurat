@@ -49,6 +49,9 @@
     =/  card=(unit card)
       (watch-indexer town /[i.path] /[i.t.path]/[i.t.t.t.path])
     ?~(card ~ ~[u.card])
+  ::
+      %track
+    ~
   ==
   ::
   ++  watch-indexer  ::  TODO: ping indexers and find responsive one?
@@ -70,7 +73,7 @@
   =^  cards  state
     ?-  mark
       %uqbar-action  (handle-action !<(action vase))
-      %uqbar-write  (handle-write !<(write vase))
+      %uqbar-write   (handle-write !<(write vase))
     ==
   [cards this]
   ::
@@ -102,7 +105,7 @@
       %=  state
           sources
         ?~  town-source=(~(get ja sources) town-id.act)  !!
-        ?~  index=(find [dock.act]~ town-source)      !!
+        ?~  index=(find [dock.act]~ town-source)         !!
         %+  ~(put by sources)  town-id.act
         (oust [u.index 1] `(list dock)`town-source)
       ==
@@ -111,9 +114,8 @@
   ++  handle-write
     |=  =write
     ^-  (quip card _state)
-    ::  TODO: this arm should do a few things to assist wallet and other agents.
     ::
-    ::  Each write should create a subscription, which will forward 3 things:
+    ::  Each write can optionally create a subscription, which will forward these things:
     ::
     ::  - a "receipt" from sequencer, which contains a signed hash of the egg
     ::    (signed by both urbit ID and uqbar address -- enforcing that reputational link)
@@ -126,17 +128,15 @@
     ::  To enable status update, uqbar.hoon should subscribe to indexer for that egg
     ::  and unsub when either status is received, or batch is rejected. (TODO how to determine latter?)
     ::
-    =/  town-id  ^-  @ux
-      ?:  ?=(%submit-many -.write)
-        town-id.write
-      `@ux`town-id.p.egg.write
-    ?~  seq=(~(get by sequencers.state) town-id)
+    ?~  seq=(~(get by sequencers.state) `@ux`town-id.p.egg.write)
       ~|("%uqbar: no known sequencer for that town" !!)
+    =/  =wire
+      /submit-transaction/(scot %ux `@ux`(shax (jam q.egg.write)))
     :_  state
-    =+  ?:  ?=(%submit-many -.write)
-          [%sequencer-town-action !>([%receive (silt eggs.write)])]
-        [%sequencer-town-action !>([%receive (silt ~[egg.write])])]
-    [%pass /submit-transaction %agent [q.u.seq %sequencer] %poke -]~
+    =+  [%sequencer-town-action !>([%receive (silt ~[egg.write])])]
+    :~  [%pass wire %agent [q.u.seq %sequencer] %poke -]
+        [%give %fact ~[wire] %write-result !>([%sent ~])]
+    ==
   --
 ::
 ++  on-agent
@@ -179,6 +179,17 @@
         ~[(pass-through cage.sign)]
       ~[(pass-through cage.sign) u.kick-card u.leave-card]
     ==
+  ::
+      %submit-transaction
+    ::  get receipt from sequencer
+    ?.  ?=([@ ~] t.wire)      `this
+    ?.  ?=(%poke-ack -.sign)  `this
+    =/  egg-hash  (slav %ux i.t.wire)
+    =+  ?~  p.sign
+          [%received src.bowl]
+        [%rejected src.bowl]
+    :_  this
+    [%give %fact ~[/track/(scot %ux egg-hash)] %write-result !>(-)]~
   ==
   ::
   ++  pass-through

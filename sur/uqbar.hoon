@@ -28,8 +28,12 @@
 ::  ++  on-poke
 ::  sending transactions to sequencer
 ::
-+$  write
-  $%  [%submit =egg:smart]
-      [%submit-many town-id=id:smart eggs=(list egg:smart)]
++$  write  [%submit =egg:smart]
++$  write-result
+  $%  [%sent ~]
+      [%received who=ship]
+      [%rejected who=ship]
+      [%executed result=errorcode:smart]
+      [%nonce value=@ud]
   ==
 --
