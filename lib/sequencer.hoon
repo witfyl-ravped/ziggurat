@@ -25,7 +25,10 @@
   ?>  ?=([%read @ @tas @ta @ ^] path)
   =/  id  (slav %ux i.t.path)
   =/  read-type  (slav %tas i.t.t.path)  ::  %json or %noun
-  =/  arg=^path  [i.t.t.t.path ~]
+  =/  arg=^path
+    ?:  =('~' i.t.t.t.t.path)
+      [i.t.t.t.path ~]
+    [i.t.t.t.path i.t.t.t.t.path ~]
   =/  contract-rice=(list @ux)  ::  TODO need to figure this out
     %+  murn  t.t.t.t.t.path
     |=  addr=@
