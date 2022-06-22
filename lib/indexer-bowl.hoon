@@ -332,19 +332,16 @@
       [%s (numb s.sig)]
     ~
   ::
-  :: ++  headers
-  ::   |=  headers=(list [epoch-num=@ud bh=block-header:zig])
-  ::   ^-  json
-  ::   %-  pairs
-  ::   :_  ~
-  ::   :-  %headers
-  ::   :-  %a
-  ::   %+  turn  headers
-  ::   |=  [epoch-num=@ud bh=block-header:zig]
-  ::   %-  pairs
-  ::   :+  [%epoch-num (numb epoch-num)]
-  ::     [%block-header (block-header bh)]
-  ::   ~
+  ++  batch-order
+    |=  =batch-order:ui
+    ^-  json
+    %-  pairs
+    :_  ~
+    :-  %batch-order
+    :-  %a
+    %+  turn  batch-order
+    |=  batch-root=id:smart
+    [%s (scot %ux batch-root)]
   --
 ::  ++  dejs  ::  see https://github.com/uqbar-dao/ziggurat/blob/d395f3bb8100ddbfad10c38cd8e7606545e164d3/lib/indexer-bowl.hoon#L348
 --

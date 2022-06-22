@@ -5,7 +5,6 @@
 |%
 +$  query-type
   $?  %batch
-      :: %chunk
       %egg
       %from
       %grain
@@ -13,6 +12,7 @@
       %lord
       %slot
       %to
+      %town
       %hash
   ==
 ::
