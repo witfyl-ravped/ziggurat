@@ -123,6 +123,8 @@
         %receive
       ?.  =(%available status.state)
         ~|("%sequencer: error: got egg while not active" !!)
+      ::  TODO: "receipt"
+      ::  is poke-ack enough?
       =-  `state(basket (~(uni in basket) -))
       ^+  basket
       %-  ~(run in eggs.act)
@@ -158,7 +160,7 @@
           land.town
         (turn ~(tap in `^basket`basket.state) tail)
       =/  new-root      (shax (jam land.new))
-      =/  diff-hash     (shax (jam diff.new))
+      =/  diff-hash     (shax (jam ~[diff.new]))
       ::  2. generate our signature
       ::  (address sig, that is)
       ?~  private-key.state
@@ -170,10 +172,11 @@
       =-  [%pass /batch-submit/(scot %ux new-root) %agent [u.rollup.state %rollup] %poke -]~
       :-  %rollup-action
       !>  :-  %receive-batch
-          :*  addr
-              id.hall.town
+          :-  addr
+          ^-  batch
+          :*  id.hall.town
               mode.hall.town
-              diff.new
+              ~[diff.new]
               diff-hash
               new-root
               land.new
@@ -201,6 +204,7 @@
         !>(`indexer-update`[%update ~(tap in basket.u.proposed-batch) (need new-town) root.u.proposed-batch])
       ::  TODO manage rejected moves here
       ~&  >>>  "%sequencer: our move was rejected by rollup!"
+      ~&  u.p.sign
       `this(proposed-batch ~)
     `this
   ::
