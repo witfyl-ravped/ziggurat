@@ -76,7 +76,7 @@
   ^-  book
   =/  =book  *book
   ?.  ?=(%grain -.update)  book
-  =/  grains-list  `(list [@da =batch-location:ui =grain:smart])`~(val by grains.update)
+  =/  grains-list  `(list [@da =batch-location:ui =grain:smart])`(zing ~(val by grains.update))
   |-  ^-  ^book
   ?~  grains-list  book
   =/  =grain:smart  grain.i.grains-list
@@ -129,7 +129,7 @@
     ~&  >>>  "%wallet: failed to find matching metadata for a grain we hold"
     ~
   ?>  ?=(%grain -.update)
-  =/  meta-grain=grain:smart  +.+.+.-:~(tap by grains.update)
+  =/  meta-grain=grain:smart  +.+.-.+.-:~(tap by grains.update)
   ?>  ?=(%& -.germ.meta-grain)
   =/  found=(unit asset-metadata)
     ?+  token-type  ~

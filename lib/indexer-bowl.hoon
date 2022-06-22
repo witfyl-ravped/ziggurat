@@ -190,12 +190,15 @@
     [%s (scot %ux id)]
   ::
   ++  grains
-    |=  grains=(map grain-id=id:smart [@da location=batch-location:ui =grain:smart])
+    |=  grains=(jar grain-id=id:smart [@da location=batch-location:ui =grain:smart])
     ^-  json
     %-  pairs
     %+  turn  ~(tap by grains)
-    |=  [=id:smart timestamp=@da location=batch-location:ui g=grain:smart]
-    :-  (scot %ux id)
+    |=  [=id:smart gs=(list [@da batch-location:ui grain:smart])]
+    :+  (scot %ux id)
+      %a
+    %+  turn  gs
+    |=  [timestamp=@da location=batch-location:ui g=grain:smart]
     %-  pairs
     :^    [%timestamp (time timestamp)]
         [%location (batch-location location)]

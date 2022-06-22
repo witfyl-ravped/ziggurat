@@ -45,11 +45,11 @@
   $@  ~
   $%  [%batch batches=(map batch-id=id:smart [timestamp=@da location=town-location =batch])]
       [%egg eggs=(map egg-id=id:smart [timestamp=@da location=egg-location =egg:smart])]
-      [%grain grains=(map grain-id=id:smart [timestamp=@da location=batch-location =grain:smart])]
+      [%grain grains=(jar grain-id=id:smart [timestamp=@da location=batch-location =grain:smart])]
       $:  %hash
           batches=(map batch-id=id:smart [timestamp=@da location=town-location =batch])
           eggs=(map egg-id=id:smart [timestamp=@da location=egg-location =egg:smart])
-          grains=(map grain-id=id:smart [timestamp=@da location=batch-location =grain:smart])
+          grains=(jar grain-id=id:smart [timestamp=@da location=batch-location =grain:smart])
       ==
   ==
 --

@@ -41,7 +41,7 @@
 ::      Grains held by id with given hash.
 ::    /x/id/[id=@ux]:
 ::    /x/id/[town-id=@ux]/[id=@ux]:
-::      History of id (queries all eggs, froms, and tos for hash).
+::      History of id (queries `from`s and `to`s).
 ::    /x/lord/[lord-id=@ux]:
 ::    /x/lord/[town-id=@ux]/[lord-id=@ux]:
 ::      Grains ruled by lord with given hash.
@@ -54,21 +54,27 @@
 ::
 ::    /grain/[@ux]:
 ::      A stream of changes to given grain.
+::      Reply on-watch is entire grain history.
 ::
 ::    :: /hash/[@ux]:  ::  TODO: implement
 ::    ::   A stream of new activity of given id.
 ::
 ::    /holder/[@ux]:
 ::      A stream of new activity of given holder.
+::      Reply on-watch is entire history of held grains.
 ::
 ::    /id/[@ux]:
 ::      A stream of new transactions of given id.
+::      Reply on-watch is all historical
+::      transactions `from` or `to` id.
 ::
 ::    /lord/[@ux]:
 ::      A stream of new activity of given lord.
+::      Reply on-watch is entire history of ruled grains.
 ::
 ::    /town/[@ux]:
 ::      A stream of each new batch for town.
+::      Reply on-watch is history of batches in town.
 ::
 ::
 ::    ##  Pokes
@@ -76,10 +82,10 @@
 ::    %set-chain-source:
 ::      Subscribe to source for new blocks.
 ::
-::    %consume-indexer-update:
-::      Add a block or chunk to the index.
+::    :: %consume-indexer-update:  ::  TODO: implement
+::    ::   Add a block or chunk to the index.
 ::
-::    %serve-update:
+::    :: %serve-update:
 ::
 ::
 /-  ui=indexer,
@@ -151,10 +157,6 @@
           %set-chain-source
         ?>  (team:title our.bowl src.bowl)
         (set-chain-source:ic !<(dock vase))
-      ::
-          %set-num-recent-headers
-        ?>  (team:title our.bowl src.bowl)
-        `state(num-recent-headers !<(@ud vase))
       ::
       ::  TODO: add %consume-update and %serve-update pokes
       ::  https://github.com/uqbar-dao/ziggurat/blob/da1d37adf538ee908945557a68387d3c87e1c32e/app/uqbar-indexer.hoon#L138
@@ -468,13 +470,6 @@
             (malt ~[[root [now.bowl eggs town]]])  ::  TODO: improve timestamping
           :_  [root batch-order.u.b]
           (~(put by batches.u.b) root [now.bowl eggs town])
-          ::
-          ::   recent-headers
-          :: :-  [epoch-num header]
-          :: %+  scag
-          ::   (dec num-recent-headers)
-          :: ^-  (list [epoch-num=@ud =block-header:zig])
-          :: recent-headers
         ==
         |^
         [make-all-sub-cards state]
@@ -486,9 +481,6 @@
           |=  [ship sub-path=path]
           ^-  [@tas @u]
           :-  `@tas`-.sub-path
-          ?:  ?=(%slot -.sub-path)  0  ::  unused placeholder
-          ?:  ?=(%chunk -.sub-path)
-            (slav %ud -.+.sub-path)
           (slav %ux -.+.sub-path)
         ::
         ++  make-all-sub-cards
@@ -497,30 +489,22 @@
           |^
           %-  zing
           :~  :: (make-sub-cards %ux ~ %batch /batch)
-              (make-sub-cards %ux ~ %from /id)
-              (make-sub-cards %ux ~ %to /id)
-              (make-sub-cards %ux ~ %grain /grain)
-              (make-sub-cards %ux ~ %holder /holder)
-              (make-sub-cards %ux ~ %lord /lord)
-              (make-sub-cards %ux ~ %town /town)
+              (make-sub-cards %from /id)
+              (make-sub-cards %to /id)
+              (make-sub-cards %grain /grain)
+              (make-sub-cards %holder /holder)
+              (make-sub-cards %lord /lord)
+              (make-sub-cards %town /town)
           ==
           ::
           ++  make-sub-cards
-            |=  $:  id-type=?(%ux %ud)
-                    payload-prefix=(unit [@ud @ud])
-                    =query-type:ui
-                    path-prefix=path
-                ==
+            |=  [=query-type:ui path-prefix=path]
             ^-  (list card)
             ::  for id-based subscriptions, get cards from both from and to
             =/  path-type
               ?:(?=(?(%from %to) query-type) %id query-type)
             %+  murn  ~(tap in (~(get ju sub-paths) path-type))
             |=  payload=@u
-            :: |=  id=@u
-            :: =/  payload=?(@u [@ud @ud @u])
-            ::   ?~  payload-prefix  id
-            ::   [-.u.payload-prefix +.u.payload-prefix id]
             ::  TODO: can improve performance here by:
             ::  * call get-locations
             ::  * handle second-order-locations
@@ -528,20 +512,38 @@
             ::  * same -> got diff; different -> pass
             =/  =update:ui  (serve-update query-type payload)
             ?~  update  ~
-            ?.  %-  %~  any  by
-                    ?+  -.update  *(map @ux [@da *])
-                      %batch  batches.update
-                      %egg    eggs.update
-                      %grain  grains.update
-                    ==
-                |=  [timestamp=@da *]
-                =(now.bowl timestamp)
-              ~
+            ::  is update timestamped now?
+            ?:  ?=(?(%batch %egg) -.update)
+              ?.  %-  %~  any  by
+                      ?-  -.update
+                        %batch  batches.update
+                        %egg    eggs.update
+                      ==
+                  |=  [timestamp=@da *]
+                  =(now.bowl timestamp)
+                ~
+              :-  ~
+              %+  fact:io
+                [%indexer-update !>(`update:ui`update)]
+              ~[(snoc path-prefix (scot %ux payload))]
+            ?.  ?=(%grain -.update)  ~
+            =.  grains.update
+              %-  ~(gas by *(jar id:smart [@da batch-location:ui grain:smart]))
+              %+  murn  ~(tap by grains.update)
+              |=  [=id:smart gs=(list [@da batch-location:ui grain:smart])]
+              ?~(gs ~ `[id ~[i.gs]])
+            =/  timestamp-index=(unit @ud)
+              %+  find  [now.bowl]~
+              %+  turn
+                ^-  (list [@da batch-location:ui grain:smart])
+                (zing ~(val by grains.update))
+              |=  [timestamp=@da *]
+              timestamp
+            ?~  timestamp-index  ~
             :-  ~
             %+  fact:io
               [%indexer-update !>(`update:ui`update)]
-            ~[(snoc path-prefix (scot id-type payload))]
-            :: ~[(snoc path-prefix (scot id-type id))]
+            ~[(snoc path-prefix (scot %ux payload))]
           ::
           ++  are-updates-same
             ::  %.y if non-location portion of update is same
@@ -584,11 +586,14 @@
               [id egg]
             ::
             ++  make-id-grain-set
-              |=  grains=(map id:smart [@da batch-location:ui grain:smart])
+              |=  grains=(jar id:smart [@da batch-location:ui grain:smart])
               ^-  (set [id:smart grain:smart])
-              %-  silt
+              %-  ~(gas in *(set [id:smart grain:smart]))
+              %-  zing
               %+  turn  ~(tap by grains)
-              |=  [=id:smart @da batch-location:ui =grain:smart]
+              |=  [=id:smart gs=(list [@da batch-location:ui grain:smart])]
+              %+  turn  gs
+              |=  [@da batch-location:ui =grain:smart]
               [id grain]
             --
           --
@@ -749,10 +754,9 @@
 ++  get-ids
   |=  =query-payload:ui
   ^-  update:ui
-  =/  egg=update:ui   (serve-update %egg query-payload)
   =/  from=update:ui  (serve-update %from query-payload)
   =/  to=update:ui    (serve-update %to query-payload)
-  (combine-egg-updates ~[egg from to])
+  (combine-egg-updates ~[from to])
 ::
 ++  get-hashes
   |=  =query-payload:ui
@@ -772,46 +776,40 @@
   |=  updates=(list update:ui)
   ^-  (map id:smart [@da town-location:ui batch:ui])
   ?~  updates  ~
-  =/  combined=(map id:smart [@da town-location:ui batch:ui])
-    %-  %~  gas  by
-        *(map id:smart [@da town-location:ui batch:ui])
-    %-  zing
-    %+  turn  updates
-    |=  =update:ui
-    ?~  update               ~
-    ?.  ?=(%batch -.update)  ~
-    ~(tap by batches.update)
-  combined
+  %-  %~  gas  by
+      *(map id:smart [@da town-location:ui batch:ui])
+  %-  zing
+  %+  turn  updates
+  |=  =update:ui
+  ?~  update               ~
+  ?.  ?=(%batch -.update)  ~
+  ~(tap by batches.update)
 ::
 ++  combine-egg-updates-to-map
   |=  updates=(list update:ui)
   ^-  (map id:smart [@da egg-location:ui egg:smart])
   ?~  updates  ~
-  =/  combined=(map id:smart [@da egg-location:ui egg:smart])
-    %-  %~  gas  by
-        *(map id:smart [@da egg-location:ui egg:smart])
-    %-  zing
-    %+  turn  updates
-    |=  =update:ui
-    ?~  update             ~
-    ?.  ?=(%egg -.update)  ~
-    ~(tap by eggs.update)
-  combined
+  %-  %~  gas  by
+      *(map id:smart [@da egg-location:ui egg:smart])
+  %-  zing
+  %+  turn  updates
+  |=  =update:ui
+  ?~  update             ~
+  ?.  ?=(%egg -.update)  ~
+  ~(tap by eggs.update)
 ::
-++  combine-grain-updates-to-map
+++  combine-grain-updates-to-jar  ::  TODO: can this clobber?
   |=  updates=(list update:ui)
-  ^-  (map id:smart [@da batch-location:ui grain:smart])
+  ^-  (jar id:smart [@da batch-location:ui grain:smart])
   ?~  updates  ~
-  =/  combined=(map id:smart [@da batch-location:ui grain:smart])
-    %-  %~  gas  by
-        *(map id:smart [@da batch-location:ui grain:smart])
-    %-  zing
-    %+  turn  updates
-    |=  =update:ui
-    ?~  update               ~
-    ?.  ?=(%grain -.update)  ~
-    ~(tap by grains.update)
-  combined
+  %-  %~  gas  by
+      *(jar id:smart [@da batch-location:ui grain:smart])
+  %-  zing
+  %+  turn  updates
+  |=  =update:ui
+  ?~  update               ~
+  ?.  ?=(%grain -.update)  ~
+  ~(tap by grains.update)
 ::
 :: ++  combine-updates-to-map
 ::   |=  [updates=(list update:ui) type=?(%batch %egg %grain)]
@@ -850,8 +848,8 @@
     (combine-batch-updates-to-map batch-updates)
   =/  combined-egg=(map id:smart [@da egg-location:ui egg:smart])
     (combine-egg-updates-to-map egg-updates)
-  =/  combined-grain=(map id:smart [@da batch-location:ui grain:smart])
-    (combine-grain-updates-to-map grain-updates)
+  =/  combined-grain=(jar id:smart [@da batch-location:ui grain:smart])
+    (combine-grain-updates-to-jar grain-updates)
   :: =/  combined-batch=(map id:smart [@da town-location:ui batch:ui])
   ::   (combine-updates-to-map batch-updates %batch)
   :: =/  combined-egg=(map id:smart [@da egg-location:ui egg:smart])
@@ -903,15 +901,17 @@
       batch-id  [timestamp town-id batch]
     ?.  ?=(@ query-payload)  ~
     =*  batch-id  query-payload
-    %+  roll  ~(tap by batches-by-town)
-    |=  $:  [town-id=id:smart =batches:ui batch-order:ui]
-            out=[%batch (map id:smart [@da town-location:ui batch:ui])]
-        ==
-    ?~  b=(~(get by batches) batch-id)  out
-    =*  timestamp  -.u.b
-    =*  batch      +.u.b
-    :-  %batch
-    (~(put by +.out) batch-id [timestamp town-id batch])
+    =/  out=[%batch (map id:smart [@da town-location:ui batch:ui])]
+      %+  roll  ~(tap by batches-by-town)
+      |=  $:  [town-id=id:smart =batches:ui batch-order:ui]
+              out=[%batch (map id:smart [@da town-location:ui batch:ui])]
+          ==
+      ?~  b=(~(get by batches) batch-id)  out
+      =*  timestamp  -.u.b
+      =*  batch      +.u.b
+      :-  %batch
+      (~(put by +.out) batch-id [timestamp town-id batch])
+    ?~(+.out ~ out)
   ::
   ++  get-from-index
     ^-  update:ui
@@ -930,11 +930,12 @@
     ==
     ::
     ++  get-grain
-      =|  grains=(map grain-id=id:smart [@da batch-location:ui grain:smart])
+      =|  grains=(jar grain-id=id:smart [@da batch-location:ui grain:smart])
       =/  grain-id=id:smart
         ?:  ?=([@ @] query-payload)  +.query-payload
         ?>  ?=(@ query-payload)
         query-payload
+      =.  locations  (flop locations)
       ::  TODO: is `jar` ordering correct to return most recent?
       |-
       ?~  locations  ?~(grains ~ [%grain grains])
@@ -952,7 +953,7 @@
       %=  $
           locations  t.locations
           grains
-        %+  ~(put by grains)  grain-id
+        %+  ~(add ja grains)  grain-id
         [timestamp location u.grain]
       ==
     ::
@@ -1005,7 +1006,7 @@
         ?.  ?=(%grain -.next-update)  out
         %=  out
             grains
-          (~(uni by grains.out) grains.next-update)
+          (~(uni by grains.out) grains.next-update)  ::  TODO: can this clobber?
         ==
       ==
     --
