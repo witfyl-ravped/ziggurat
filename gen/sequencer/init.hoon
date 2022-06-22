@@ -1,9 +1,9 @@
 /-  *sequencer
 /+  smart=zig-sys-smart, ethereum
-/*  zigs-contract  %noun  /lib/zig/compiled/zigs/noun
-::  /*  nft-contract  %noun  /lib/zig/compiled/nft/noun
-::  /*  publish-contract  %noun  /lib/zig/compiled/publish/noun
-::  /*  trivial-contract  %noun  /lib/zig/compiled/trivial/noun
+/*  zigs-contract     %noun  /lib/zig/compiled/zigs/noun
+/*  nft-contract      %noun  /lib/zig/compiled/nft/noun
+/*  publish-contract  %noun  /lib/zig/compiled/publish/noun
+/*  trivial-contract  %noun  /lib/zig/compiled/trivial/noun
 :-  %say
 |=  [[now=@da eny=@uvJ bek=beak] [rollup-host=@p town-id=@ux private-key=@ux ~] ~]
 =/  pubkey-1  0x3.e87b.0cbb.431d.0e8a.2ee2.ac42.d9da.cab8.063d.6bb6.2ff9.b2aa.e1b9.0f56.9c3f.3423
@@ -12,29 +12,26 @@
 =/  zigs-1  (fry-rice:smart pubkey-1 zigs-wheat-id:smart town-id `@`'zigs')
 =/  zigs-2  (fry-rice:smart pubkey-2 zigs-wheat-id:smart town-id `@`'zigs')
 =/  zigs-3  (fry-rice:smart pubkey-3 zigs-wheat-id:smart town-id `@`'zigs')
-=/  beef-zigs-grain  ::  ~zod
+=/  beef-zigs-grain
   ^-  grain:smart
   :*  zigs-1
       zigs-wheat-id:smart
-      ::  associated seed: 0xbeef
       pubkey-1
       town-id
       [%& `@`'zigs' [10.321.055.000.000.000.000 ~ `@ux`'zigs-metadata']]
   ==
-=/  dead-zigs-grain  ::  ~bus
+=/  dead-zigs-grain
   ^-  grain:smart
   :*  zigs-2
       zigs-wheat-id:smart
-      ::  associated seed: 0xdead
       pubkey-2
       town-id
       [%& `@`'zigs' [50.000.000.000.000.000.000 ~ `@ux`'zigs-metadata']]
   ==
-=/  cafe-zigs-grain  ::  ~nec
+=/  cafe-zigs-grain
   ^-  grain:smart
   :*  zigs-3
       zigs-wheat-id:smart
-      ::  associated seed: 0xcafe
       pubkey-3
       town-id
       [%& `@`'zigs' [50.000.000.000.000.000.000 ~ `@ux`'zigs-metadata']]
@@ -64,26 +61,26 @@
       zigs-wheat-id:smart  ::  lord
       zigs-wheat-id:smart  ::  holder
       town-id              ::  town-id
-      [%| wheat(owns (silt ~[zigs-1 zigs-2 zigs-3 `@ux`'zigs-metadata']))]      ::  germ
+      [%| wheat(owns (silt ~[zigs-1 zigs-2 zigs-3 `@ux`'zigs-metadata']))]
   ==
 ::  publish.hoon contract
-::  =/  publish-grain
-::    ^-  grain:smart
-::    :*  0x1111.1111     ::  id
-::        0x1111.1111     ::  lord
-::        0x1111.1111     ::  holder
-::        town-id         ::  town-id
-::        [%| ;;(wheat:smart (cue q.q.publish-contract))]  ::  germ
-::    ==
+=/  publish-grain
+  ^-  grain:smart
+  :*  0x1111.1111     ::  id
+      0x1111.1111     ::  lord
+      0x1111.1111     ::  holder
+      town-id         ::  town-id
+      [%| ;;(wheat:smart (cue q.q.publish-contract))]  ::  germ
+  ==
 ::  ::  trivial.hoon contract
-::  =/  trivial-grain
-::    ^-  grain:smart
-::    :*  0xdada.dada     ::  id
-::        0xdada.dada     ::  lord
-::        0xdada.dada     ::  holder
-::        town-id         ::  town-id
-::        [%| ;;(wheat:smart (cue q.q.trivial-contract))]  ::  germ
-::    ==
+=/  trivial-grain
+  ^-  grain:smart
+  :*  0xdada.dada     ::  id
+      0xdada.dada     ::  lord
+      0xdada.dada     ::  holder
+      town-id         ::  town-id
+      [%| ;;(wheat:smart (cue q.q.trivial-contract))]  ::  germ
+  ==
 ::  ::
 ::  ::  NFT stuff
 ::  =/  nft-metadata-grain
@@ -130,8 +127,8 @@
         [id.zigs-metadata-grain zigs-metadata-grain]
         ::  [id.nft-wheat-grain nft-wheat-grain]
         ::  [id.nft-metadata-grain nft-metadata-grain]
-        ::  [id.publish-grain publish-grain]
-        ::  [id.trivial-grain trivial-grain]
+        [id.publish-grain publish-grain]
+        [id.trivial-grain trivial-grain]
         [zigs-1 beef-zigs-grain]
         [zigs-2 dead-zigs-grain]
         [zigs-3 cafe-zigs-grain]
