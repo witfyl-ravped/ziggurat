@@ -35,10 +35,10 @@
 ++  constrain
   |=  =hints
   ^-  [(unit thee-hint) ?]
+  =/  i  0
+  =/  hit  hints
   |^
   =/  b=?  %.y
-  =/  hit  hints
-  =/  i  0
   |-
   ?~  hit
     `b
@@ -54,11 +54,19 @@
   ::  +broad: verify constraints across instructions in the list
   ++  broad
     |=  hin=(unit thee-hint)
+    ^-  ?
     ?~  hin
       %.y
-    %.n
+    ?-    -.u.hin
+      ?(%0 %1 %cons)  %.n
+    ::
+        %2
+      ?~  hit    %.n
+      ?~  t.hit  %.n
+      (ver-f-hash p2h.u.hin i.t.hit)
+    ==
   ::
-  ::  +deep: verify constraints across instructions in the tree
+  ::  +deep: verify constraints recursively in the tree
   ++  deep
     |=  the=thee
     ^-  [(unit thee-hint) ?]
@@ -74,7 +82,7 @@
       [~ %.y]
     ::
         %2
-      :-  ~
+      :-  `the
       ?&  (ver-f-hash f1h.the -.f1.the)
           (ver-f-hash f2h.the -.f2.the)
           (ver-p-hash p1h.the (rear f1.the))
@@ -186,7 +194,7 @@
     :-  [%& ~ u.p.hed^u.p.tal]
     =+  [%cons u.hhed u.htal u.hedp u.talp hed-hit tal-hit hed-tep tal-tep]
     %_    app
-      hit  [- old-hit]
+      hit  (snoc old-hit -)
       tep  (pedometer old-tep -)
     ==
   ::
@@ -201,14 +209,14 @@
     ?~  hsibs  [%&^~ app]
     :-  [%& ~ u.u.part]
     =+  [%0 axis.f u.hpart u.hsibs]
-    app(hit -^hit, tep 1)
+    app(hit (snoc hit -), tep 1)
   ::
       [%1 const=*]
     =^  hres=(unit phash)  app  (hash const.f)
     ?~  hres  [%&^~ app]
     :-  [%& ~ const.f]
     =+  [%1 u.hres]
-    app(hit -^hit, tep 1)
+    app(hit (snoc hit -), tep 1)
   ::
       [%2 sub=* for=*]
     =^  hsub=(unit phash)  app  (hash sub.f)
@@ -239,7 +247,7 @@
     %_  $
       s    u.p.subject
       f    u.p.formula
-      hit  -^old-hit
+      hit  (snoc old-hit -)
       tep  (pedometer old-tep -)
     ==
   ==
