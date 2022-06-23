@@ -39,7 +39,7 @@
       ?(%id %grain %holder %lord)
     ?.  ?=([@ @ @ ~] path)  ~
     =/  town=id:smart  (slav %ux i.t.path)
-    ?~  card=(watch-indexer town ~ /[i.path]/[i.t.t.path])  ~
+    ?~  card=(watch-indexer town ~ path)  ~
     ~[u.card]
   ::
       %scry
@@ -47,7 +47,7 @@
     ?.  ?=([@ @ @ @ ~] path)                      ~
     =/  town=id:smart  (slav %ux i.t.t.path)
     =/  card=(unit card)
-      (watch-indexer town /[i.path] /[i.t.path]/[i.t.t.t.path])
+      (watch-indexer town /[i.path] path)
     ?~(card ~ ~[u.card])
   ::
       %track

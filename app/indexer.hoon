@@ -195,11 +195,32 @@
       :_  ~
       [%indexer-update !>(`update:ui`update)]
     ::
+        [%id @ @ ~]
+      :_  this
+      =/  payload=[@ux @ux]
+        [(slav %ux i.t.path) (slav %ux i.t.t.path)]
+      ?~  update=(get-ids payload)  ~
+      :_  ~
+      %-  fact:io
+      :_  ~
+      [%indexer-update !>(`update:ui`update)]
+    ::
         ?([%grain @ ~] [%holder @ ~] [%lord @ ~] [%town @ ~])
       :_  this
       =/  query-type=?(%grain %holder %lord %town)  i.path
       =/  hash=@ux  (slav %ux i.t.path)
       ?~  update=(serve-update query-type hash)  ~
+      :_  ~
+      %-  fact:io
+      :_  ~
+      [%indexer-update !>(`update:ui`update)]
+    ::
+        ?([%grain @ @ ~] [%holder @ @ ~] [%lord @ @ ~] [%town @ @ ~])
+      :_  this
+      =/  query-type=?(%grain %holder %lord %town)  i.path
+      =/  payload=[@ux @ux]
+        [(slav %ux i.t.path) (slav %ux i.t.t.path)]
+      ?~  update=(serve-update query-type payload)  ~
       :_  ~
       %-  fact:io
       :_  ~
@@ -210,12 +231,12 @@
     |=  =path
     ^-  (quip card _this)
     ?+    path  (on-leave:def path)
-        $?  [%grain @ ~]
+        $?  [%grain *]
             :: [%hash @ ~]
-            [%holder @ ~]
-            [%id @ ~]
-            [%lord @ ~]
-            [%town @ ~]
+            [%holder *]
+            [%id *]
+            [%lord *]
+            [%town *]
         ==
       `this
     ==

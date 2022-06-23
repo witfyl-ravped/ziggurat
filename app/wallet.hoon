@@ -354,11 +354,11 @@
       ==
     `this
   ::
-      [%holder @ ~]
+      ?([%holder @ ~] [%holder @ @ ~])
     ?:  ?=(%watch-ack -.sign)  (on-agent:def wire sign)
     ?.  ?=(%fact -.sign)       (on-agent:def wire sign)
     ?.  ?=(%indexer-update p.cage.sign)  (on-agent:def wire sign)
-    =+  pub=(slav %ux i.t.wire)
+    =+  pub=?:(?=([@ @ ~] wire) (slav %ux i.t.wire) (slav %ux i.t.t.wire))
     =/  =update:ui  !<(=update:ui q.cage.sign)
     ::  TODO: this is awful, replace with scrys to contract that give token types. see wallet/util.hoon
     =/  found=book
@@ -376,14 +376,14 @@
       metadata-store  metadata-search
     ==
   ::
-      [%id @ ~]
+      ?([%id @ ~] [%id @ @ ~])
     ::  update to a transaction from a tracked account
     ?:  ?=(%watch-ack -.sign)  (on-agent:def wire sign)
     ?.  ?=(%fact -.sign)       (on-agent:def wire sign)
     ?.  ?=(%indexer-update p.cage.sign)  (on-agent:def wire sign)
     =/  =update:ui  !<(=update:ui q.cage.sign)
     ?.  ?=(%egg -.update)  `this
-    =/  our-id=@ux  (slav %ux i.t.wire)
+    =/  our-id=@ux  ?:(?=([@ @ ~] wire) (slav %ux i.t.wire) (slav %ux i.t.t.wire))
     =+  our-txs=(~(gut by transaction-store.state) our-id [sent=~ received=~])
     =/  eggs=(list [@ux =egg:smart])
       %+  turn  ~(val by eggs.update)

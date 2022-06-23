@@ -23,12 +23,14 @@
       ~(tap in pubkeys)
     |=  k=@ux
     =-  [%pass - %agent [our %uqbar] %watch -]
-    /id/(scot %ux k)
+    :: /id/(scot %ux k)
+    /id/0x0/(scot %ux k)
   %+  turn
     ~(tap in pubkeys)
   |=  k=@ux
   =-  [%pass - %agent [our %uqbar] %watch -]
-  /holder/(scot %ux k)
+  :: /holder/(scot %ux k)
+  /holder/0x0/(scot %ux k)
 ::
 ++  clear-holder-and-id-sub
   |=  [id=@ux wex=boat:gall]
