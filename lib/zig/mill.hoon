@@ -50,41 +50,67 @@
 ++  mill
   |_  [miller=account town-id=id now=@da]
   ::
-  ::  +mill-all: mills all eggs in basket
+  ::  +mill-all
+  ::
+  ::  All eggs must be run through mill in parallel -- they should all operate against the
+  ::  same starting state passed through `land` at the beginning. Each run of mill should
+  ::  create a (validated) diff set, which can then be compared with an accumulated set of 
+  ::  diffs. If there is overlap, that egg should be discarded or pushed into the next
+  ::  parallel "pass", depending on sequencer parameters.
   ::
   ++  mill-all
-    |=  [=land basket=(list egg)]
+    |=  [=land basket=(list [@ux =egg]) passes=@ud]
     ^-  state-transition
+    ::
+    ::  TODOs:
+    ::  -  add multiple sequential passes
+    ::  -  implement burns for cross-town txns
+    ::
     =/  pending
       %+  sort  basket
-      |=  [a=egg b=egg]
-      (gth rate.p.a rate.p.b)
-    =|  [processed=(list [@ux egg]) reward=@ud]
+      |=  [a=[@ux =egg] b=[@ux =egg]]
+      (gth rate.p.egg.a rate.p.egg.b)
+    ::
+    =|  processed=(list [@ux egg])
+    =|  all-diffs=granary
     =|  lis-hits=(list (list hints))
     =|  crows=(list crow)
+    =|  reward=@ud
     |-
-    ::  TODO add 'crow's to chunk -- list of events
-    ::  TODO add diff granary, burn granary
     ?~  pending
-      :*  land(p (~(pay tax p.land) reward))
+      ::  create final state transition
+      :*  [(~(pay tax (~(uni by p.land) all-diffs)) reward) q.land]
           processed
           (flop lis-hits)
-          diff=*granary
+          all-diffs
           crows
-          burns=*granary
+          burns=*granary  ::  TODO implement
       ==
-    =+  [res fee err hits cro]=(mill land i.pending)
-    =+  i.pending(status.p err)
-    %_  $
+    ::
+    =/  [[diff=granary nonces=populace] fee=@ud =errorcode hits=(list hints) =crow]
+      (mill land egg.i.pending)
+    ?^  overlap=(~(int by all-diffs) diff)
+      ::  diff contains collision, reject
+      ::
+      %=  $
+        pending    t.pending
+        processed  [i.pending(status.p.egg %9) processed]
+      ==
+    ::  diff is isolated, proceedddd
+    ::
+    =?  diff  ?=(account from.p.egg.i.pending)
+      (~(charge tax p.land) from.p.egg.i.pending fee)
+    %=  $
       pending    t.pending
-      processed  [[`@ux`(shax (jam -)) -] processed]
-      land       res
+      processed  [i.pending(status.p.egg errorcode) processed]
+      all-diffs  (~(uni by all-diffs) diff)
+      q.land     nonces
       reward     (add reward fee)
       lis-hits   [hits lis-hits]
-      crows      [cro crows]
+      crows      [crow crows]
     ==
   ::
-  ::  +mill: processes a single egg and returns updated land
+  ::  +mill: processes a single egg and returns map of modified grains + updated nonce
   ::
   ++  mill
     |=  [=land =egg]
@@ -104,10 +130,10 @@
       ~&  >>>  "mill: tx rejected; not enough budget"
       [land 0 %4 ~ ~]  ::  can't afford gas
     ::
-    =+  [hits cro gan rem err]=(~(work farm p.land) egg)
-    =/  fee=@ud   (sub budget.p.egg rem)
-    :_  [fee err hits cro]
-    :-  (~(charge tax ?~(gan p.land u.gan)) from.p.egg fee)
+    =/  res  (~(work farm p.land) egg)
+    =/  fee=@ud  (sub budget.p.egg rem.res)
+    :_  [fee errorcode.res hits.res crow.res]
+    :-  ?~(diff.res ~ u.diff.res)
     (~(put by q.land) id.from.p.egg nonce.from.p.egg)
   ::
   ::  +tax: manage payment for egg in zigs
@@ -164,22 +190,17 @@
   ::
   ++  farm
     |_  =granary
-    ::  +work: take egg and return updated granary, remaining budget, and errorcode (0=success)
+    ::  +work: take egg and return diff granary, remaining budget, and errorcode (0=success)
     ++  work
       |=  =egg
-      ^-  [(list hints) =crow (unit ^granary) rem=@ud =errorcode]
+      ^-  [hits=(list hints) diff=(unit ^granary) =crow rem=@ud =errorcode]
       =/  hatchling
         (incubate egg(budget.p (div budget.p.egg rate.p.egg)) ~)
-      :-  (flop hits.hatchling)
-      ?~  final.hatchling
-        [~ ~ rem.hatchling errorcode.hatchling]
-      ?~  roost.hatchling
-        [~ ~ rem.hatchling errorcode.hatchling]
-      [crow.u.roost.hatchling +>.hatchling]
+      hatchling(hits (flop hits.hatchling))
     ::  +incubate: fertilize and germinate, then grow
     ++  incubate
       |=  [=egg hits=(list hints)]
-      ^-  [hits=(list hints) roost=(unit rooster) final=(unit ^granary) rem=@ud =errorcode]
+      ^-  [hits=(list hints) diff=(unit ^granary) =crow rem=@ud =errorcode]
       |^
       =/  args  (fertilize q.egg)
       ?~  stalk=(germinate to.p.egg cont-grains.q.egg)
@@ -222,21 +243,24 @@
     ::  +grow: recursively apply any calls stemming from egg, return on rooster or failure
     ++  grow
       |=  [=crop =embryo =egg hits=(list hints)]
-      ^-  [(list hints) (unit rooster) final=(unit ^granary) rem=@ud =errorcode]
+      ^-  [(list hints) diff=(unit ^granary) =crow rem=@ud =errorcode]
       |^
+      =|  =crow
       =+  [hit chick rem err]=(weed to.p.egg budget.p.egg)
       ?~  chick  [hit^hits ~ ~ rem err]
       ?:  ?=(%& -.u.chick)
         ::  rooster result, finished growing
-        ?~  gan=(harvest p.u.chick to.p.egg from.p.egg)
+        ?~  diff=(harvest p.u.chick to.p.egg from.p.egg)
           [hit^hits ~ ~ rem %7]
-        [hit^hits `p.u.chick gan rem err]
+        [hit^hits diff crow.p.u.chick rem err]
       ::  hen result, continuation
       =*  next  next.p.u.chick
       ::  continuation calls can alter grains
-      ?~  gan=(harvest roost.p.u.chick to.p.egg from.p.egg)
+      ?~  diff=(harvest roost.p.u.chick to.p.egg from.p.egg)
+        ::  roost had an invalid state modification, call fails
         [hit^hits ~ ~ rem %7]
-      %+  ~(incubate farm u.gan)
+      ::  combine diffs with main granary to run next call against
+      %+  ~(incubate farm (~(uni by granary) u.diff))
         egg(from.p to.p.egg, to.p to.next, budget.p rem, q args.next)
       hit^hits
       ::
@@ -285,7 +309,7 @@
       =-  ?.  -
             ~&  >>>  "harvest checks failed"
             ~
-          `(~(uni by granary) (~(uni by changed.res) issued.res))
+          `(~(uni by changed.res) issued.res)
       ?&  %-  ~(all in changed.res)
           |=  [=id =grain]
           ::  all changed grains must already exist AND

@@ -175,9 +175,10 @@
       =+  /(scot %p our.bowl)/wallet/(scot %da now.bowl)/account/(scot %ux addr)/(scot %ud id.hall.town)/noun
       =+  .^(account:smart %gx -)
       =/  new=state-transition
-        %+  ~(mill-all mil - id.hall.town now.bowl)
-          land.town
-        (turn ~(tap in `^basket`basket.state) tail)
+        %^    ~(mill-all mil - id.hall.town now.bowl)
+            land.town
+          ~(tap in `^basket`basket.state)
+        1  ::  number of parallel "passes"
       =/  new-root      (shax (jam land.new))
       =/  diff-hash     (shax (jam ~[diff.new]))
       ::  2. generate our signature

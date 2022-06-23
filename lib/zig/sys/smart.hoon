@@ -94,6 +94,7 @@
       %6  ::  6: crash in contract execution
       %7  ::  7: validation of changed/issued rice failed
       %8  ::  8: ran out of gas while executing
+      %9  ::  9: was not parallel / superceded by another egg in batch
   ==
 ::
 +$  egg  (pair shell yolk)
