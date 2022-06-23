@@ -41,8 +41,7 @@
 +$  batch
   [transactions=(list [@ux egg:smart]) town:seq]
 ::
-+$  rollup-update-queue
-  (jug town-id=@ux batch-id=@ux)
++$  town-update-queue  (jug town-id=@ux batch-id=@ux)
 +$  sequencer-update-queue
   %+  map  town-id=@ux
   %+  map  batch-id=@ux

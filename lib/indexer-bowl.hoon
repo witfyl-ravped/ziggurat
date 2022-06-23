@@ -275,7 +275,7 @@
     |=  =hall:seq
     ^-  json
     %-  pairs
-    :~  [%id %s (scot %ux id.hall)]
+    :~  [%town-id %s (scot %ux town-id.hall)]
         [%sequencer (sequencer sequencer.hall)]
         [%mode (mode mode.hall)]
         [%latest-diff-hash %s (scot %ux latest-diff-hash.hall)]

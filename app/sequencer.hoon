@@ -153,10 +153,10 @@
       ::  1. produce diff and new state with mill
       =/  addr  p.sequencer.hall.town
       =/  mil  ~(mill mill smart-lib-vase zink-cax-map)
-      =+  /(scot %p our.bowl)/wallet/(scot %da now.bowl)/account/(scot %ux addr)/(scot %ux id.hall.town)/noun
+      =+  /(scot %p our.bowl)/wallet/(scot %da now.bowl)/account/(scot %ux addr)/(scot %ux town-id.hall.town)/noun
       =+  .^(account:smart %gx -)
       =/  new=state-transition
-        %+  ~(mill-all mil - id.hall.town now.bowl)
+        %+  ~(mill-all mil - town-id.hall.town now.bowl)
           land.town
         (turn ~(tap in `^basket`basket.state) tail)
       =/  new-root      (shax (jam land.new))
@@ -174,7 +174,7 @@
       !>  :-  %receive-batch
           :-  addr
           ^-  batch
-          :*  id.hall.town
+          :*  town-id.hall.town
               mode.hall.town
               ~[diff.new]
               diff-hash
@@ -214,12 +214,12 @@
       [%pass wire %agent [src.bowl %rollup] %watch (snip `path`wire)]~
     ?.  ?=(%fact -.sign)  `this
     =^  cards  state
-      (update-fact !<(rollup-update q.cage.sign))
+      (update-fact !<(town-update q.cage.sign))
     [cards this]
   ==
   ::
   ++  update-fact
-    |=  upd=rollup-update
+    |=  upd=town-update
     ^-  (quip card _state)
     ?-    -.upd
         %new-peer-root
@@ -229,9 +229,9 @@
         %new-sequencer
       ::  check if we have been kicked off our town
       ::  this is in place for later..  TODO expand this functionality
-      ?~  town.state                     `state
-      ?.  =(town-id.upd id.hall.u.town)  `state
-      ?:  =(who.upd our.bowl)            `state
+      ?~  town.state                          `state
+      ?.  =(town-id.upd town-id.hall.u.town)  `state
+      ?:  =(who.upd our.bowl)                 `state
       ~&  >>>  "%sequencer: we've been kicked out of town!"
       `state
     ==
@@ -254,7 +254,7 @@
   ::
       [%town-id ~]
     ?~  town  ``noun+!>(~)
-    ``noun+!>(`id.hall.u.town)
+    ``noun+!>(`town-id.hall.u.town)
   ::
   ::  state reads fail if sequencer not active
   ::
@@ -270,7 +270,7 @@
       [%read @ @tas @ta @ ^]  :: grain id, %noun/%json, argument @ta, other +jam'd data, like tx args, then any associated rice IDs
     ?~  town  [~ ~]
     ::  TODO pre-;; library
-    (read-wheat t.path now.bowl id.hall.u.town p.land.u.town smart-lib-vase)
+    (read-wheat t.path now.bowl town-id.hall.u.town p.land.u.town smart-lib-vase)
   ==
 ::
 ++  on-leave  on-leave:def

@@ -87,8 +87,11 @@
 ::
 ::    ##  Pokes
 ::
-::    %set-chain-source:
-::      Subscribe to source for new blocks.
+::    %set-sequencer:
+::      Subscribe to sequencer for new batches.
+::
+::    %set-rollup:
+::      Subscribe to rollup for new batch roots.
 ::
 ::    :: %consume-indexer-update:  ::  TODO: implement
 ::    ::   Add a block or chunk to the index.
@@ -116,7 +119,8 @@
 +$  base-state-0
   $:  %0
       =batches-by-town:ui
-      =rollup-update-queue:ui
+      =capitol:seq
+      =town-update-queue:ui
       =sequencer-update-queue:ui
   ==
 +$  indices-0
@@ -162,24 +166,29 @@
     |=  [=mark =vase]
     ^-  (quip card _this)
     ?>  (team:title our.bowl src.bowl)
-    =^  cards  state
-      ?+    mark  (on-poke:def mark vase)
-          %set-sequencer
+    ?+    mark  (on-poke:def mark vase)
+        %set-sequencer
+      :_  this
+      %^    set-watch-target:ic
+          sequencer-wire
+        !<(dock vase)
+      sequencer-path
+    ::
+        %set-rollup
+      :_  this
+      %+  weld
         %^    set-watch-target:ic
-            sequencer-wire
+            rollup-capitol-wire
           !<(dock vase)
-        sequencer-path
-      ::
-          %set-rollup
-        %^    set-watch-target:ic
-            rollup-wire
-          !<(dock vase)
-        rollup-path
-      ::
-      ::  TODO: add %consume-update and %serve-update pokes
-      ::  https://github.com/uqbar-dao/ziggurat/blob/da1d37adf538ee908945557a68387d3c87e1c32e/app/uqbar-indexer.hoon#L138
-      ==
-    [cards this]
+        rollup-capitol-path
+      %^    set-watch-target:ic
+          rollup-root-wire
+        !<(dock vase)
+      rollup-root-path
+    ::
+    ::  TODO: add %consume-update and %serve-update pokes
+    ::  https://github.com/uqbar-dao/ziggurat/blob/da1d37adf538ee908945557a68387d3c87e1c32e/app/uqbar-indexer.hoon#L138
+    ==
   ::
   ++  on-watch
     |=  =path
@@ -193,6 +202,14 @@
       :: %-  fact:io
       :: :_  ~
       :: [%indexer-update !>(`update:ui`update)]
+    ::
+        [%capitol-updates ~]
+      :_  this
+      :_  ~
+      %-  fact:io
+      :_  ~
+      :-  %rollup-update
+      !>(`capitol-update:seq`[%new-capitol capitol])
     ::
         [%id @ ~]
       :_  this
@@ -354,7 +371,7 @@
     |=  [=wire =sign:agent:gall]
     |^  ^-  (quip card _this)
     ?+    wire  (on-agent:def wire sign)
-        [%rollup-update ~]
+        ?([%rollup-capitol-update ~] [%rollup-root-update ~])
       ?+    -.sign  (on-agent:def wire sign)
       ::
           %kick
@@ -364,9 +381,11 @@
         ?~  old-source  ~
         :_  ~
         %^    watch-target:ic
-            rollup-wire
+            wire
           u.old-source
-        rollup-path
+        ?:  ?=(%rollup-capitol-update -.wire)
+          rollup-capitol-path
+        rollup-root-path
       ::
           %fact
         =^  cards  state
@@ -418,21 +437,29 @@
       |=  update=rollup-update:seq
       ^-  (quip card _state)
       ?-    -.update
+          %new-sequencer
+        `state
+      ::
+          %new-capitol
+        :_  state(capitol capitol.update)
+        :_  ~
+        %+  fact:io
+          [%rollup-update !>(`capitol-update:seq`update)]
+        ~[rollup-capitol-path]
+      ::
           %new-peer-root
         =*  town-id  town-id.update
         ?~  town-q=(~(get by sequencer-update-queue) town-id)
           :-  ~
           %=  state
-              rollup-update-queue
-            %+  ~(put ju rollup-update-queue)  town-id
-            root.update
+              town-update-queue
+            (~(put ju town-update-queue) town-id root.update)
           ==
         ?~  indexer-update=(~(get by u.town-q) root.update)
           :-  ~
           %=  state
-              rollup-update-queue
-            %+  ~(put ju rollup-update-queue)  town-id
-            root.update
+              town-update-queue
+            (~(put ju town-update-queue) town-id root.update)
           ==
         =^  cards  state
           %^    consume-batch
@@ -446,8 +473,6 @@
           |=  town-queue=(map @ux [(list [@ux egg:smart]) town:seq])
           %-  ~(del by town-queue)  root.update
         ==
-          %new-sequencer
-        `state
       ==
     ::
     ++  consume-sequencer-update
@@ -476,10 +501,10 @@
         :: $(epochs rest.epoch, cards new-cards, state new-state)
       ::
           %update
-        =*  town-id  id.hall.town.update
+        =*  town-id  town-id.hall.town.update
         ?:  %.  root.update
             %~  has  in
-            (~(get ju rollup-update-queue) town-id)
+            (~(get ju town-update-queue) town-id)
           =^  cards  state
             %^    consume-batch
                 root.update
@@ -487,9 +512,8 @@
             town.update
           :-  cards
           %=  state
-              rollup-update-queue
-            %+  ~(del ju rollup-update-queue)  town-id
-            root.update
+              town-update-queue
+            (~(del ju town-update-queue) town-id root.update)
           ==
         :-  ~
         %=  state
@@ -575,7 +599,7 @@
     ++  consume-batch
       |=  [root=@ux eggs=(list [@ux egg:smart]) =town:seq]
       ^-  (quip card _state)
-      =*  town-id  id.hall.town
+      =*  town-id  town-id.hall.town
       =+  ^=  [egg from grain holder lord to]
           (parse-batch root town-id eggs land.town)
       :: =:  egg-index     (gas-ja egg-index egg town-id)
@@ -602,42 +626,44 @@
       [make-all-sub-cards state]
       ::
       ++  make-sub-paths
-        ^-  (jug @tas @u)
-        %-  ~(gas ju *(jug @tas @u))
+        ^-  (jug @tas path)
+        %-  ~(gas ju *(jug @tas path))
         %+  turn  ~(val by sup.bowl)
         |=  [ship sub-path=path]
-        ^-  [@tas @u]
-        :-  `@tas`-.sub-path
-        (slav %ux -.+.sub-path)
+        ^-  [@tas path]
+        ?>  ?=(^ sub-path)
+        [`@tas`i.sub-path t.sub-path]
       ::
       ++  make-all-sub-cards
         ^-  (list card)
-        =/  sub-paths=(jug @tas @u)  make-sub-paths
+        =/  sub-paths=(jug @tas path)  make-sub-paths
         |^
         %-  zing
-        :~  :: (make-sub-cards %ux ~ %batch /batch)
-            (make-sub-cards %from /id)
-            (make-sub-cards %to /id)
-            (make-sub-cards %grain /grain)
-            (make-sub-cards %holder /holder)
-            (make-sub-cards %lord /lord)
-            (make-sub-cards %town /town)
+        :~  :: (make-sub-cards %batch %batch)
+            (make-sub-cards %from %id)
+            (make-sub-cards %to %id)
+            (make-sub-cards %grain %grain)
+            (make-sub-cards %holder %holder)
+            (make-sub-cards %lord %lord)
+            (make-sub-cards %town %town)
         ==
         ::
         ++  make-sub-cards
-          |=  [=query-type:ui path-prefix=path]
+          |=  [=query-type:ui path-type=@tas]
           ^-  (list card)
-          ::  for id-based subscriptions, get cards from both from and to
-          =/  path-type
-            ?:(?=(?(%from %to) query-type) %id query-type)
           %+  murn  ~(tap in (~(get ju sub-paths) path-type))
-          |=  payload=@u
+          |=  sub-path=path
           ::  TODO: can improve performance here by:
           ::  * call get-locations
           ::  * handle second-order-locations
           ::  * compare batch-root with first element of batch-order
           ::  * same -> got diff; different -> pass
-          =/  =update:ui  (serve-update query-type payload)
+          =/  payload=?(@ux [@ux @ux])
+            ?:  ?=([@ ~] sub-path)  (slav %ux i.sub-path)
+            ?>  ?=([@ @ ~] sub-path)
+            [(slav %ux i.sub-path) (slav %ux i.t.sub-path)]
+          =/  =update:ui
+            (serve-update query-type payload)
           ?~  update  ~
           ::  is update timestamped now?
           ?:  ?=(?(%batch %egg) -.update)
@@ -652,7 +678,7 @@
             :-  ~
             %+  fact:io
               [%indexer-update !>(`update:ui`update)]
-            ~[(snoc path-prefix (scot %ux payload))]
+            ~[[path-type sub-path]]
           ?.  ?=(%grain -.update)  ~
           =.  grains.update
             %-  ~(gas by *(jar id:smart [@da batch-location:ui grain:smart]))
@@ -670,7 +696,7 @@
           :-  ~
           %+  fact:io
             [%indexer-update !>(`update:ui`update)]
-          ~[(snoc path-prefix (scot %ux payload))]
+          ~[[path-type sub-path]]
         ::
         ++  are-updates-same
           ::  %.y if non-location portion of update is same
@@ -809,15 +835,23 @@
   ^-  wire
   /epochs-catchup
 ::
-++  rollup-wire
+++  rollup-capitol-wire
   ^-  wire
-  /rollup-update
+  /rollup-capitol-update
+::
+++  rollup-root-wire
+  ^-  wire
+  /rollup-root-update
 ::
 ++  sequencer-wire
   ^-  wire
   /sequencer-update
 ::
-++  rollup-path
+++  rollup-capitol-path
+  ^-  path
+  /capitol-updates
+::
+++  rollup-root-path
   ^-  path
   /peer-root-updates
 ::
@@ -848,9 +882,8 @@
 ::
 ++  set-watch-target
   |=  [w=wire d=dock p=path]
-  ^-  (quip card _state)
+  ^-  (list card)
   =/  watch-card=card  (watch-target w d p)
-  :_  state
   =/  leave-card=(unit card)  (leave-wire w)
   ?~  leave-card
     :: ~[(get-epoch-catchup d) watch-card]
