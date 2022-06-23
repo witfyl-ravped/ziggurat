@@ -79,7 +79,8 @@
           (ver-f-hash f2h.the -.f2.the)
           (ver-p-hash p1h.the (rear f1.the))
           (ver-p-hash p2h.the (rear f2.the))
-          ::  verify step numbers
+          =(f1step.the (roll f1.the add-step))
+          =(f2step.the (roll f2.the add-step))
       ==
     ::
         %cons
@@ -88,8 +89,19 @@
           (ver-f-hash f2h.the -.f2.the)
           (ver-p-hash p1h.the (rear f1.the))
           (ver-p-hash p2h.the (rear f2.the))
-          ::  verify step numbers
+          =(f1step.the (roll f1.the add-step))
+          =(f2step.the (roll f2.the add-step))
       ==
+    ==
+  ::
+  ++  add-step
+    |=  [t=thee b=@]
+    ^-  @
+    ?~  t  0
+    ?-    -.t
+      ?(%0 %1)  1
+      %2        (add [f1step f2step]:t)
+      %cons     (add [f1step f2step]:t)
     ==
   ::
   ++  ver-f-hash
