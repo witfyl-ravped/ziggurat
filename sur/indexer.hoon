@@ -41,6 +41,11 @@
 +$  batch
   [transactions=(list [@ux egg:smart]) town:seq]
 ::
++$  sequencer-update-queue
+  %+  map  town-id=@ux
+  %+  map  batch-id=@ux
+  [eggs=(list [@ux egg:smart]) =town:seq]
+::
 +$  update
   $@  ~
   $%  [%batch batches=(map batch-id=id:smart [timestamp=@da location=town-location =batch])]
