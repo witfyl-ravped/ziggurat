@@ -34,21 +34,21 @@
 ::
 ++  constrain
   |=  =hints
-  ^-  [(unit thee-hint) ?]
+  ^-  ?
   =/  i  0
   =/  hit  hints
   |^
   =/  b=?  %.y
   |-
   ?~  hit
-    `b
-  ?.  b  `b
+    b
+  ?.  b  b
   =^  res  b
     (deep i.hit)
-  ?.  b  `b
+  ?.  b  b
   =.  b
     (broad res)
-  ?.  b  `b
+  ?.  b  b
   $(hit t.hit, i +(i))
   ::
   ::  +broad: verify constraints across instructions in the list
@@ -82,6 +82,10 @@
       [~ %.y]
     ::
         %2
+      =/  f1d  (constrain f1.the)
+      ?.  f1d  [~ %.n]
+      =/  f2d  (constrain f2.the)
+      ?.  f2d  [~ %.n]
       :-  `the
       ?&  (ver-f-hash f1h.the -.f1.the)
           (ver-f-hash f2h.the -.f2.the)
@@ -92,6 +96,10 @@
       ==
     ::
         %cons
+      =/  f1d  (constrain f1.the)
+      ?.  f1d  [~ %.n]
+      =/  f2d  (constrain f2.the)
+      ?.  f2d  [~ %.n]
       :-  ~
       ?&  (ver-f-hash f1h.the -.f1.the)
           (ver-f-hash f2h.the -.f2.the)
