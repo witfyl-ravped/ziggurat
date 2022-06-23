@@ -42,13 +42,13 @@
   |-
   ?~  hit
     `b
-  =*  the  i.hit
-  =^  res  b
-    (deep the)
   ?.  b  `b
-  ::  TODO: branch off
+  =^  res  b
+    (deep i.hit)
+  ?.  b  `b
   =.  b
     (broad res)
+  ?.  b  `b
   $(hit t.hit, i +(i))
   ::
   ::  +broad: verify constraints across instructions in the list
@@ -67,23 +67,54 @@
     ?-    -.the
         %0
       ::  TODO: verify
-      [`the %.y]
+      [~ %.y]
     ::
         %1
       ::  TODO: verify
-      [`the %.y]
+      [~ %.y]
     ::
         %2
-      ::  TODO: verify
-      =/  vf1
-        (constrain f1.the)
-      =/  vf2
-        (constrain f2.the)
-      [`the %.y]
+      :-  ~
+      ?&  (ver-f-hash f1h.the -.f1.the)
+          (ver-f-hash f2h.the -.f2.the)
+          (ver-p-hash p1h.the (rear f1.the))
+          (ver-p-hash p2h.the (rear f2.the))
+          ::  verify step numbers
+      ==
     ::
         %cons
-      ::  TODO: verify
-      [`the %.y]
+      :-  ~
+      ?&  (ver-f-hash f1h.the -.f1.the)
+          (ver-f-hash f2h.the -.f2.the)
+          (ver-p-hash p1h.the (rear f1.the))
+          (ver-p-hash p2h.the (rear f2.the))
+          ::  verify step numbers
+      ==
+    ==
+  ::
+  ++  ver-f-hash
+    |=  [fh=phash t=thee]
+    ^-  ?
+    ?~  t  %.n
+    .=  fh
+    %-  hash:pedersen
+    ?-    -.t
+      %0     [(hash:pedersen 0 0) (hash:pedersen axis.t 0)]
+      %1     [(hash:pedersen 1 0) res.t]
+      %2     [(hash:pedersen 2 0) (hash:pedersen [f1h f2h]:t)]
+      %cons  [f1h f2h]:t
+    ==
+  ::
+  ++  ver-p-hash
+    |=  [ph=phash t=thee]
+    ^-  ?
+    ?~  t  %.n
+    .=  ph
+    ?-    -.t
+      %0     leaf.t
+      %1     res.t
+      %2     hres.t
+      %cons  (hash:pedersen [p1h p2h]:t)
     ==
   --
 ::
@@ -104,17 +135,6 @@
     %+  add  f1step.hin
     f2step.hin
   ==
-::
-::++  create-hints
-::  |=  [n=^ h=hints cax=cache]
-::  ^-  json
-::  =/  hs  (hash -.n cax)
-::  =/  hf  (hash +.n cax)
-::  %-  pairs:enjs:format
-::  :~  hints+(hints:enjs h)
-::      subject+s+(num:enjs hs)
-::      formula+s+(num:enjs hf)
-::  ==
 ::
 ++  zink
   =|  appendix
