@@ -114,6 +114,7 @@
   ++  handle-write
     |=  =write
     ^-  (quip card _state)
+    ?-    -.write
     ::
     ::  Each write can optionally create a subscription, which will forward these things:
     ::
@@ -128,14 +129,21 @@
     ::  To enable status update, uqbar.hoon should subscribe to indexer for that egg
     ::  and unsub when either status is received, or batch is rejected. (TODO how to determine latter?)
     ::
-    ?~  seq=(~(get by sequencers.state) `@ux`town-id.p.egg.write)
-      ~|("%uqbar: no known sequencer for that town" !!)
-    =/  =wire
-      /submit-transaction/(scot %ux `@ux`(shax (jam q.egg.write)))
-    :_  state
-    =+  [%sequencer-town-action !>([%receive (silt ~[egg.write])])]
-    :~  [%pass wire %agent [q.u.seq %sequencer] %poke -]
-        [%give %fact ~[wire] %write-result !>([%sent ~])]
+        %submit
+      =/  town-id  `@ux`town-id.p.egg.write
+      ?~  seq=(~(get by sequencers.state) town-id)
+        ~|("%uqbar: no known sequencer for that town" !!)
+      =/  egg-hash  (scot %ux `@ux`(shax (jam q.egg.write)))
+      :_  state
+      =+  [%sequencer-town-action !>([%receive (silt ~[egg.write])])]
+      :~  [%pass /submit-transaction/egg-hash %agent [q.u.seq %sequencer] %poke -]
+          [%give %fact ~[/track/egg-hash] %write-result !>([%sent ~])]
+      ==
+    ::
+        %receipt
+      ::  forward to local watchers
+      :_  state
+      ~[[%give %fact ~[/track/(scot %ux egg-hash.write)] %write-result !>(write)]]
     ==
   --
 ::
@@ -184,12 +192,10 @@
     ::  get receipt from sequencer
     ?.  ?=([@ ~] t.wire)      `this
     ?.  ?=(%poke-ack -.sign)  `this
-    =/  egg-hash  (slav %ux i.t.wire)
-    =+  ?~  p.sign
-          [%received src.bowl]
-        [%rejected src.bowl]
+    =/  path  ~[/track/[i.t.wire]]
     :_  this
-    [%give %fact ~[/track/(scot %ux egg-hash)] %write-result !>(-)]~
+    ?~  p.sign  ~
+    [%give %fact path %write-result !>([%rejected src.bowl])]~  
   ==
   ::
   ++  pass-through
@@ -253,6 +259,8 @@
   |=  =path
   ^-  (unit (unit cage))
   ::  all scrys should return a unit
+  ::
+  ::  TODO: revisit this when remote scry is a thing..
   ::
   ?.  =(%x -.path)  ~
   ?+    +.path  (on-peek:def path)

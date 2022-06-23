@@ -28,11 +28,14 @@
 ::  ++  on-poke
 ::  sending transactions to sequencer
 ::
-+$  write  [%submit =egg:smart]
++$  write  
+  $%  [%submit =egg:smart]
+      [%receipt egg-hash=@ux ship-sig=[p=@ux q=ship r=life] uqbar-sig=sig:smart]
+  ==
 +$  write-result
   $%  [%sent ~]
-      [%received who=ship]
-      [%rejected who=ship]
+      [%receipt egg-hash=@ux ship-sig=[p=@ux q=ship r=life] uqbar-sig=sig:smart]
+      [%rejected ~]
       [%executed result=errorcode:smart]
       [%nonce value=@ud]
   ==

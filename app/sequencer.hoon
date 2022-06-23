@@ -3,7 +3,7 @@
 ::  Agent for managing a single UQ| town. Publishes diffs to rollup.hoon
 ::  Accepts transactions and batches them periodically as moves to town.
 ::
-/+  *sequencer, *rollup, zink=zink-zink, default-agent, dbug, verb
+/+  *sequencer, *rollup, zink=zink-zink, sig=zig-sig, default-agent, dbug, verb
 ::  Choose which library smart contracts are executed against here
 ::
 /*  smart-lib-noun  %noun  /lib/zig/compiled/smart-lib/noun
@@ -120,7 +120,7 @@
       ~&  >>  "sequencer: wiping state"
       `state(rollup ~, private-key ~, town ~, basket ~, peer-roots ~, status %off)
     ::
-    ::  handle transactions
+    ::  handle bridged assets from rollup
     ::
         %receive-assets
       ::  uncritically absorb assets bridged from rollup
@@ -130,14 +130,22 @@
       ?~  town.state  !!
       ~&  >>  "%sequencer: received assets from rollup: {<assets.act>}"
       `state(town `u.town(p.land (~(uni by p.land.u.town.state) assets.act)))
-
+    ::
+    ::  transactions
     ::
         %receive
       ?.  =(%available status.state)
         ~|("%sequencer: error: got egg while not active" !!)
-      ::  TODO: "receipt"
-      ::  is poke-ack enough?
-      =-  `state(basket (~(uni in basket) -))
+      ::  give a "receipt" to sender, with signature they can show
+      ::  a counterparty for "business finality"
+      :-  %+  turn  ~(tap in eggs.act)
+          |=  =egg:smart
+          ^-  card
+          =/  hash  (shax (jam q.egg))
+          =/  usig  (ecdsa-raw-sign:secp256k1:secp:crypto hash (need private-key.state))
+          =+  [%uqbar-write !>([%receipt `@ux`hash (sign:sig our.bowl now.bowl hash) usig])]
+          [%pass /submit-transaction/(scot %ux hash) %agent [src.bowl %uqbar] %poke -]
+      =-  state(basket (~(uni in basket) -))
       ^+  basket
       %-  ~(run in eggs.act)
       |=  =egg:smart
