@@ -48,31 +48,39 @@
 ::    /x/to/[to-id=@ux]:
 ::    /x/to/[town-id=@ux]/[to-id=@ux]:
 ::      History of receiver with the given hash.
+::    /x/town/[town-id=@ux]:
+::    /x/town/[town-id=@ux]/[town-id=@ux]:
+::      History of town: all batches.
 ::
 ::
 ::    ## Subscription paths
 ::
-::    /grain/[@ux]:
+::    /grain/[grain-id=@ux]
+::    /grain/[town-id=@ux]/[grain-id=@ux]:
 ::      A stream of changes to given grain.
 ::      Reply on-watch is entire grain history.
 ::
 ::    :: /hash/[@ux]:  ::  TODO: implement
 ::    ::   A stream of new activity of given id.
 ::
-::    /holder/[@ux]:
+::    /holder/[holder-id=@ux]
+::    /holder/[town-id=@ux]/[holder-id=@ux]:
 ::      A stream of new activity of given holder.
 ::      Reply on-watch is entire history of held grains.
 ::
-::    /id/[@ux]:
+::    /id/[id=@ux]
+::    /id/[town-id=@ux]/[id=@ux]:
 ::      A stream of new transactions of given id.
 ::      Reply on-watch is all historical
 ::      transactions `from` or `to` id.
 ::
-::    /lord/[@ux]:
+::    /lord/[lord-id=@ux]
+::    /lord/[town-id=@ux]/[lord-id=@ux]:
 ::      A stream of new activity of given lord.
 ::      Reply on-watch is entire history of ruled grains.
 ::
-::    /town/[@ux]:
+::    /town/[town-id=@ux]
+::    /town/[town-id=@ux]/[town-id=@ux]:
 ::      A stream of each new batch for town.
 ::      Reply on-watch is history of batches in town.
 ::
