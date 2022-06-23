@@ -108,6 +108,7 @@
 +$  base-state-0
   $:  %0
       =batches-by-town:ui
+      =rollup-update-queue:ui
       =sequencer-update-queue:ui
   ==
 +$  indices-0
@@ -391,9 +392,19 @@
           %new-peer-root
         =*  town-id  town-id.update
         ?~  town-q=(~(get by sequencer-update-queue) town-id)
-          `state  ::  TODO: add to rollup-update-queue
+          :-  ~
+          %=  state
+              rollup-update-queue
+            %+  ~(put ju rollup-update-queue)  town-id
+            root.update
+          ==
         ?~  indexer-update=(~(get by u.town-q) root.update)
-          `state  ::  TODO: add to rollup-update-queue
+          :-  ~
+          %=  state
+              rollup-update-queue
+            %+  ~(put ju rollup-update-queue)  town-id
+            root.update
+          ==
         =^  cards  state
           %^    consume-batch
               root.update
@@ -436,7 +447,21 @@
         :: $(epochs rest.epoch, cards new-cards, state new-state)
       ::
           %update
-        =*  town-id   id.hall.town.update
+        =*  town-id  id.hall.town.update
+        ?:  %.  root.update
+            %~  has  in
+            (~(get ju rollup-update-queue) town-id)
+          =^  cards  state
+            %^    consume-batch
+                root.update
+              eggs.update
+            town.update
+          :-  cards
+          %=  state
+              rollup-update-queue
+            %+  ~(del ju rollup-update-queue)  town-id
+            root.update
+          ==
         :-  ~
         %=  state
             sequencer-update-queue
