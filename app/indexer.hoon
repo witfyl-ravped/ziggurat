@@ -32,7 +32,10 @@
 ::      History of sender with the given hash.
 ::    /x/grain/[grain-id=@ux]:
 ::    /x/grain/[town-id=@ux]/[grain-id=@ux]:
-::      State of grain with given hash.
+::      Historical states of grain with given hash.
+::    /x/grain-eggs/[grain-id=@ux]:
+::    /x/grain-eggs/[town-id=@ux]/[grain-id=@ux]:
+::      Eggs involving grain with given hash.
 ::    /x/hash/[hash=@ux]:
 ::    /x/hash/[town-id=@ux]/[hash=@ux]:
 ::      Info about hash (queries all indexes for hash).
@@ -127,6 +130,7 @@
   $:  egg-index=(map @ux (jar @ux egg-location:ui))
       from-index=(map @ux (jar @ux second-order-location:ui))
       grain-index=(map @ux (jar @ux batch-location:ui))
+      grain-eggs-index=(map @ux (jar @ux second-order-location:ui))
       holder-index=(map @ux (jar @ux second-order-location:ui))
       lord-index=(map @ux (jar @ux second-order-location:ui))
       to-index=(map @ux (jar @ux second-order-location:ui))
@@ -230,9 +234,9 @@
       :_  ~
       [%indexer-update !>(`update:ui`update)]
     ::
-        ?([%grain @ ~] [%holder @ ~] [%lord @ ~] [%town @ ~])
+        ?([%grain @ ~] [%grain-eggs @ ~] [%holder @ ~] [%lord @ ~] [%town @ ~])
       :_  this
-      =/  query-type=?(%grain %holder %lord %town)  i.path
+      =/  =query-type:ui  i.path
       =/  hash=@ux  (slav %ux i.t.path)
       ?~  update=(serve-update query-type hash)  ~
       :_  ~
@@ -240,9 +244,9 @@
       :_  ~
       [%indexer-update !>(`update:ui`update)]
     ::
-        ?([%grain @ @ ~] [%holder @ @ ~] [%lord @ @ ~] [%town @ @ ~])
+        ?([%grain @ @ ~] [%grain-eggs @ @ ~] [%holder @ @ ~] [%lord @ @ ~] [%town @ @ ~])
       :_  this
-      =/  query-type=?(%grain %holder %lord %town)  i.path
+      =/  =query-type:ui  i.path
       =/  payload=[@ux @ux]
         [(slav %ux i.t.path) (slav %ux i.t.t.path)]
       ?~  update=(serve-update query-type payload)  ~
@@ -292,14 +296,15 @@
       =/  =update:ui  (get-ids query-payload)
       (make-peek-update update)
     ::
-        $?  [%x %batch @ ~]   [%x %json %batch @ ~]
-            [%x %egg @ ~]     [%x %json %egg @ ~]
-            [%x %from @ ~]    [%x %json %from @ ~]
-            [%x %grain @ ~]   [%x %json %grain @ ~]
-            [%x %holder @ ~]  [%x %json %holder @ ~]
-            [%x %lord @ ~]    [%x %json %lord @ ~]
-            [%x %to @ ~]      [%x %json %to @ ~]
-            [%x %town @ ~]    [%x %json %town @ ~]
+        $?  [%x %batch @ ~]       [%x %json %batch @ ~]
+            [%x %egg @ ~]         [%x %json %egg @ ~]
+            [%x %from @ ~]        [%x %json %from @ ~]
+            [%x %grain @ ~]       [%x %json %grain @ ~]
+            [%x %grain-eggs @ ~]  [%x %json %grain-eggs @ ~]
+            [%x %holder @ ~]      [%x %json %holder @ ~]
+            [%x %lord @ ~]        [%x %json %lord @ ~]
+            [%x %to @ ~]          [%x %json %to @ ~]
+            [%x %town @ ~]        [%x %json %town @ ~]
         ==
       =/  args=^path  ?.(is-json t.path t.t.path)
       ?.  ?=([@ @ ~] args)  (on-peek:def path)
@@ -308,14 +313,15 @@
       =/  =update:ui  (serve-update query-type hash)
       (make-peek-update update)
     ::
-        $?  [%x %batch @ @ ~]   [%x %json %batch @ @ ~]
-            [%x %egg @ @ ~]     [%x %json %egg @ @ ~]
-            [%x %from @ @ ~]    [%x %json %from @ @ ~]
-            [%x %grain @ @ ~]   [%x %json %grain @ @ ~]
-            [%x %holder @ @ ~]  [%x %json %holder @ @ ~]
-            [%x %lord @ @ ~]    [%x %json %lord @ @ ~]
-            [%x %to @ @ ~]      [%x %json %to @ @ ~]
-            [%x %town @ @ ~]    [%x %json %town @ @ ~]
+        $?  [%x %batch @ @ ~]       [%x %json %batch @ @ ~]
+            [%x %egg @ @ ~]         [%x %json %egg @ @ ~]
+            [%x %from @ @ ~]        [%x %json %from @ @ ~]
+            [%x %grain @ @ ~]       [%x %json %grain @ @ ~]
+            [%x %grain-eggs @ @ ~]  [%x %json %grain-eggs @ @ ~]
+            [%x %holder @ @ ~]      [%x %json %holder @ @ ~]
+            [%x %lord @ @ ~]        [%x %json %lord @ @ ~]
+            [%x %to @ @ ~]          [%x %json %to @ @ ~]
+            [%x %town @ @ ~]        [%x %json %town @ @ ~]
         ==
       =/  args=^path  ?.(is-json t.path t.t.path)
       ?.  ?=([@ @ @ ~] args)  (on-peek:def path)
@@ -600,7 +606,7 @@
       |=  [root=@ux eggs=(list [@ux egg:smart]) =town:seq]
       ^-  (quip card _state)
       =*  town-id  town-id.hall.town
-      =+  ^=  [egg from grain holder lord to]
+      =+  ^=  [egg from grain grain-eggs holder lord to]
           (parse-batch root town-id eggs land.town)
       :: =:  egg-index     (gas-ja egg-index egg town-id)
       ::     from-index    (gas-ja from-index from town-id)
@@ -608,12 +614,13 @@
       ::     holder-index  (gas-ja holder-index holder town-id)
       ::     lord-index    (gas-ja lord-index lord town-id)
       ::     to-index      (gas-ja to-index to town-id)
-      =:  egg-index     (gas-ja-egg egg-index egg town-id)
-          from-index    (gas-ja-second-order from-index from town-id)
-          grain-index   (gas-ja-batch grain-index grain town-id)
-          holder-index  (gas-ja-second-order holder-index holder town-id)
-          lord-index    (gas-ja-second-order lord-index lord town-id)
-          to-index      (gas-ja-second-order to-index to town-id)
+      =:  egg-index         (gas-ja-egg egg-index egg town-id)
+          from-index        (gas-ja-second-order from-index from town-id)
+          grain-index       (gas-ja-batch grain-index grain town-id)
+          grain-eggs-index  (gas-ja-second-order grain-eggs-index grain-eggs town-id)
+          holder-index      (gas-ja-second-order holder-index holder town-id)
+          lord-index        (gas-ja-second-order lord-index lord town-id)
+          to-index          (gas-ja-second-order to-index to town-id)
           batches-by-town
         %+  ~(put by batches-by-town)  town-id
         ?~  b=(~(get by batches-by-town) town-id)
@@ -760,11 +767,12 @@
               (list [@ux second-order-location:ui])
               (list [@ux second-order-location:ui])
               (list [@ux second-order-location:ui])
+              (list [@ux second-order-location:ui])
           ==
       =*  granary  p.land
-      =+  [new-grain new-holder new-lord]=(parse-granary root town-id granary)
-      =+  [new-egg new-from new-to]=(parse-transactions root town-id eggs)
-      [new-egg new-from new-grain new-holder new-lord new-to]
+      =+  [grain holder lord]=(parse-granary root town-id granary)
+      =+  [egg from grain-eggs to]=(parse-transactions root town-id eggs)
+      [egg from grain grain-eggs holder lord to]
     ::
     ++  parse-granary
       |=  [root=@ux town-id=@ux =granary:seq]
@@ -801,26 +809,39 @@
       ^-  $:  (list [@ux egg-location:ui])
               (list [@ux second-order-location:ui])
               (list [@ux second-order-location:ui])
+              (list [@ux second-order-location:ui])
           ==
       =|  parsed-egg=(list [@ux egg-location:ui])
       =|  parsed-from=(list [@ux second-order-location:ui])
+      =|  parsed-grain-eggs=(list [@ux second-order-location:ui])
       =|  parsed-to=(list [@ux second-order-location:ui])
       =/  egg-num=@ud  0
       |-
-      ?~  txs  [parsed-egg parsed-from parsed-to]
-      =*  tx-hash  -.i.txs
-      =*  egg      +.i.txs
-      =*  to       to.p.egg
+      ?~  txs
+        [parsed-egg parsed-from parsed-grain-eggs parsed-to]
+      =*  egg-hash     -.i.txs
+      =*  egg          +.i.txs
+      =*  to           to.p.egg
+      =*  my-grains    `(set id:smart)`my-grains.q.egg
+      =*  cont-grains  `(set id:smart)`cont-grains.q.egg
       =*  from
         ?:  ?=(@ux from.p.egg)  from.p.egg
         id.from.p.egg
       =/  =egg-location:ui  [town-id root egg-num]
+      =/  new-grain-eggs=(list [@ux second-order-location:ui])
+        %+  turn  ~(tap in (~(uni in my-grains) cont-grains))
+        |=  grain-id=id:smart
+        [grain-id egg-hash]
       %=  $
           txs          t.txs
-          parsed-egg   [[tx-hash egg-location] parsed-egg]
-          parsed-from  [[from tx-hash] parsed-from]
-          parsed-to    [[to tx-hash] parsed-to]
+          parsed-egg   [[egg-hash egg-location] parsed-egg]
+          parsed-from  [[from egg-hash] parsed-from]
+          parsed-to    [[to egg-hash] parsed-to]
           egg-num      +(egg-num)
+          parsed-grain-eggs
+        ?~  parsed-grain-eggs  new-grain-eggs
+        ?~  new-grain-eggs     parsed-grain-eggs
+        (weld new-grain-eggs parsed-grain-eggs)
       ==
     --
   ::
@@ -927,14 +948,15 @@
 ++  get-hashes
   |=  =query-payload:ui
   ^-  update:ui
-  =/  batch=update:ui   (serve-update %batch query-payload)
-  =/  egg=update:ui     (serve-update %egg query-payload)
-  =/  from=update:ui    (serve-update %from query-payload)
-  =/  grain=update:ui   (serve-update %grain query-payload)
-  =/  holder=update:ui  (serve-update %holder query-payload)
-  =/  lord=update:ui    (serve-update %lord query-payload)
-  =/  to=update:ui      (serve-update %to query-payload)
-  =/  town=update:ui    (serve-update %town query-payload)
+  =/  batch=update:ui       (serve-update %batch query-payload)
+  =/  egg=update:ui         (serve-update %egg query-payload)
+  =/  from=update:ui        (serve-update %from query-payload)
+  =/  grain=update:ui       (serve-update %grain query-payload)
+  =/  grain-eggs=update:ui  (serve-update %grain-eggs query-payload)
+  =/  holder=update:ui      (serve-update %holder query-payload)
+  =/  lord=update:ui        (serve-update %lord query-payload)
+  =/  to=update:ui          (serve-update %to query-payload)
+  =/  town=update:ui        (serve-update %town query-payload)
   %^  combine-updates  ~[batch town]  ~[egg from to]
   ~[grain holder lord]
 ::
@@ -1036,7 +1058,7 @@
       %batch
     get-batch-update
   ::
-      ?(%egg %from %grain %holder %lord %to)
+      ?(%egg %from %grain %grain-eggs %holder %lord %to)
     get-from-index
   ::
       %town
@@ -1091,7 +1113,7 @@
         %egg
       get-egg
     ::
-        ?(%from %holder %lord %to)
+        ?(%from %grain-eggs %holder %lord %to)
       get-second-order
     ==
     ::
@@ -1187,6 +1209,9 @@
     ::
         %grain
       (get-by-get-ja grain-index query-payload)
+    ::
+        %grain-eggs
+      (get-by-get-ja grain-eggs-index query-payload)
     ::
         %holder
       (get-by-get-ja holder-index query-payload)

@@ -8,6 +8,7 @@
       %egg
       %from
       %grain
+      %grain-eggs
       %holder
       %lord
       %slot
