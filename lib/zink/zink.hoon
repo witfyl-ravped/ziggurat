@@ -76,8 +76,24 @@
       [~ %.y]
     ?-    +<.the
         %0
-      ::  TODO: verify
-      [~ %.y]
+      :-  ~
+      ?:  =(0 axis.the)  %.n
+      ::  TODO: assert formula hash = hash(0 (hash axis))  ???
+      =/  leaf  leaf.the
+      =/  root  *phash
+      |-
+      ?:  =(1 axis.the)  =(sh.the leaf)
+      ?~  path.the       %.n
+      =*  sib  i.path.the
+      ?:  =(2 axis.the)
+        =.  root  (hash:pedersen leaf sib)
+        =(sh.the root)
+      ?:  =(3 axis.the)
+        =.  root  (hash:pedersen sib leaf)
+        =(sh.the root)
+      ?:  =((mod axis.the 2) 0)
+        $(axis.the (div axis.the 2), leaf (hash:pedersen leaf sib), path.the t.path.the)
+      $(axis.the (div (dec axis.the) 2), leaf (hash:pedersen sib leaf), path.the t.path.the)
     ::
         %1
       [~ %.y]
