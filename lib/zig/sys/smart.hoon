@@ -125,7 +125,7 @@
 +$  crow     (list [@tas json])
 ::
 +$  rooster  [changed=(map id grain) issued=(map id grain) =crow]
-+$  hen      [next=[to=id town-id=id args=yolk] roost=rooster]
++$  hen      [next=(list [to=id town-id=id args=yolk]) roost=rooster]
 ::
 ::  JSON, from lull.hoon and zuse.hoon
 ::  allows read arm of contracts to perform enjs operations

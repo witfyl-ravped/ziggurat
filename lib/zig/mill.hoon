@@ -245,7 +245,6 @@
       |=  [=crop =embryo =egg hits=(list hints)]
       ^-  [(list hints) diff=(unit ^granary) =crow rem=@ud =errorcode]
       |^
-      =|  =crow
       =+  [hit chick rem err]=(weed to.p.egg budget.p.egg)
       ?~  chick  [hit^hits ~ ~ rem err]
       ?:  ?=(%& -.u.chick)
@@ -254,15 +253,35 @@
           [hit^hits ~ ~ rem %7]
         [hit^hits diff crow.p.u.chick rem err]
       ::  hen result, continuation
+      =|  crows=crow
+      =|  all-diffs=^granary
       =*  next  next.p.u.chick
-      ::  continuation calls can alter grains
-      ?~  diff=(harvest roost.p.u.chick to.p.egg from.p.egg)
-        ::  roost had an invalid state modification, call fails
-        [hit^hits ~ ~ rem %7]
-      ::  combine diffs with main granary to run next call against
-      %+  ~(incubate farm (~(uni by granary) u.diff))
-        egg(from.p to.p.egg, to.p to.next, budget.p rem, q args.next)
-      hit^hits
+      =.  hits  hit^hits
+      =/  last-diff  (harvest roost.p.u.chick to.p.egg from.p.egg)
+      |-
+      ?~  last-diff
+        ::  diff from last call failed validation
+        [hits ~ ~ rem %7]
+      =.  all-diffs  (~(uni by all-diffs) u.last-diff)
+      ?~  next
+        ::  all continuations complete
+        ::
+        [hits `all-diffs (weld crows crow.roost.p.u.chick) rem %0]
+      ::  continue continuing
+      ::
+      =/  inter
+        %+  ~(incubate farm (~(uni by granary) all-diffs))
+          egg(from.p to.p.egg, to.p to.i.next, budget.p rem, q args.i.next)
+        hits
+      ?.  =(%0 errorcode.inter)
+        [(weld hits.inter hits) ~ ~ rem.inter errorcode.inter]
+      %=  $
+        next       t.next
+        rem        rem.inter
+        last-diff  diff.inter
+        hits       (weld hits.inter hits)
+        crows      (weld crows crow.inter)
+      ==
       ::
       ::  +weed: run contract formula with arguments and memory, bounded by bud
       ::
