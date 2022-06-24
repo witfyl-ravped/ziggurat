@@ -253,8 +253,6 @@
         =/  dor=vase  [-:!>(*contract) battery]
         ::  MULE
         ::
-        ~&  >>>  cart
-        ~&  >  embryo
         =/  res
           (mule |.(;;(chick q:(shut dor %write !>(cart) !>(embryo)))))^(sub budget 7)
         ?:  ?=(%| -.-.res)
@@ -285,7 +283,6 @@
     ++  harvest
       |=  [res=rooster lord=id from=caller]
       ^-  (unit ^granary)
-      ~&  >>  res
       =-  ?.  -
             ~&  >>>  "harvest checks failed"
             ~
