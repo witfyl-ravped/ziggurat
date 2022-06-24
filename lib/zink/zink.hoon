@@ -70,6 +70,29 @@
     ==
   ==
 ::
+++  matrix-to-csv
+  |=  lis=(list (list @x))
+  ^-  cord
+  =|  cords=(list cord)
+  |-
+  ?~  lis
+    (rap 3 (join '\0a' (flop cords)))
+  %_  $
+    lis  t.lis
+  ::
+      cords
+    =/  len  (lent i.lis)
+    :_  cords
+    =<  c
+    %+  roll  i.lis
+    |=  [h=@x [c=@t i=@]]
+    =+  (scot %x h)
+    :_  +(i)
+    %^  cat  3  c
+    ?:  =(+(i) len)  -
+    (cat 3 - ', ')
+  ==
+::
 ++  constrain
   |=  hit=hints
   ^-  ?
