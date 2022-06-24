@@ -250,31 +250,31 @@
         =/  payload   .*(q.library pay.cont.crop)
         =/  battery   .*([q.library payload] bat.cont.crop)
         =/  dor=vase  [-:!>(*contract) battery]
-        ::  MULE
-        ::
-        =/  res
-          (mule |.(;;(chick q:(shut dor %write !>(cart) !>(embryo)))))^(sub budget 7)
-        ?:  ?=(%| -.-.res)
-          ::  error in contract execution
-          [~ ~ +.res %6]
-        [~ `p.-.res +.res %0]
         ::  ZEBRA
         ::
-        ::  =/  gun
-        ::    (ajar dor %write !>(cart) !>(embryo))
-        ::  =/  =book
-        ::    (zebra budget zink-cax gun)
-        ::  ~&  >>  p.book  ::  chick+(hole (unit chick) p.p.book)
-        ::  :-  hit.q.book
-        ::  ?:  ?=(%| -.p.book)
+        =/  gun
+          (ajar dor %write !>(cart) !>(embryo))
+        =/  =book
+          (zebra budget zink-cax gun)
+        ~&  >>  p.book  ::  chick+(hole (unit chick) p.p.book)
+        :-  hit.q.book
+        ?:  ?=(%| -.p.book)
+          ::  error in contract execution
+          ~&  p.book
+          [~ bud.q.book %6]
+        ::  chick result
+        ?~  p.p.book
+          ~&  >>>  "mill: ran out of gas"
+          [~ 0 %8]
+        [(hole (unit chick) p.p.book) bud.q.book %0]
+        ::  MULE
+        ::
+        ::  =/  res
+        ::    (mule |.(;;(chick q:(shut dor %write !>(cart) !>(embryo)))))^(sub budget 7)
+        ::  ?:  ?=(%| -.-.res)
         ::    ::  error in contract execution
-        ::    ~&  p.book
-        ::    [~ bud.q.book %6]
-        ::  ::  chick result
-        ::  ?~  p.p.book
-        ::    ~&  >>>  "mill: ran out of gas"
-        ::    [~ 0 %8]
-        ::  [(hole (unit chick) p.p.book) bud.q.book %0]
+        ::    [~ ~ +.res %6]
+        ::  [~ `p.-.res +.res %0]
       --
     ::
     ::  +harvest: take a completed execution and validate all changes and additions to granary state
