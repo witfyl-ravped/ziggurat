@@ -32,11 +32,48 @@
   =/  ht  $(n +.n)
   (hash:pedersen hh ht)
 ::
+++  trace-to-matrix
+  |=  hit=hints
+  ^-  (list (list @x))
+  =|  lis=(list (list @x))
+  |-
+  ?~  hit  lis
+  ?~  i.hit  $(hit t.hit)
+  %_    $
+    hit  t.hit
+  ::
+      lis
+    ?-    +<.i.hit
+        %0  (snoc lis [sh `@x`+< `@x`axis leaf path]:i.hit)
+    ::
+        %1  (snoc lis [sh `@x`+< res ~]:i.hit)
+    ::
+        %2
+      =/  f1rows  (trace-to-matrix f1.i.hit)
+      =/  f2rows  (trace-to-matrix f2.i.hit)
+      %+  weld
+        %+  weld
+          %+  snoc  lis
+          [sh `@x`+< f1h f2h p1h p2h hres `@x`f1step `@x`f2step ~]:i.hit
+        f1rows
+      f2rows
+    ::
+        %cons
+      =/  f1rows  (trace-to-matrix f1.i.hit)
+      =/  f2rows  (trace-to-matrix f2.i.hit)
+      %+  weld
+        %+  weld
+          %+  snoc  lis
+          [sh `@x`+< f1h f2h p1h p2h `@x`f1step `@x`f2step ~]:i.hit
+        f1rows
+      f2rows
+    ==
+  ==
+::
 ++  constrain
-  |=  =hints
+  |=  hit=hints
   ^-  ?
   =/  i  0
-  =/  hit  hints
   |^
   =/  b=?  %.y
   |-

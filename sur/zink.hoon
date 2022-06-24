@@ -2,7 +2,7 @@
 |%
 +$  child  *
 +$  parent  *
-+$  phash  @uv                     ::  Pedersen hash
++$  phash  @x                     ::  Pedersen hash
 +$  hash-req
   $%  [%cell head=phash tail=phash]
       [%atom val=@]
