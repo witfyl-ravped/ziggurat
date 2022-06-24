@@ -74,7 +74,7 @@
     ::
         %launch-town
       ::  create new hall
-      ?<  (~(has by capitol) id.hall.act)
+      ?<  (~(has by capitol) town-id.hall.act)
       ::  TODO remove starting-state from init and populate new towns via
       ::  assets from other towns
       =+  (~(put by capitol) town-id.hall.act hall.act)
