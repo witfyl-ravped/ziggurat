@@ -8,10 +8,17 @@
   ::
   ++  process
     |=  [args=action caller-id=id]
+    ?:  ?=(%make-value -.action)
+      =/  salt=@           500
+      =/  value-germ=germ  [%& salt [number=0]]
+      =/  value-id=id      0x1
+      =/  val=grain  [value-id lord=me.cart holder=caller-id town-id.cart value-germ]
+      [%& changed=~ issued=(malt ~[[id.val val]]) crow=~]
+    =/  val=grain  (snag 0 ~(val by owns.inp))
+    ?>  =(caller-id holder.value)
+    ?>  ?=(%& -.germ.val)
+    =/  =value  ;;(value data.p.germ.val)
     ?-    -.action
-        %make-value
-      [%& ~ ~ ~]
-    ::
         %add
       [%& ~ ~ ~]
     ::
@@ -22,8 +29,11 @@
       [%& ~ ~ ~]
     ==
   ::
+  +$  value
+    [number=@ud]  :: could extend to [number=@ud last-modified=@ud]
+  ::
   +$  action
-    $%  [%make-value ~]
+    $%  [%make-value initial=@ud]
         [%add amount=@ud]
         [%sub amount=@ud]
         [%fib n=@ud]
