@@ -40,11 +40,12 @@
 ::+$  hints  (list thee)
 ::
 +$  thee-hint
+  $:  sh=phash
   $%  [%0 axis=@ leaf=phash path=(list phash)]
       [%1 res=phash]
       [%2 f1h=phash f2h=phash p1h=phash p2h=phash hres=phash f1=(list thee) f2=(list thee) f1step=@ f2step=@]
       [%cons f1h=phash f2h=phash p1h=phash p2h=phash f1=(list thee) f2=(list thee) f1step=@ f2step=@]
-  ==
+  ==  ==
 ::
 ++  thee
   $+(thee $@(~ thee-hint))

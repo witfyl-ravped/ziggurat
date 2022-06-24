@@ -57,13 +57,15 @@
     ^-  ?
     ?~  hin
       %.y
-    ?-    -.u.hin
+    ?-    +<.u.hin
       ?(%0 %1 %cons)  %.n
     ::
         %2
       ?~  hit    %.n
       ?~  t.hit  %.n
-      (ver-f-hash p2h.u.hin i.t.hit)
+      ?&  (ver-s-hash sh.u.hin i.t.hit)
+          (ver-f-hash p2h.u.hin i.t.hit)
+      ==
     ==
   ::
   ::  +deep: verify constraints recursively in the tree
@@ -72,13 +74,12 @@
     ^-  [(unit thee-hint) ?]
     ?~  the
       [~ %.y]
-    ?-    -.the
+    ?-    +<.the
         %0
       ::  TODO: verify
       [~ %.y]
     ::
         %1
-      ::  TODO: verify
       [~ %.y]
     ::
         %2
@@ -114,7 +115,7 @@
     |=  [t=thee b=@]
     ^-  @
     ?~  t  0
-    ?-    -.t
+    ?-    +<.t
       ?(%0 %1)  1
       %2        (add [f1step f2step]:t)
       %cons     (add [f1step f2step]:t)
@@ -126,7 +127,7 @@
     ?~  t  %.n
     .=  fh
     %-  hash:pedersen
-    ?-    -.t
+    ?-    +<.t
       %0     [(hash:pedersen 0 0) (hash:pedersen axis.t 0)]
       %1     [(hash:pedersen 1 0) res.t]
       %2     [(hash:pedersen 2 0) (hash:pedersen [f1h f2h]:t)]
@@ -138,19 +139,25 @@
     ^-  ?
     ?~  t  %.n
     .=  ph
-    ?-    -.t
+    ?-    +<.t
       %0     leaf.t
       %1     res.t
       %2     hres.t
       %cons  (hash:pedersen [p1h p2h]:t)
     ==
+  ::
+  ++  ver-s-hash
+    |=  [sh=phash t=thee]
+    ^-  ?
+    ?~  t  %.n
+    =(sh sh.t)
   --
 ::
 ++  pedometer
   |=  [tep=@ hin=thee-hint]
   ^-  @
   .+
-  ?-    -.hin
+  ?-    +<.hin
     ?(%0 %1)  tep
   ::
       %2
@@ -172,6 +179,9 @@
   ^-  book
   |^
   |-
+  =^  sh=(unit phash)  app  (hash s)
+  ?~  sh
+    [%&^~ app]
   ?+    f
     ~&  f
     [%|^trace app]
@@ -200,7 +210,7 @@
     =^  htal=(unit phash)  app  (hash +.f)
     ?~  htal  [%&^~ app]
     :-  [%& ~ u.p.hed^u.p.tal]
-    =+  [%cons u.hhed u.htal u.hedp u.talp hed-hit tal-hit hed-tep tal-tep]
+    =+  u.sh^[%cons u.hhed u.htal u.hedp u.talp hed-hit tal-hit hed-tep tal-tep]
     %_    app
       hit  (snoc old-hit -)
       tep  (pedometer old-tep -)
@@ -216,14 +226,14 @@
     =^  hsibs=(unit (list phash))  app  (merk-sibs s axis.f)
     ?~  hsibs  [%&^~ app]
     :-  [%& ~ u.u.part]
-    =+  [%0 axis.f u.hpart u.hsibs]
+    =+  u.sh^[%0 axis.f u.hpart u.hsibs]
     app(hit (snoc hit -), tep 1)
   ::
       [%1 const=*]
     =^  hres=(unit phash)  app  (hash const.f)
     ?~  hres  [%&^~ app]
     :-  [%& ~ const.f]
-    =+  [%1 u.hres]
+    =+  u.sh^[%1 u.hres]
     app(hit (snoc hit -), tep 1)
   ::
       [%2 sub=* for=*]
@@ -251,7 +261,10 @@
     ?~  hforp  [%&^~ app]
     =^  hres=(unit phash)  app  (hash [u.p.subject u.p.formula])
     ?~  hres  [%&^~ app]
-    =+  [%2 u.hsub u.hfor u.hsubp u.hforp u.hres sub-hit for-hit sub-tep for-tep]
+    =+  :-  u.sh
+        :*  %2  u.hsub  u.hfor  u.hsubp  u.hforp  u.hres
+            sub-hit   for-hit   sub-tep   for-tep
+        ==
     %_  $
       s    u.p.subject
       f    u.p.formula
