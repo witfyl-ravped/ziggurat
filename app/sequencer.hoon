@@ -20,7 +20,8 @@
       proposed-batch=(unit [=basket =land diff-hash=@ux root=@ux])
       status=?(%available %off)
   ==
-+$  inflated-state-0  [state-0 smart-lib-vase=vase zink-cax-map=(map * @)]
++$  inflated-state-0  [state-0 =mil smart-lib-vase=vase]
++$  mil  $_  ~(mill mill !>(0) *(map * @))
 --
 ::
 =|  inflated-state-0
@@ -33,13 +34,27 @@
     def   ~(. (default-agent this %|) bowl)
 ::
 ++  on-init
-  `this(state [[%0 ~ ~ ~ ~ ~ ~ %off] ;;(vase (cue q.q.smart-lib-noun)) ;;((map * @) (cue q.q.zink-cax-noun))])
+  =/  smart-lib=vase  ;;(vase (cue q.q.smart-lib-noun))
+  =/  mil
+    %~  mill  mill
+    [smart-lib ;;((map * @) (cue q.q.zink-cax-noun))]
+  :-  ~
+  %_    this
+      state
+    :+  [%0 ~ ~ ~ ~ ~ ~ %off]
+      mil
+    smart-lib
+  ==
+::
 ++  on-save  !>(-.state)
 ++  on-load
   |=  =old=vase
   ::  on-load: pre-cue our compiled smart contract library
-  ::
-  `this(state [!<(state-0 old-vase) ;;(vase (cue q.q.smart-lib-noun)) ;;((map * @) (cue q.q.zink-cax-noun))])
+  =/  smart-lib=vase  ;;(vase (cue q.q.smart-lib-noun))
+  =/  mil
+    %~  mill  mill
+    [smart-lib ;;((map * @) (cue q.q.zink-cax-noun))]
+  `this(state [!<(state-0 old-vase) mil smart-lib])
 ::
 ++  on-watch
   |=  =path
@@ -152,7 +167,6 @@
       ::
       ::  1. produce diff and new state with mill
       =/  addr  p.sequencer.hall.town
-      =/  mil  ~(mill mill smart-lib-vase zink-cax-map)
       =+  /(scot %p our.bowl)/wallet/(scot %da now.bowl)/account/(scot %ux addr)/(scot %ux town-id.hall.town)/noun
       =+  .^(account:smart %gx -)
       =/  new=state-transition
