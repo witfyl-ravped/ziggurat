@@ -1,3 +1,5 @@
+/=  lib  /lib/zig/contracts/lib/math
+=,  lib
 |_  =cart
 ++  write
   |=  =embryo
@@ -52,25 +54,6 @@
         %giv
       ::  ?<  =(holder.val who.action)  :: cannot give something to yourself
       [%& changed=(malt ~[[id.val val(holder who.action)]]) ~ ~]
-    ==
-  ::
-  +$  value
-    [number=@ud]  :: could extend to [number=@ud last-modified=@ud]
-  ::
-  +$  action
-    $%  [%make-value initial=@ud]
-        [%add amount=@ud]
-        [%sub amount=@ud]
-        [%mul multiplier=@ud]
-        [%giv who=id]
-        ::  [%swp ~]
-        ::  [%fib n=@ud] would need multiple cont calls??
-    ==
-  ::
-  +$  event
-    $%
-      [%owner-changed grain=id old=id new=id]
-      :: [%hit-zero value=id]
     ==
   ::
 ++  read
