@@ -94,21 +94,17 @@
       (malt ~[[id:account-1 account-1]])
   =/  =cart
     [`@ux`'fungible' 0 1 (malt ~[[id:account-3 account-3]])]
-  
   =/  updated-account=grain
     :*  id:account-1
         `@ux`'fungible'
         0xbeef
         1
-        [%& `@`'salt' [50 (silt ~[0xcafe]) `@ux`'simple']]
+        [%& `@`'salt' [50 (silt ~[[0xcafe 10]]) `@ux`'simple']]
     ==
-
   =/  correct=chick
     [%& (malt ~[[id:updated-account updated-account]]) ~ ~]
-  
   =/  res=chick
     (~(write cont cart) embryo)
-
   (expect-eq !>(res) !>(correct))
 ::
 ::  tests for %give
@@ -248,10 +244,8 @@
     ==
   =/  issued-rice=(map id grain)
     (malt ~[[new-id new]])
-
   =/  next-mints=(set mint:sur)
     (silt ~[[0xffff `new-id 50]])
-
   =/  updated-1=grain
     :*  `@ux`'simple'
         `@ux`'fungible'
@@ -270,25 +264,20 @@
     ==  ==
   =/  res=chick
     (~(write cont cart) embryo)
-
   =/  correct=chick
     :+  %|
       :+  me.cart  town-id.cart
       [owner-1 `[%mint `@ux`'simple' next-mints] ~ ~(key by `(map id grain)`issued-rice)]
     [(malt ~[[id:updated-1 updated-1]]) issued-rice ~]
-
-  (expect-eq !>(res) !>(correct))  
-
-
+  (expect-eq !>(res) !>(correct))
+::
 ::  tests for %deploy
 ::
 ++  test-deploy  ^-  tang
   =/  token-salt
     (sham (cat 3 0xbeef 'TC'))
-
   =/  account-rice
     (fry-rice 0xdead `@ux`'fungible' 1 token-salt)
-
   =/  new-token-metadata=grain
     :*  (fry-rice `@ux`'fungible' `@ux`'fungible' 1 token-salt)
         `@ux`'fungible'
@@ -305,7 +294,6 @@
             0xbeef
             token-salt
     ==  ==
-
   =/  updated-account=grain
     :*  account-rice
         `@ux`'fungible'
@@ -316,26 +304,18 @@
             ~
             id.new-token-metadata
     ==  ==
-
   =/  =embryo
     :+  owner-1
       `[%deploy (silt ~[[0xdead 900]]) (silt ~[0xdead]) 'Test Coin' 'TC' 0 1.000 %.y]
       ~
   =/  cart
     [`@ux`'fungible' 0 1 ~]
-
   =/  res=chick
     (~(write cont cart) embryo)
-
   =/  correct=chick
     [%& ~ (malt ~[[account-rice updated-account] [[[id.new-token-metadata new-token-metadata]]]]) ~]
-
   (expect-eq !>(res) !>(correct))
 ::
 ::  tests for %take
-::
-
-::
-::  tests for %set-allowance
 ::
 --
