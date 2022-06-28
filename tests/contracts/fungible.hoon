@@ -91,7 +91,7 @@
   =/  =embryo
     :+  owner-1
       `[%set-allowance 0xcafe 10]
-      (malt ~[[id:account-1 account-1]])
+    (malt ~[[id:account-1 account-1]])
   =/  =cart
     [`@ux`'fungible' 0 1 (malt ~[[id:account-3 account-3]])]
   =/  updated-1=grain
@@ -181,8 +181,6 @@
   =/  res=(each * (list tank))
     (mule |.((~(write cont cart) embryo)))
   (expect-eq !>(%.n) !>(-.res))
-
-
 ::
 ::  tests for %take
 ::
@@ -200,7 +198,6 @@
         1
         [%& `@`'salt' [60 (malt ~[[0xdead 10]]) `@ux`'simple']]
     ==
-
   =/  updated-2=grain
     :*  0x1.dead
         `@ux`'fungible'
@@ -213,7 +210,6 @@
   =/  correct=chick
     [%& (malt ~[[id:updated-1 updated-1] [id:updated-2 updated-2]]) ~ ~]
   (expect-eq !>(res) !>(correct))
-
 ::
 ++  test-take-send-new-account  ^-  tang
   =/  =embryo
@@ -234,7 +230,7 @@
     :+  %|
       :+  me.cart  town-id.cart
       [owner-1 `[%take 0xffff `new-id 0x1.dead 10] ~ (silt ~[0x1.dead new-id])]
-      [~ (malt ~[[new-id new]]) ~]
+    [~ (malt ~[[new-id new]]) ~]
   =/  res=chick
     (~(write cont cart) embryo)
   (expect-eq !>(res) !>(correct))
@@ -245,7 +241,7 @@
   =/  =embryo
     :+  owner-1
       `[%mint `@ux`'simple' (silt ~[[0xdead `0x1.dead 50] [0xcafe `0x1.cafe 10]])]
-      ~
+    ~
   =/  =cart
     [`@ux`'fungible' 0 1 (malt ~[[id:metadata-2 metadata-2] [id:account-2 account-2] [id:account-3 account-3]])]
   =/  updated-1=grain
@@ -288,7 +284,7 @@
   =/  =embryo
     :+  owner-1
       `[%mint `@ux`'simple' (silt ~[[0xffff ~ 50]])]
-      ~
+    ~
   =/  =cart
     [`@ux`'fungible' 0 1 (malt ~[[id:metadata-2 metadata-2]])]
   =/  new-id  (fry-rice 0xffff `@ux`'fungible' 1 `@`'salt')
@@ -364,7 +360,7 @@
   =/  =embryo
     :+  owner-1
       `[%deploy (silt ~[[0xdead 900]]) (silt ~[0xdead]) 'Test Coin' 'TC' 0 1.000 %.y]
-      ~
+    ~
   =/  cart
     [`@ux`'fungible' 0 1 ~]
   =/  res=chick
